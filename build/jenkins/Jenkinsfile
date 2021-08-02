@@ -1,0 +1,113 @@
+environment {
+  PROJECT_BUILD_TAG = ''
+}
+
+pipeline {
+  agent {
+    label 'jenkins-slave'
+  }
+
+  options {
+    buildDiscarder(logRotator(numToKeepStr: '5'))
+    disableConcurrentBuilds()
+  }
+  stages {
+    stage("Show Variables") {
+      steps {
+        script {
+          sh 'make devops-print-variables'
+        }
+      }
+    }
+    stage("Plan Deployment") {
+      steps {
+        script {
+          /*
+          sh 'make provision-plan'
+          */
+          sh 'echo TO DO'
+        }
+      }
+    }
+    stage("Provision") {
+      steps {
+        script {
+          /*
+          sh 'make provision'
+          */
+          sh 'echo TO DO'
+        }
+      }
+    }
+    stage("Derive Build Tag") {
+      steps {
+        script {
+          env.PROJECT_BUILD_TAG = sh(returnStdout: true, script: 'make derive-build-tag').trim()
+        }
+      }
+    }
+    stage("Build") {
+      steps {
+        script {
+          sh 'make build VERSION=${env.PROJECT_BUILD_TAG}'
+        }
+      }
+    }
+    stage("Unit Test") {
+      steps {
+        script {
+          sh 'echo To Do'
+        }
+      }
+    }
+    stage("Contract Tests") {
+      steps {
+        script {
+          sh 'echo To Do'
+        }
+      }
+    }
+    stage("Push") {
+      steps {
+        script {
+          sh 'make push VERSION=${env.PROJECT_BUILD_TAG}'
+        }
+      }
+    }
+    stage("Deploy") {
+      steps {
+        script {
+          /*
+          sh 'make deploy'
+          */
+          sh 'echo TO DO'
+        }
+      }
+    }
+    stage("Monitor Deployment") {
+      steps {
+        script {
+          /*
+          sh 'make k8s-check-deployment-of-replica-sets'
+          */
+          sh 'echo TO DO'
+        }
+      }
+    }
+    stage("Smoke Test") {
+      steps {
+        script {
+          sh 'echo To Do'
+        }
+      }
+    }
+  }
+  post {
+        always {
+            script {
+                sh 'make stop'
+                sh 'make clean'
+            }
+        }
+    }
+}

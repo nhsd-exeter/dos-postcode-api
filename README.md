@@ -50,10 +50,17 @@
 
 ## Overview
 
-A few sentences what business problem this project solves...
+This is the DoS Postcode API.  A number of Service Searches require a point to point distance from the search postcode to the services meeting the search criteria to be calculated and returned. To perform this task the northing and easting location coordinates are required.  This API will return northing and easting coordinates for any given UK postcode.
 
 ## Quick Start
 
+Run the following make targets:
+- make build
+- make start
+
+The API can be reached on this endpoint:
+
+https://localhost:8443/api/postcode
 ### Development Requirements
 
 - macOS operating system provisioned with the `curl -L bit.ly/make-devops-macos-setup | bash` command

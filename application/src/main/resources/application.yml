@@ -1,0 +1,20 @@
+spring:
+  main:
+    allow-bean-definition-overriding: true
+invalid:
+  postcode: Please enter a valid postcode
+springdoc:
+  api-docs:
+    path: /ccg-api-docs
+server:
+  port: 8443
+  ssl:
+    key-store-type: PKCS12
+    keystore: classpath:${CERTIFICATE_DOMAIN}.p12
+    key-store-password:
+dynamo:
+  config:
+    region: eu-west-2
+  table:
+    name: ${DYNAMODB_POSTCODE_LOC_MAP_TABLE}
+  endpoint: ${POSTCODE_LOCATION_DYNAMO_URL}
