@@ -1,4 +1,4 @@
-package uk.nhs.digital.a2si.servicefinder.ccg.exception;
+package uk.nhs.digital.uec.dos.api.dospostcodeapi.exception;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

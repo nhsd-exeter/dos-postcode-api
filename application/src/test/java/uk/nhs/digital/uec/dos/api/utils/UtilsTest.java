@@ -1,9 +1,9 @@
-package uk.nhs.digital.a2si.servicefinder.ccg.utils;
+package uk.nhs.digital.uec.dos.api.dospostcodeapi.utils;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static uk.nhs.digital.a2si.servicefinder.ccg.utils.CcgUtils.validatePostCode;
-import static uk.nhs.digital.a2si.servicefinder.ccg.utils.CcgUtils.formatPostCodeWithSpace;
-import static uk.nhs.digital.a2si.servicefinder.ccg.utils.CcgUtils.formatPostCodeWithoutSpace;
+import static uk.nhs.digital.uec.dos.api.dospostcodeapi.utils.PostcodeUtils.validatePostCode;
+import static uk.nhs.digital.uec.dos.api.dospostcodeapi.utils.PostcodeUtils.formatPostCodeWithSpace;
+import static uk.nhs.digital.uec.dos.api.dospostcodeapi.utils.PostcodeUtils.formatPostCodeWithoutSpace;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;

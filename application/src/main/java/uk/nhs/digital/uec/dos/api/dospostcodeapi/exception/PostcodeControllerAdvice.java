@@ -1,4 +1,4 @@
-package uk.nhs.digital.a2si.servicefinder.ccg.exception;
+package uk.nhs.digital.uec.dos.api.dospostcodeapi.exception;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -10,12 +10,12 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.server.ResponseStatusException;
 
 /**
-    Controller advice class for ccg
+    Controller advice class for Postcode
  */
 
 @ControllerAdvice
 @Slf4j
-public class CcgControllerAdvice {
+public class PostcodeControllerAdvice {
 
     @ExceptionHandler(ResponseStatusException.class)
     public ResponseEntity handleStatusException(ResponseStatusException ex) {

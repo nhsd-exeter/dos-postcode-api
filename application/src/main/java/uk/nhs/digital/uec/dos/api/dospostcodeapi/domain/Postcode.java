@@ -1,11 +1,11 @@
-package uk.nhs.digital.a2si.servicefinder.ccg.domain;
+package uk.nhs.digital.uec.dos.api.dospostcodeapi.domain;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 
-@DynamoDBTable(tableName = "service-finder-postcode-ccg")
-public class Ccg {
+@DynamoDBTable(tableName = "service-finder-nonprod-postcode-location-mapping")
+public class Postcode {
     private String postCode;
     private String name;
 

@@ -1,4 +1,4 @@
-package uk.nhs.digital.a2si.servicefinder.ccg.config;
+package uk.nhs.digital.uec.dos.api.dospostcodeapi.config;
 
 import com.amazonaws.client.builder.AwsClientBuilder.EndpointConfiguration;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
@@ -20,7 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Configuration
 @EnableDynamoDBRepositories
-    (basePackages = {"uk.nhs.digital.a2si.servicefinder.ccg.repository"})
+    (basePackages = {"uk.nhs.digital.uec.dos.api.dospostcodeapi.repository"})
 @Slf4j
 public class DynamoConfig {
 

@@ -5,7 +5,7 @@ invalid:
   postcode: Please enter a valid postcode
 springdoc:
   api-docs:
-    path: /ccg-api-docs
+    path: /Postcode-api-docs
 server:
   port: 8443
   ssl:
