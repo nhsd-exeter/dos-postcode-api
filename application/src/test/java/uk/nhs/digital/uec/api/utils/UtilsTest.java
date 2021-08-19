@@ -1,10 +1,10 @@
-package uk.nhs.digital.uec.dos.api.dospostcodeapi.utils;
+package uk.nhs.digital.uec.api.utils;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static uk.nhs.digital.uec.dos.api.dospostcodeapi.utils.PostcodeUtils.validatePostCode;
-import static uk.nhs.digital.uec.dos.api.dospostcodeapi.utils.PostcodeUtils.formatPostCodeWithSpace;
-import static uk.nhs.digital.uec.dos.api.dospostcodeapi.utils.PostcodeUtils.formatPostCodeWithoutSpace;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static uk.nhs.digital.uec.api.util.PostcodeUtils.formatPostCodeWithSpace;
+import static uk.nhs.digital.uec.api.util.PostcodeUtils.formatPostCodeWithoutSpace;
+import static uk.nhs.digital.uec.api.util.PostcodeUtils.validatePostCode;
 
 import org.junit.jupiter.api.Test;
 
@@ -15,7 +15,7 @@ public class UtilsTest {
 
         String postCode = "AL86JL";
         String formatPostCode1 = formatPostCodeWithSpace(postCode);
-        assertEquals(formatPostCode1, "AL8 6JL");
+        assertEquals("AL8 6JL", formatPostCode1);
 
     }
 
@@ -25,7 +25,7 @@ public class UtilsTest {
 
         String postCode = "AL8 6JL";
         String formatPostCode1 = formatPostCodeWithoutSpace(postCode);
-        assertEquals(formatPostCode1, "AL86JL");
+        assertEquals("AL86JL", formatPostCode1);
 
     }
 

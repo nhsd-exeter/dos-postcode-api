@@ -1,0 +1,6 @@
+server:
+  port: 8443
+  ssl:
+    key-store-type: PKCS12
+    keystore: classpath:${COOKIE_DOMAIN}.p12
+    key-store-password:

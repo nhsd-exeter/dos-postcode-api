@@ -1,4 +1,4 @@
-package uk.nhs.digital.uec.dos.api.dospostcodeapi.config;
+package uk.nhs.digital.uec.api.config;
 
 import com.amazonaws.client.builder.AwsClientBuilder.EndpointConfiguration;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
@@ -10,8 +10,6 @@ import org.socialsignin.spring.data.dynamodb.repository.config.EnableDynamoDBRep
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * This class defines the basic authentication and connection details to AWS DynamoDB
@@ -20,8 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Configuration
 @EnableDynamoDBRepositories
-    (basePackages = {"uk.nhs.digital.uec.dos.api.dospostcodeapi.repository"})
-@Slf4j
+    (basePackages = {"uk.nhs.digital.uec.api.repository"})
 public class DynamoConfig {
 
     @Value("${dynamo.config.region}")

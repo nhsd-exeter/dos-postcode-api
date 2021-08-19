@@ -1,4 +1,4 @@
-package uk.nhs.digital.uec.dos.api.dospostcodeapi.exception;
+package uk.nhs.digital.uec.api.exception;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

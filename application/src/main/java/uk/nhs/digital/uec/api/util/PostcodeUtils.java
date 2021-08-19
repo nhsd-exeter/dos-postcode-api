@@ -1,4 +1,4 @@
-package uk.nhs.digital.uec.dos.api.dospostcodeapi.utils;
+package uk.nhs.digital.uec.api.util;
 
 import java.util.Collections;
 import java.util.List;
@@ -11,7 +11,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import lombok.extern.slf4j.Slf4j;
-import uk.nhs.digital.uec.dos.api.dospostcodeapi.exception.InvalidPostcodeException;
+import uk.nhs.digital.uec.api.exception.InvalidPostcodeException;
 @Slf4j
 public class PostcodeUtils {
 

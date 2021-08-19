@@ -1,0 +1,4 @@
+servicefinder:
+  usermanagement:
+    cookie.domain: ${COOKIE_DOMAIN:localhost}
+    url: ${USER_MANAGEMENT_URL}
