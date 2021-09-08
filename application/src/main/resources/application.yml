@@ -1,26 +1,23 @@
 spring:
-  main:
-    allow-bean-definition-overriding: true
-invalid:
-  postcode: Please enter a valid postcode
+  profiles:
+    active: local
 springdoc:
   api-docs:
     path: /ccg-api-docs
-servicefinder:
-  allowedorigins: ${ALLOWED_ORIGINS}
-  usermanagement:
-    cookie.domain: ${COOKIE_DOMAIN}
-    url: ${USER_MANAGEMENT_URL}
+
 server:
-  port: 8443
+  port: ${SERVER_PORT}
   ssl:
     key-store-type: PKCS12
-    keystore: classpath:${COOKIE_DOMAIN}.p12
+    keystore: classpath:certificate/certificate.p12
     key-store-password:
-security.oauth2.resource.jwk.key-set-uri: ${COGNITO_JWT_VERIFICATION_URL}
+
 dynamo:
   config:
     region: eu-west-2
   table:
-    name: ${DYNAMODB_CCG_TABLE}
-  endpoint: ${DYNAMO_DB_URL}
+    name: service-finder-local-postcode-location-mapping
+  endpoint: http://host.docker.internal:8000/
+
+invalid:
+  postcode: Please enter a valid postcode

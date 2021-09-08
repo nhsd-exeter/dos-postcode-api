@@ -26,7 +26,7 @@ services:
     image: "amazon/dynamodb-local:latest"
     container_name: dynamodb-pc-local
     environment:
-      ALLOWED_ORIGINS: '{$ALLOWED_ORIGINS}'
+      ALLOWED_ORIGINS: "{$ALLOWED_ORIGINS}"
     ports:
       - "8000:8000"
     volumes:

@@ -16,7 +16,14 @@ build: project-config
 		$(PROJECT_DIR)/build/docker/dos-postcode-api/assets/application/dos-postcode-api.jar
 	make docker-build NAME=dos-postcode-api
 
-start: project-start # Start project
+start: project-start	# Start project
+			 make local-dynamodb-scripts
+
+local-dynamodb-scripts:
+	cd $(PROJECT_DIR)data/dynamo/test
+	chmod +x *.sh
+	./00-postcode-location-mapping-table.sh > /dev/null
+	./01-postcode-location-mapping-table.sh
 
 stop: project-stop # Stop project
 
