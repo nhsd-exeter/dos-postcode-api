@@ -3,7 +3,7 @@ spring:
     active: local
 springdoc:
   api-docs:
-    path: /ccg-api-docs
+    path: /postcode-api-docs
 
 server:
   port: ${SERVER_PORT}
