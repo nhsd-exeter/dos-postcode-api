@@ -7,6 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -18,6 +19,7 @@ import uk.nhs.digital.uec.api.service.PostcodeMappingService;
 /** RestController for Postcode Mapping service */
 @RestController
 @RequestMapping("/api/search")
+@PreAuthorize("hasAnyRole('ROLE_POSTCODE')")
 @Slf4j
 public class PostcodeMappingController {
 
