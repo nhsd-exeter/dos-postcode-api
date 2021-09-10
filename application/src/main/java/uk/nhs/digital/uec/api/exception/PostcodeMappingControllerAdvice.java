@@ -15,7 +15,7 @@ import org.springframework.web.server.ResponseStatusException;
 public class PostcodeMappingControllerAdvice {
 
   @ExceptionHandler(ResponseStatusException.class)
-  public ResponseEntity handleStatusException(ResponseStatusException ex) {
+  public ResponseEntity<ErrorMessage> handleStatusException(ResponseStatusException ex) {
     log.error(ex.getReason(), ex);
     log.error(ExceptionUtils.getStackTrace(ex));
     return ResponseEntity.status(ex.getStatus())
@@ -24,7 +24,7 @@ public class PostcodeMappingControllerAdvice {
   }
 
   @ExceptionHandler(Exception.class)
-  public ResponseEntity handleException(Exception exception) {
+  public ResponseEntity<ErrorMessage> handleException(Exception exception) {
     log.error(ExceptionUtils.getStackTrace(exception));
     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
         .contentType(MediaType.APPLICATION_JSON)
@@ -32,7 +32,7 @@ public class PostcodeMappingControllerAdvice {
   }
 
   @ExceptionHandler(InvalidPostcodeException.class)
-  public ResponseEntity handleInvalidPostCodeException(Exception exception) {
+  public ResponseEntity<ErrorMessage> handleInvalidPostCodeException(Exception exception) {
     log.error(ExceptionUtils.getStackTrace(exception));
     return ResponseEntity.status(HttpStatus.BAD_REQUEST)
         .contentType(MediaType.APPLICATION_JSON)
