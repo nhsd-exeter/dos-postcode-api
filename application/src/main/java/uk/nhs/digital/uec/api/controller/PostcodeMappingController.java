@@ -1,7 +1,6 @@
 package uk.nhs.digital.uec.api.controller;
 
 import java.util.List;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +19,6 @@ import uk.nhs.digital.uec.api.service.PostcodeMappingService;
 @RestController
 @RequestMapping("/api/search")
 @PreAuthorize("hasAnyRole('ROLE_POSTCODE_API_ACCESS')")
-@Slf4j
 public class PostcodeMappingController {
 
   @Autowired private PostcodeMappingService postcodeMappingService;
