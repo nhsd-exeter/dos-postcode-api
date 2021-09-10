@@ -16,8 +16,8 @@ dynamo:
   config:
     region: eu-west-2
   table:
-    name: service-finder-local-postcode-location-mapping
-  endpoint: http://host.docker.internal:8000/
+    name: ${DYNAMODB_POSTCODE_LOC_MAP_TABLE}
+  endpoint: ${POSTCODE_LOCATION_DYNAMO_URL}
 
 invalid:
   postcode: Please enter a valid postcode

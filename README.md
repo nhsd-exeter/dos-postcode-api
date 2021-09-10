@@ -60,7 +60,7 @@ Run the following make targets:
 
 The API can be reached on this endpoint:
 
-https://localhost:8443/api/postcode
+https://localhost:8443/api/search?postcodes=<postcode>
 ### Development Requirements
 
 - macOS operating system provisioned with the `curl -L bit.ly/make-devops-macos-setup | bash` command
