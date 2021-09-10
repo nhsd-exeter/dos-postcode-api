@@ -6,6 +6,7 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 import lombok.Getter;
 import lombok.Setter;
 
+/* Domain object for postcode mapping */
 @DynamoDBTable(tableName = "service-finder-local-postcode-location-mapping")
 @Getter
 @Setter
