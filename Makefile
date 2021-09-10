@@ -17,7 +17,7 @@ build: project-config
 	make docker-build NAME=dos-postcode-api
 
 start: project-start	# Start project
-      make local-dynamodb-scripts
+	make local-dynamodb-scripts
 
 local-dynamodb-scripts:
 	cd $(PROJECT_DIR)data/dynamo/test
