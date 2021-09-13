@@ -4,10 +4,26 @@ include $(abspath $(PROJECT_DIR)/build/automation/init.mk)
 # ==============================================================================
 # Development workflow targets
 
-build: project-config # Build project
-	make docker-build NAME=NAME_TEMPLATE_TO_REPLACE
+build: project-config
+	cp \
+		$(PROJECT_DIR)/build/automation/etc/certificate/* \
+		$(PROJECT_DIR)/application/src/main/resources/certificate
+	make docker-run-mvn \
+		DIR="application" \
+		CMD="-Dmaven.test.skip=true clean install"
+	mv \
+		$(PROJECT_DIR)/application/target/dos-postcode-api-*.jar \
+		$(PROJECT_DIR)/build/docker/dos-postcode-api/assets/application/dos-postcode-api.jar
+	make docker-build NAME=dos-postcode-api
 
-start: project-start # Start project
+start: project-start	# Start project
+	make local-dynamodb-scripts
+
+local-dynamodb-scripts:
+	cd $(PROJECT_DIR)data/dynamo/test
+	chmod +x *.sh
+	./00-postcode-location-mapping-table.sh > /dev/null
+	./01-postcode-location-mapping-table.sh
 
 stop: project-stop # Stop project
 
@@ -20,10 +36,13 @@ test: # Test project
 	make stop
 
 push: # Push project artefacts to the registry
-	make docker-push NAME=NAME_TEMPLATE_TO_REPLACE
+	make docker-push NAME=dos-postcode-api
 
 deploy: # Deploy artefacts - mandatory: PROFILE=[name]
 	make project-deploy STACK=application PROFILE=$(PROFILE)
+
+provision-plan:
+	make terraform-plan STACK=database PROFILE=$(PROFILE)
 
 provision: # Provision environment - mandatory: PROFILE=[name]
 	make terraform-apply-auto-approve STACK=database PROFILE=$(PROFILE)
@@ -138,4 +157,19 @@ pipeline-create-resources: ## Create all the pipeline deployment supporting reso
 
 # ==============================================================================
 
-.SILENT:
+derive-build-tag:
+	dir=$$(make _docker-get-dir NAME=dos-postcode-api)
+	echo $$(cat $$dir/VERSION) | \
+				sed "s/YYYY/$$(date --date=$(BUILD_DATE) -u +"%Y")/g" | \
+				sed "s/mm/$$(date --date=$(BUILD_DATE) -u +"%m")/g" | \
+				sed "s/dd/$$(date --date=$(BUILD_DATE) -u +"%d")/g" | \
+				sed "s/HH/$$(date --date=$(BUILD_DATE) -u +"%H")/g" | \
+				sed "s/MM/$$(date --date=$(BUILD_DATE) -u +"%M")/g" | \
+				sed "s/ss/$$(date --date=$(BUILD_DATE) -u +"%S")/g" | \
+				sed "s/SS/$$(date --date=$(BUILD_DATE) -u +"%S")/g" | \
+				sed "s/hash/$$(git rev-parse --short HEAD)/g"
+
+# ==============================================================================
+
+.SILENT: \
+	derive-build-tag

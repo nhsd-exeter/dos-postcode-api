@@ -1,0 +1,43 @@
+version: "3.7"
+
+services:
+  api:
+    image: $AWS_ECR/uec-dos/pc/dos-postcode-api:latest
+    container_name: dos-postcode-api
+    environment:
+      SPRING_PROFILES_ACTIVE: default
+      CERTIFICATE_DOMAIN: $CERTIFICATE_DOMAIN
+      SERVER_PORT: $SERVER_PORT
+      VERSION: $VERSION
+      POSTCODE_LOCATION_DYNAMO_URL: $POSTCODE_LOCATION_DYNAMO_URL
+      AWS_ACCESS_KEY_ID: dummy
+      AWS_SECRET_ACCESS_KEY: dummy
+      DYNAMODB_POSTCODE_LOC_MAP_TABLE: $DYNAMODB_POSTCODE_LOC_MAP_TABLE
+    ports:
+      - 8443:8443
+    command: ["java", "-jar", "/application/dos-postcode-api.jar"]
+    networks:
+      default:
+        aliases:
+          - api.pc.local
+
+  dynamodb-local:
+    command: "-jar DynamoDBLocal.jar -sharedDb -dbPath /home/dynamodblocal"
+    image: "amazon/dynamodb-local:latest"
+    container_name: dynamodb-pc-local
+    environment:
+      ALLOWED_ORIGINS: "{$ALLOWED_ORIGINS}"
+    ports:
+      - "8000:8000"
+    volumes:
+      - "/home/dynamodblocal"
+    working_dir: /home/dynamodblocal
+    networks:
+      default:
+        aliases:
+          - dynamo.pc.local
+
+networks:
+  default:
+    external:
+      name: $DOCKER_NETWORK
