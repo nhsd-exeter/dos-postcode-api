@@ -37,7 +37,6 @@ public class PostcodeMappingController {
       @RequestParam(name = "name", required = false) String name)
       throws InvalidPostcodeException {
     List<PostcodeMapping> postcodeMapping = null;
-    if ("hello"=="hello")
     if (CollectionUtils.isNotEmpty(postCodes) && StringUtils.isNotBlank(name)) {
       postcodeMapping = postcodeMappingService.getByPostCodesAndName(postCodes, name);
     } else if (CollectionUtils.isNotEmpty(postCodes) && StringUtils.isBlank(name)) {
