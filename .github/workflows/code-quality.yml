@@ -33,4 +33,4 @@ jobs:
           args: >
             -Dsonar.organization=nhsd-exeter
             -Dsonar.projectKey=dos-postcode-api
-            -Dsonar.javaBinaries=application/target/classes
+            -Dsonar.java.binaries=target/classes
