@@ -22,7 +22,7 @@ jobs:
           build/automation/etc/githooks/scripts/terraform-format-pre-commit.sh
       - name: Build java project
         run: |
-          make build
+          mvn clean install
       - uses: sonarsource/sonarcloud-github-action@master
         # SEE: https://github.com/SonarSource/sonarcloud-github-action
         env:
