@@ -30,3 +30,4 @@ jobs:
           args: >
             -Dsonar.organization=nhsd-exeter
             -Dsonar.projectKey=dos-postcode-api
+            -Dsonar.exclusions=**/*.java
