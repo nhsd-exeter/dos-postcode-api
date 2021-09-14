@@ -104,6 +104,11 @@ run-security-test:
 	[ $$(make project-branch-sec-test) != true ] && exit 0
 	echo TODO: $(@)
 
+build-project-for-sonar:
+	make docker-run-mvn \
+		DIR="application" \
+		CMD="compile"
+
 # --------------------------------------
 
 remove-unused-environments:
