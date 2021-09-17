@@ -38,12 +38,7 @@ test: # Test project
 push: # Push project artefacts to the registry
 	make docker-push NAME=dos-postcode-api
 
-project-populate-application-variables:
-	export COGNITO_USER_POOL_ID=$$(make -s aws-cognito-get-userpool-id NAME=$(COGNITO_USER_POOL))
-	export COGNITO_JWT_VERIFICATION_URL=https://cognito-idp.eu-west-2.amazonaws.com/$${COGNITO_USER_POOL_ID}/.well-known/jwks.json
-
 deploy: # Deploy artefacts - mandatory: PROFILE=[name]
-	eval "$$(make project-populate-application-variables)"
 	make project-deploy STACK=application PROFILE=$(PROFILE)
 
 provision-plan:

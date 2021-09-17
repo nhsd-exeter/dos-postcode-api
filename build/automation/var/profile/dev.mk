@@ -18,8 +18,5 @@ POSTCODE_LOCATION_DYNAMO_URL := https://dynamodb.$(AWS_REGION).amazonaws.com
 DYNAMODB_POSTCODE_LOC_MAP_TABLE := service-finder-nonprod-postcode-location-mapping
 
 REPLICAS := 1
-
-COGNITO_USER_POOL := service-finder-api-authentication-pool-$(PROFILE)
-COGNITO_JWT_VERIFICATION_URL := $(or $(COGNITO_JWT_VERIFICATION_URL), )
 PROJECT_GROUP_NAME_SHORT := $(PROJECT_GROUP_SHORT)-$(PROJECT_NAME_SHORT)
 TTL := 2d

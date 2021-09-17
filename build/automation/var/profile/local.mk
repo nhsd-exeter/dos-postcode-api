@@ -5,7 +5,6 @@
 
 PROFILE := local
 
-CERTIFICATE_DOMAIN := certificate/certificate
 SERVER_PORT := 8443
 VERSION := v0.0.1
 
