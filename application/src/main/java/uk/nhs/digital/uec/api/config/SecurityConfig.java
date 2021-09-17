@@ -1,5 +1,8 @@
 package uk.nhs.digital.uec.api.config;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -17,11 +20,19 @@ import uk.nhs.digital.uec.api.filter.TokenEntryPoint;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+  public static final String HEALTH_CHECK_READINESS_URL = "/actuator/health/readiness";
+  public static final String HEALTH_CHECK_LIVENESS_URL = "/actuator/health/liveness";
+  public static final String WELCOME_URL = "/home";
+
   @Autowired private AccessTokenFilter accessTokenFilter;
   @Autowired private TokenEntryPoint tokenEndpoint;
 
   @Override
   protected void configure(HttpSecurity http) throws Exception {
+
+    List<String> permitAllEndpointList = Arrays.asList(HEALTH_CHECK_READINESS_URL,
+      HEALTH_CHECK_LIVENESS_URL,
+      WELCOME_URL);
 
     http.addFilterBefore(accessTokenFilter, AbstractPreAuthenticatedProcessingFilter.class)
         .cors()
@@ -29,6 +40,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .csrf()
         .disable()
         .authorizeRequests()
+        .antMatchers(permitAllEndpointList.toArray(new String[permitAllEndpointList.size()]))
+        .permitAll()
         .anyRequest()
         .authenticated()
         .and()

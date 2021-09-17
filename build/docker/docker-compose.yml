@@ -2,11 +2,10 @@ version: "3.7"
 
 services:
   api:
-    image: $AWS_ECR/uec-dos/pc/dos-postcode-api:latest
+    image: $AWS_ECR/uec-dos-api/pc/dos-postcode-api:latest
     container_name: dos-postcode-api
     environment:
       SPRING_PROFILES_ACTIVE: default
-      CERTIFICATE_DOMAIN: $CERTIFICATE_DOMAIN
       SERVER_PORT: $SERVER_PORT
       VERSION: $VERSION
       POSTCODE_LOCATION_DYNAMO_URL: $POSTCODE_LOCATION_DYNAMO_URL

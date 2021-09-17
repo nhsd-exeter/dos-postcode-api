@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: uec-dos-api-pc-deployment
+  name: uec-dos-api-pc
+spec:
+  replicas: REPLICAS_TO_REPLACE
+  selector:
+    matchLabels:
+      app: uec-dos-api-pc
+      env: PROFILE_TO_REPLACE
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1        # how many pods we can add at a time
+      maxUnavailable: 0  # maxUnavailable define how many pods can be unavailable during the rolling update
+  template:
+    metadata:
+      labels:
+        app: uec-dos-api-pc
+        env: PROFILE_TO_REPLACE
+    spec:
+      serviceAccountName: uec-dos-api-pc-service-account
+      serviceAccount: uec-dos-api-pc-service-account
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app
+                      operator: In
+                      values:
+                        - uec-dos-api-pc
+                topologyKey: kubernetes.io/hostname
+      containers:
+      - name: uec-dos-api-pc
+        image: ECR_URL_TO_REPLACE:IMAGE_TAG_TO_REPLACE
+        envFrom:
+        - configMapRef:
+            name: uec-dos-api-pc-configmap
+        readinessProbe:
+          httpGet:
+            path: /actuator/health/readiness
+            port: 443
+            scheme: HTTPS
+          initialDelaySeconds: 20
+          periodSeconds: 5
+        livenessProbe:
+          httpGet:
+            path: /actuator/health/liveness
+            port: 443
+            scheme: HTTPS
+          initialDelaySeconds: 120
+          failureThreshold: 3
+          periodSeconds: 5
+        ports:
+        - containerPort: 443
+          protocol: TCP
+        resources:
+          requests:
+            memory: "0Mi"
+            cpu: "0m"
+          limits:
+            memory: "2048Mi"
+            cpu: "1000m"
+        imagePullPolicy: Always
