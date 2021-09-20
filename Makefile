@@ -31,6 +31,11 @@ restart: stop start # Restart project
 
 log: project-log # Show project logs
 
+unit-test:
+	make docker-run-mvn \
+		DIR="application" \
+		CMD="test"
+
 test: # Test project
 	make start
 	make stop
