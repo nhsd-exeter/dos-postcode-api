@@ -114,6 +114,11 @@ build-project-for-sonar:
 		DIR="application" \
 		CMD="compile"
 
+test-project-for-sonar:
+	make docker-run-mvn \
+		DIR="application" \
+		CMD="test"
+
 # --------------------------------------
 
 remove-unused-environments:
