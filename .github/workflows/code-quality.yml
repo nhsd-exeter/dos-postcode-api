@@ -34,3 +34,4 @@ jobs:
             -Dsonar.organization=nhsd-exeter
             -Dsonar.projectKey=dos-postcode-api
             -Dsonar.java.binaries=target/classes
+            -Dsonar.coverage.exclusions=*Config.java
