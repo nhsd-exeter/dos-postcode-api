@@ -118,6 +118,9 @@ test-project-for-sonar:
 	make docker-run-mvn \
 		DIR="application" \
 		CMD="test"
+	make docker-run-mvn \
+		DIR="application" \
+		CMD="jacoco:report"
 
 # --------------------------------------
 
