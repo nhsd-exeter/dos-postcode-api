@@ -1,7 +1,0 @@
-!kustomization.yaml
-!namespace.yaml
-!feedback-deployment.yaml
-!service-finder-deployment.yaml
-!ui-admin-deployment.yaml
-!ui-user-deployment.yaml
-!user-management-deployment.yaml

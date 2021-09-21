@@ -4,6 +4,11 @@ include $(abspath $(PROJECT_DIR)/build/automation/init.mk)
 # ==============================================================================
 # Development workflow targets
 
+compile:
+	make docker-run-mvn \
+		DIR="application" \
+		CMD="compile"
+
 build: project-config
 	cp \
 		$(PROJECT_DIR)/build/automation/etc/certificate/* \
@@ -35,6 +40,12 @@ unit-test:
 	make docker-run-mvn \
 		DIR="application" \
 		CMD="test"
+
+coverage-report:
+	make unit-test
+	make docker-run-mvn \
+		DIR="application" \
+		CMD="jacoco:report"
 
 test: # Test project
 	make start
@@ -108,19 +119,6 @@ run-performance-test:
 run-security-test:
 	[ $$(make project-branch-sec-test) != true ] && exit 0
 	echo TODO: $(@)
-
-build-project-for-sonar:
-	make docker-run-mvn \
-		DIR="application" \
-		CMD="compile"
-
-test-project-for-sonar:
-	make docker-run-mvn \
-		DIR="application" \
-		CMD="test"
-	make docker-run-mvn \
-		DIR="application" \
-		CMD="jacoco:report"
 
 # --------------------------------------
 
