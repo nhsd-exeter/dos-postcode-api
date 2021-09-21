@@ -41,3 +41,4 @@ jobs:
             -Dsonar.coverage.jacoco.xmlReportPaths=target/jacoco.exe
             -Dsonar.log.level=DEBUG
             -Dsonar.junit.reportPaths=target
+            -Dsonar.jacoco.reportPaths=target
