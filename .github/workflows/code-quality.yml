@@ -42,3 +42,4 @@ jobs:
             -Dsonar.jacoco.reportPaths=target/surefire-reports/*
             -Dsonar.coverage.jacoco.xmlReportPaths=target/surefire-reports/TEST-uk.nhs.digital.uec.api.controller.HomeControllerTest.xml
             -Dsonar.coverageReportPaths=target/surefire-reports/TEST-uk.nhs.digital.uec.api.controller.HomeControllerTest.xml
+            -Dsonar.log.level=DEBUG
