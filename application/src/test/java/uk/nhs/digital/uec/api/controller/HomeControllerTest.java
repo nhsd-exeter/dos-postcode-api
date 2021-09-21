@@ -17,11 +17,10 @@ public class HomeControllerTest {
   @Test
   public void testHomeController()
   {
-    //ResponseEntity<?> response = homeController.getPostcodeMappingHome();
+    ResponseEntity<?> response = homeController.getPostcodeMappingHome();
 
-    //assertEquals(HttpStatus.OK, response.getStatusCode());
-    //assertEquals("Welcome to postcode details search service", response.getBody());
-    assertEquals(1,1);
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertEquals("Welcome to postcode details search service", response.getBody());
 
   }
 
