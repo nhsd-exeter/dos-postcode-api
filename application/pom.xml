@@ -5,7 +5,6 @@
   <modelVersion>4.0.0</modelVersion>
 
   <properties>
-        <hibernate.version>4.3.6.Final</hibernate.version>
         <mockito.version>3.7.7</mockito.version>
         <aws-java-sdk-dynamodb.version>1.11.948</aws-java-sdk-dynamodb.version>
         <aws-java-sdk-sts.version>1.11.699</aws-java-sdk-sts.version>
@@ -159,7 +158,6 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-actuator</artifactId>
     </dependency>
-
   </dependencies>
 
   <build>
@@ -176,7 +174,28 @@
           </excludes>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>0.8.6</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>prepare-agent</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>report</id>
+            <phase>prepare-package</phase>
+            <goals>
+              <goal>report</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
+
+
 
 </project>

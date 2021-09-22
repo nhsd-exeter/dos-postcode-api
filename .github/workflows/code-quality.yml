@@ -20,9 +20,12 @@ jobs:
       - name: Check Terraform files format
         run: |
           build/automation/etc/githooks/scripts/terraform-format-pre-commit.sh
-      - name: Build java project
+      - name: Compile project
         run: |
-          make build-project-for-sonar
+          make compile
+      - name: Create coverage reports
+        run: |
+          make coverage-report
       - uses: sonarsource/sonarcloud-github-action@master
         # SEE: https://github.com/SonarSource/sonarcloud-github-action
         env:
@@ -34,3 +37,5 @@ jobs:
             -Dsonar.organization=nhsd-exeter
             -Dsonar.projectKey=dos-postcode-api
             -Dsonar.java.binaries=target/classes
+            -Dsonar.coverage.exclusions=src/main/java/**/config/*.java,src/test/**/*.*
+            -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco

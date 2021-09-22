@@ -56,7 +56,7 @@ pipeline {
     stage("Unit Test") {
       steps {
         script {
-          sh 'echo To Do'
+          sh 'make unit-test'
         }
       }
     }
