@@ -54,6 +54,14 @@ test: # Test project
 push: # Push project artefacts to the registry
 	make docker-push NAME=dos-postcode-api
 
+tag-release: # Create the release tag - mandatory DEV_TAG RELEASE_TAG
+	make docker-login
+	docker pull $(DOCKER_REGISTRY)/api:$(DEV_TAG)
+	docker tag $(DOCKER_REGISTRY)/api:$(DEV_TAG) $(DOCKER_REGISTRY)/api:$(RELEASE_TAG)
+	docker tag $(DOCKER_REGISTRY)/api:$(DEV_TAG) $(DOCKER_REGISTRY_LIVE)/api:$(RELEASE_TAG)
+	docker push $(DOCKER_REGISTRY)/api:$(RELEASE_TAG)
+	docker push $(DOCKER_REGISTRY_LIVE)/api:$(RELEASE_TAG)
+
 deploy: # Deploy artefacts - mandatory: PROFILE=[name]
 	make project-deploy STACK=application PROFILE=$(PROFILE)
 
