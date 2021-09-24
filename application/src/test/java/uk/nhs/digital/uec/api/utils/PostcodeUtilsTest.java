@@ -11,19 +11,19 @@ import org.junit.jupiter.api.Test;
 
 public class PostcodeUtilsTest {
 
-  private static final String postcodeWithSpace = "AL8 6JL";
+  private static final String postCodeWithSpace = "AL8 6JL";
 
   @Test
   public void testFormatPostCodeWithSpace() {
 
     String postCode = "AL86JL";
     String formatPostCode1 = formatPostCodeWithSpace(postCode);
-    assertEquals(postcodeWithSpace, formatPostCode1);
+    assertEquals(postCodeWithSpace, formatPostCode1);
   }
 
   @Test
   public void testFormatPostCodeWithoutSpace() {
-    String formatPostCode1 = formatPostCodeWithoutSpace(postcodeWithSpace);
+    String formatPostCode1 = formatPostCodeWithoutSpace(postCodeWithSpace);
     assertEquals("AL86JL", formatPostCode1);
   }
 
@@ -43,7 +43,7 @@ public class PostcodeUtilsTest {
 
   @Test
   public void testValidPostCode() {
-    boolean validatePostCode = validatePostCode(postcodeWithSpace);
+    boolean validatePostCode = validatePostCode(postCodeWithSpace);
     assertTrue(validatePostCode);
   }
 
