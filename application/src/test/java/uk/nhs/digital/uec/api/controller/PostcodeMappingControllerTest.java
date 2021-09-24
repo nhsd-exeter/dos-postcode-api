@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uk.nhs.digital.uec.api.domain.PostcodeMapping;
+import uk.nhs.digital.uec.api.exception.InvalidPostcodeException;
 import uk.nhs.digital.uec.api.service.PostcodeMappingService;
 
 @ExtendWith(SpringExtension.class)
@@ -23,6 +24,7 @@ public class PostcodeMappingControllerTest {
   @Mock PostcodeMappingService postcodeService;
   private static List<String> postcodes = null;
   private static PostcodeMapping postcodeMapping = null;
+  private static String serviceName = "Nhs Halton CCG";
 
   @BeforeAll
   public static void initialise() {
@@ -30,33 +32,32 @@ public class PostcodeMappingControllerTest {
     postcodeMapping = new PostcodeMapping();
     postcodeMapping.setEasting(12766);
     postcodeMapping.setNorthing(456);
-    postcodeMapping.setName("NHS Halton CCG");
+    postcodeMapping.setName(serviceName);
   }
 
   @Test
-  public void testPostcodesWithName() throws Exception {
-    when(postcodeService.getByPostCodesAndName(postcodes, "NHS Halton CCG"))
+  public void testPostcodesWithName() throws InvalidPostcodeException {
+    when(postcodeService.getByPostCodesAndName(postcodes, serviceName))
         .thenReturn(Arrays.asList(postcodeMapping));
     ResponseEntity<?> response =
-        postcodeMappingController.getPostcodeMapping(postcodes, "NHS Halton CCG");
+        postcodeMappingController.getPostcodeMapping(postcodes, serviceName);
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
   }
 
   @Test
-  public void testPostcodes() throws Exception {
+  public void testPostcodes() throws InvalidPostcodeException {
     when(postcodeService.getByPostCodes(postcodes)).thenReturn(Arrays.asList(postcodeMapping));
     ResponseEntity<?> response =
-        postcodeMappingController.getPostcodeMapping(postcodes, "NHS Halton CCG");
+        postcodeMappingController.getPostcodeMapping(postcodes, serviceName);
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
   }
 
   @Test
-  public void testName() throws Exception {
-    when(postcodeService.getByName("NHS Halton CCG")).thenReturn(Arrays.asList(postcodeMapping));
-    ResponseEntity<?> response =
-        postcodeMappingController.getPostcodeMapping(null, "NHS Halton CCG");
+  public void testName() throws InvalidPostcodeException {
+    when(postcodeService.getByName(serviceName)).thenReturn(Arrays.asList(postcodeMapping));
+    ResponseEntity<?> response = postcodeMappingController.getPostcodeMapping(null, serviceName);
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
   }

@@ -7,7 +7,6 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,7 +14,6 @@ import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
 import uk.nhs.digital.uec.api.domain.PostcodeMapping;
 import uk.nhs.digital.uec.api.exception.InvalidPostcodeException;
 import uk.nhs.digital.uec.api.repository.PostcodeMappingRepository;
@@ -24,73 +22,68 @@ import uk.nhs.digital.uec.api.repository.PostcodeMappingRepository;
 @ExtendWith(SpringExtension.class)
 public class PostcodeMappingServiceTest {
 
-    @InjectMocks
-    private PostcodeMappingServiceImpl postcodeMappingService;
+  @InjectMocks private PostcodeMappingServiceImpl postcodeMappingService;
 
-    @MockBean
-    private PostcodeMappingRepository postcodeMappingRepository;
+  @MockBean private PostcodeMappingRepository postcodeMappingRepository;
 
-    private List<PostcodeMapping> postcodeMappingList;
-    private List<Optional<PostcodeMapping>> postcodeMappingOptList;
+  private List<PostcodeMapping> postcodeMappingList;
+  private List<Optional<PostcodeMapping>> postcodeMappingOptList;
+  private static String serviceName = "Nhs Halton CCG";
+  private List<String> postCodes = null;
 
-    @BeforeEach
-    public void init(){
-        PostcodeMapping postcodeMapping = new PostcodeMapping();
-        postcodeMapping.setName("Nhs Halton CCG");
-        postcodeMapping.setPostCode("WA1 1QY");
-        postcodeMapping.setEasting(12345);
-        postcodeMapping.setNorthing(360);
-        postcodeMappingList = new ArrayList<>();
-        postcodeMappingOptList = new ArrayList<>();
-        postcodeMappingList.add(postcodeMapping);
-        postcodeMappingOptList.add(Optional.of(postcodeMapping));
-    }
+  @BeforeEach
+  public void init() {
+    PostcodeMapping postcodeMapping = new PostcodeMapping();
+    postcodeMapping.setName(serviceName);
+    postcodeMapping.setPostCode("WA1 1QY");
+    postcodeMapping.setEasting(12345);
+    postcodeMapping.setNorthing(360);
+    postcodeMappingList = new ArrayList<>();
+    postcodeMappingOptList = new ArrayList<>();
+    postcodeMappingList.add(postcodeMapping);
+    postcodeMappingOptList.add(Optional.of(postcodeMapping));
+    postCodes = new ArrayList<>();
+    postCodes.add("WA11QY");
+  }
 
-    @Test
-    public void testGetByPostCodeInAndName() throws InvalidPostcodeException
-    {
-        List<String> postCodes = new ArrayList<>();
-        postCodes.add("WA11QY");
-        when(postcodeMappingRepository.findByPostCodeInAndName(postCodes, "Nhs Halton CCG")).thenReturn(postcodeMappingOptList);
-        List<PostcodeMapping> findByPostCodeIn = postcodeMappingService.getByPostCodesAndName(postCodes, "Nhs Halton CCG");
-        assertTrue(findByPostCodeIn.size() > 0);
-    }
+  @Test
+  public void testGetByPostCodeInAndName() throws InvalidPostcodeException {
+    when(postcodeMappingRepository.findByPostCodeInAndName(postCodes, serviceName))
+        .thenReturn(postcodeMappingOptList);
+    List<PostcodeMapping> findByPostCodeIn =
+        postcodeMappingService.getByPostCodesAndName(postCodes, serviceName);
+    assertTrue(findByPostCodeIn.size() > 0);
+  }
 
-    @Test
-    public void testGetByPostCodes() throws InvalidPostcodeException {
-        List<String> postCodes = new ArrayList<>();
-        postCodes.add("WA11QY");
-        when(postcodeMappingRepository.findByPostCodeIn(postCodes)).thenReturn(postcodeMappingOptList);
-        List<PostcodeMapping> findByPostCodeIn = postcodeMappingService.getByPostCodes(postCodes);
-        assertTrue(findByPostCodeIn.size() > 0);
-    }
+  @Test
+  public void testGetByPostCodes() throws InvalidPostcodeException {
+    when(postcodeMappingRepository.findByPostCodeIn(postCodes)).thenReturn(postcodeMappingOptList);
+    List<PostcodeMapping> findByPostCodeIn = postcodeMappingService.getByPostCodes(postCodes);
+    assertTrue(findByPostCodeIn.size() > 0);
+  }
 
-    @Test
-    public void testGetByCcgName() throws InvalidPostcodeException
-    {
-        when(postcodeMappingRepository.findByName("Nhs Halton CCG")).thenReturn(postcodeMappingOptList);
-        List<PostcodeMapping> findByPostCodeIn = postcodeMappingService.getByName("Nhs Halton CCG");
-        assertTrue(findByPostCodeIn.size() > 0);
-    }
+  @Test
+  public void testGetByCcgName() throws InvalidPostcodeException {
+    when(postcodeMappingRepository.findByName(serviceName)).thenReturn(postcodeMappingOptList);
+    List<PostcodeMapping> findByPostCodeIn = postcodeMappingService.getByName(serviceName);
+    assertTrue(findByPostCodeIn.size() > 0);
+  }
 
-    @Test
-    public void testGetAll() throws InvalidPostcodeException
-    {
-        when(postcodeMappingRepository.findAll()).thenReturn(postcodeMappingList);
-        List<PostcodeMapping> findByPostCodeIn = postcodeMappingService.getAll();
-        assertTrue(findByPostCodeIn.size() > 0);
-    }
+  @Test
+  public void testGetAll() throws InvalidPostcodeException {
+    when(postcodeMappingRepository.findAll()).thenReturn(postcodeMappingList);
+    List<PostcodeMapping> findByPostCodeIn = postcodeMappingService.getAll();
+    assertTrue(findByPostCodeIn.size() > 0);
+  }
 
-
-    @Test
-    public void testEastingAndNorthing() throws InvalidPostcodeException
-    {
-        when(postcodeMappingRepository.findByName("Nhs Halton CCG")).thenReturn(postcodeMappingOptList);
-        List<PostcodeMapping> findByPostCodeIn = postcodeMappingService.getByName("Nhs Halton CCG");
-        PostcodeMapping postCodeMapping = findByPostCodeIn.stream().findAny().get();
-        int easting = postCodeMapping.getEasting();
-        int northing = postCodeMapping.getNorthing();
-        assertEquals(12345, easting);
-        assertEquals(360, northing);
-    }
+  @Test
+  public void testEastingAndNorthing() throws InvalidPostcodeException {
+    when(postcodeMappingRepository.findByName(serviceName)).thenReturn(postcodeMappingOptList);
+    List<PostcodeMapping> findByPostCodeIn = postcodeMappingService.getByName(serviceName);
+    PostcodeMapping postCodeMapping = findByPostCodeIn.stream().findAny().get();
+    int easting = postCodeMapping.getEasting();
+    int northing = postCodeMapping.getNorthing();
+    assertEquals(12345, easting);
+    assertEquals(360, northing);
+  }
 }

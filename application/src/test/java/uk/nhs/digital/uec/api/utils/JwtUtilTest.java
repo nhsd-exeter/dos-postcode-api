@@ -26,11 +26,7 @@ public class JwtUtilTest {
   public void expiredTokenTest() {
     AccessTokenExpiredException accessTokenExpiredException =
         assertThrows(
-            AccessTokenExpiredException.class,
-            () -> {
-              jwtUtil.isTokenValid(expiredAccessToken);
-            });
-
+            AccessTokenExpiredException.class, () -> jwtUtil.isTokenValid(expiredAccessToken));
     assertNotNull(accessTokenExpiredException);
   }
 
@@ -38,12 +34,7 @@ public class JwtUtilTest {
   public void invalidTokenTest() {
     String accessToken = "123-Invalid-ToKeN";
     IllegalStateException illegalStateException =
-        assertThrows(
-            IllegalStateException.class,
-            () -> {
-              jwtUtil.isTokenValid(accessToken);
-            });
-
+        assertThrows(IllegalStateException.class, () -> jwtUtil.isTokenValid(accessToken));
     assertNotNull(illegalStateException);
   }
 
@@ -55,10 +46,8 @@ public class JwtUtilTest {
 
   @Test
   public void getTokenFromHeaderTest() {
-
     MockHttpServletRequest request = new MockHttpServletRequest();
     request.addHeader("Authorization", "Bearer " + expiredAccessToken);
-
     String accessToken = jwtUtil.getTokenFromHeader(request);
     assertEquals(accessToken, expiredAccessToken);
   }
