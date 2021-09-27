@@ -2,12 +2,17 @@ package uk.nhs.digital.uec.api.utils;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static uk.nhs.digital.uec.api.util.PostcodeUtils.formatPostCodeWithSpace;
 import static uk.nhs.digital.uec.api.util.PostcodeUtils.formatPostCodeWithoutSpace;
 import static uk.nhs.digital.uec.api.util.PostcodeUtils.validatePostCode;
+import static uk.nhs.digital.uec.api.util.PostcodeUtils.validatePostCodes;
 
+import java.util.Arrays;
 import org.junit.jupiter.api.Test;
+import uk.nhs.digital.uec.api.exception.InvalidPostcodeException;
 
 public class PostcodeUtilsTest {
 
@@ -39,6 +44,14 @@ public class PostcodeUtilsTest {
     String postCode = "N4%2QZ";
     boolean validatePostCode = validatePostCode(postCode);
     assertFalse(validatePostCode);
+  }
+
+  @Test
+  public void invalidPostcodeTest() {
+    InvalidPostcodeException invalidPostcodeException =
+        assertThrows(
+            InvalidPostcodeException.class, () -> validatePostCodes(Arrays.asList("N4%2QZ")));
+    assertNotNull(invalidPostcodeException);
   }
 
   @Test
