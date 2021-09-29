@@ -27,6 +27,8 @@ public class PostcodeMappingServiceImpl implements PostcodeMappingService {
         .filter(Optional::isPresent)
         .map(Optional::get)
         .collect(Collectors.toList());
+
+    String hello = "hello";
   }
 
   @Override
