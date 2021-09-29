@@ -29,6 +29,14 @@ public class PostcodeMappingServiceImpl implements PostcodeMappingService {
         .collect(Collectors.toList());
   }
 
+  public List<PostcodeMapping> getByPostCodes2(List<String> postCodes)
+      throws InvalidPostcodeException {
+    return postcodeMappingRepository.findByPostCodeIn(validatePostCodes(postCodes)).stream()
+        .filter(Optional::isPresent)
+        .map(Optional::get)
+        .collect(Collectors.toList());
+  }
+
   private void thisIsDead()
   {
     String hello = "hello";
