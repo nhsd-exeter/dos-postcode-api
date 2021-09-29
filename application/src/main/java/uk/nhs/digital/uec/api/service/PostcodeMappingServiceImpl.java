@@ -27,7 +27,10 @@ public class PostcodeMappingServiceImpl implements PostcodeMappingService {
         .filter(Optional::isPresent)
         .map(Optional::get)
         .collect(Collectors.toList());
+  }
 
+  private void thisIsDead()
+  {
     String hello = "hello";
   }
 
