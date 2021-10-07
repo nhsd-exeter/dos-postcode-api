@@ -46,7 +46,6 @@
     - [Runbooks](#runbooks)
   - [Product](#product)
     - [Communications](#communications)
-    - [Documentation](#documentation)
 
 ## Overview
 
@@ -331,11 +330,3 @@ List all the operational runbooks
 - Email addresses in use, e.g. `[service.name]@nhs.net`
 
 All of the above can be service, product, application or even team specific.
-
-### Documentation
-
-- Sprint board link
-- Backlog link
-- Roadmap link
-- Risks register link
-- Documentation workspace link
