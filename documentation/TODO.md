@@ -7,6 +7,7 @@
   - [Regular tasks](#regular-tasks)
   - [One off tasks](#one-off-tasks)
     - [Automation](#automation)
+    - [Engineering](#engineering)
     - [Architecture](#architecture)
     - [Infrastructure](#infrastructure)
     - [Security](#security)
@@ -28,6 +29,15 @@ This document must be discussed regularly with the Tech Lead and considered in t
 ### Automation
 
 - TODO
+
+### Engineering
+
+- Engineering Quality Gateway Checks
+  - Increase unit test coverage to 80%
+  - Add Integration testing and fail builds
+  - Fail builds if over 3% code duplication is detected
+  - Fail builds if code smells are detected (see sonar gateway rules: )
+  - Check git history for secrets
 
 ### Architecture
 
