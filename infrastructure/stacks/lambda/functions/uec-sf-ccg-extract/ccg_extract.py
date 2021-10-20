@@ -20,7 +20,7 @@ PORT = os.environ.get("PORT")
 REGION = os.environ.get("REGION")
 BATCH_SIZE = int(os.environ.get("BATCH_SIZE"))
 SECRET_NAME = os.environ.get("SECRET_NAME")
-KEY = os.environ.get("KEY")
+DOS_CREDS = os.environ.get("DOS_CREDS")
 
 
 def get_secret():
