@@ -30,7 +30,7 @@ locals {
   ccg_extract_db_region                 = "eu-west-2"
   ccg_extract_db_batch_size             = "100000"
   ccg_extract_db_secret_name            = var.dos_read_replica_secret_name
-  ccg_extract_db_secret_key             = var.dos_read_replica_secret_key
+  ccg_extract_db_key                    = var.dos_read_replica_key
   ccg_extract_db_secret_arn             = data.aws_secretsmanager_secret.dos_read_replica_secret_name.arn
 
   ccg_insert_iam_name = "${var.service_prefix}-ccg-insert-lambda"

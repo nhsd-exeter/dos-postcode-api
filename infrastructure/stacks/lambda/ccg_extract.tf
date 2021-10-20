@@ -23,7 +23,7 @@ resource "aws_lambda_function" "ccg_extract_lambda" {
       REGION        = local.ccg_extract_db_region
       BATCH_SIZE    = local.ccg_extract_db_batch_size
       SECRET_NAME   = local.ccg_extract_db_secret_name
-      SECRET_KEY    = local.ccg_extract_db_secret_key
+      KEY           = local.ccg_extract_db_key
     }
   }
   vpc_config {
@@ -81,8 +81,8 @@ EOF
 }
 
 resource "aws_iam_role_policy_attachment" "AWSLambdaVPCAccessExecutionRole" {
-    role       = aws_iam_role.ccg_extract_lambda_role.name
-    policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
+  role       = aws_iam_role.ccg_extract_lambda_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
 }
 
 resource "aws_iam_role_policy_attachment" "rdsDataReadOnlyAccessExtract" {

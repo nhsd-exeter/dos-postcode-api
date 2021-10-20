@@ -20,7 +20,7 @@ PORT = os.environ.get("PORT")
 REGION = os.environ.get("REGION")
 BATCH_SIZE = int(os.environ.get("BATCH_SIZE"))
 SECRET_NAME = os.environ.get("SECRET_NAME")
-SECRET_KEY = os.environ.get("SECRET_KEY")
+KEY = os.environ.get("KEY")
 
 
 def get_secret():
@@ -77,7 +77,7 @@ def connect():
             port=PORT,
             user=USR,
             database=SOURCE_DB,
-            password=secret_dict[SECRET_KEY],
+            password=secret_dict[KEY],
         )
         return conn
     except Exception as e:

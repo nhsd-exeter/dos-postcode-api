@@ -23,7 +23,7 @@ variable "dos_security_group" { description = "The security group for the dos re
 
 variable "dos_read_replica_secret_name" { description = "The dos read replica secret name" }
 
-variable "dos_read_replica_secret_key" { description = "The dos read replica secret key" }
+variable "dos_read_replica_key" { description = "The dos read replica secret key" }
 
 variable "ccg_etl_db_user" { description = "The dos read replica user name" }
 
