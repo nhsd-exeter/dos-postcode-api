@@ -18,7 +18,7 @@ import uk.nhs.digital.uec.api.service.PostcodeMappingService;
 /** RestController for Postcode Mapping service */
 @RestController
 @RequestMapping("/api/search")
-@PreAuthorize("hasAnyRole('ROLE_POSTCODE_API_ACCESS')")
+@PreAuthorize("hasAnyRole('POSTCODE_API_ACCESS')")
 public class PostcodeMappingController {
 
   @Autowired private PostcodeMappingService postcodeMappingService;

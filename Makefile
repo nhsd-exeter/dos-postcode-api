@@ -28,7 +28,7 @@ local-dynamodb-scripts:
 	cd $(PROJECT_DIR)/data/dynamo/test
 	chmod +x *.sh
 	./00-postcode-location-mapping-table.sh > /dev/null
-	./01-postcode-location-mapping-table.sh
+	./01-postcode-location-mapping-table.she
 
 stop: project-stop # Stop project
 
