@@ -2,7 +2,7 @@ locals {
 
   ccg_insert_function_name = "${var.service_prefix}-ccg-insert"
   ccg_insert_description   = "Service Finder function to insert ccg and postcode mappings into DynamoDB"
-  ccg_insert_runtime       = "python3.6"
+  ccg_insert_runtime       = "python3.8"
   ccg_insert_timeout       = 900
   ccg_insert_memory_size   = 1024
 
