@@ -2,7 +2,7 @@ version: "3.7"
 
 services:
   api:
-    image: $AWS_ECR/uec-dos-api/pc/dos-postcode-api:latest
+    image: $DOCKER_REGISTRY/dos-postcode-api:latest
     container_name: dos-postcode-api
     environment:
       SPRING_PROFILES_ACTIVE: default

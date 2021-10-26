@@ -7,9 +7,11 @@
   - [Regular tasks](#regular-tasks)
   - [One off tasks](#one-off-tasks)
     - [Automation](#automation)
+    - [Engineering](#engineering)
     - [Architecture](#architecture)
     - [Infrastructure](#infrastructure)
     - [Security](#security)
+    - [Documentation](#documentation)
 
 List here all the technical tasks for prioritisation that need to be discussed with the team but are not ready yet to be placed on the backlog. This should form a holistic view of the state of the project and show the direction for incremental development and refactoring of certain areas of the software listed below. The idea behind this list is to ensure backlog hygiene and that it only consists of stories that can be completed within the next two sprints. Therefore, the focus can be changed dynamically depending on the business need.
 
@@ -28,6 +30,15 @@ This document must be discussed regularly with the Tech Lead and considered in t
 
 - TODO
 
+### Engineering
+
+- Engineering Quality Gateway Checks
+  - Increase unit test coverage to 80%
+  - Add Integration testing and fail builds
+  - Fail builds if over 3% code duplication is detected
+  - Fail builds if code smells are detected (see sonar gateway rules: )
+  - Check git history for secrets
+
 ### Architecture
 
 - TODO
@@ -39,3 +50,11 @@ This document must be discussed regularly with the Tech Lead and considered in t
 ### Security
 
 - TODO
+
+### Documentation
+
+- Sprint board link
+- Backlog link
+- Roadmap link
+- Risks register link
+- Documentation workspace link
