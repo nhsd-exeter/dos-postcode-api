@@ -53,13 +53,6 @@ This is the DoS Postcode API.  A number of Service Searches require a point to p
 
 ## Quick Start
 
-Run the following make targets:
-- make build
-- make start
-
-The API can be reached on this endpoint:
-
-https://localhost:8443/api/search?postcodes=<postcode>
 ### Development Requirements
 
 - macOS operating system provisioned with the `curl -L bit.ly/make-devops-macos-setup | bash` command
@@ -89,6 +82,7 @@ Generate and trust a self-signed certificate that will be used locally to enable
     make build
     make start log
     open https://ui.project.local:8443
+    # https://localhost:8443/api/search?postcodes=<postcode>
 
 ## Contributing
 
