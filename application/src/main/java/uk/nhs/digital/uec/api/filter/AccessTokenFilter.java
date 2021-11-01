@@ -2,7 +2,6 @@ package uk.nhs.digital.uec.api.filter;
 
 import static uk.nhs.digital.uec.api.constants.AuthenticationConstants.COGNITO_GROUPS;
 import static uk.nhs.digital.uec.api.constants.AuthenticationConstants.IDENTITY_PROVIDER_ID;
-import static uk.nhs.digital.uec.api.constants.AuthenticationConstants.ROLE_PREFIX;
 import static uk.nhs.digital.uec.api.constants.AuthenticationConstants.USER_HASH;
 
 import com.auth0.jwt.JWT;
@@ -81,7 +80,7 @@ public class AccessTokenFilter extends OncePerRequestFilter {
     List<GrantedAuthority> authorities = new ArrayList<>();
     groupList.forEach(
         cognitoGroupName -> {
-          authorities.add(new SimpleGrantedAuthority(ROLE_PREFIX + cognitoGroupName));
+          authorities.add(new SimpleGrantedAuthority(cognitoGroupName));
         });
     return authorities;
   }
