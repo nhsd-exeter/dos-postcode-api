@@ -72,6 +72,8 @@ provision: # Provision environment - mandatory: PROFILE=[name]
 	make terraform-apply-auto-approve STACK=database PROFILE=$(PROFILE)
 
 clean: # Clean up project
+	make stop
+	docker network rm $(DOCKER_NETWORK) 2> /dev/null ||:
 
 # ==============================================================================
 # Supporting targets
