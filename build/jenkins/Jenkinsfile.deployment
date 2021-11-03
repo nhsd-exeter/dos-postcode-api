@@ -35,7 +35,7 @@ pipeline {
     stage("Plan Infrastructure") {
       steps {
         script {
-          sh "make terraform-plan PROFILE=${env.PROFILE}"
+          sh "make provision-plan PROFILE=${env.PROFILE}"
         }
       }
     }
