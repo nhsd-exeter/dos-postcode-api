@@ -25,10 +25,12 @@ variable "dos_read_replica_secret_name" { description = "The dos read replica se
 
 variable "dos_read_replica_key" { description = "The dos read replica secret key" }
 
-variable "ccg_etl_db_user" { description = "The dos read replica user name" }
+variable "postcode_etl_db_user" { description = "The dos read replica user name" }
 
-variable "ccg_etl_source_db" { description = "The dos read replica source database" }
+variable "postcode_etl_source_db" { description = "The dos read replica source database" }
 
 variable "core_dos_python_libs" { description = "core dos python libs for accessing dos databases" }
 
 variable "service_prefix" { description = "service prefix for all infrastructure related to this application" }
+
+variable "postcode_etl_logging_level" { description = "Logging level for service_etl lambda" }

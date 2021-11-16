@@ -1,14 +1,14 @@
 # Lambda
-data "archive_file" "ccg_insert_function" {
+data "archive_file" "postcode_insert_function" {
   type        = "zip"
-  source_dir  = "${path.module}/functions/uec-sf-ccg-insert"
-  output_path = "${path.module}/functions_zip/${local.ccg_insert_function_name}.zip"
+  source_dir  = "${path.module}/functions/uec-sf-postcode-insert"
+  output_path = "${path.module}/functions_zip/${local.postcode_insert_function_name}.zip"
 }
 
-data "archive_file" "ccg_extract_function" {
+data "archive_file" "postcode_extract_function" {
   type        = "zip"
-  source_dir  = "${path.module}/functions/uec-sf-ccg-extract"
-  output_path = "${path.module}/functions_zip/${local.ccg_extract_function_name}.zip"
+  source_dir  = "${path.module}/functions/uec-sf-postcode-extract"
+  output_path = "${path.module}/functions_zip/${local.postcode_extract_function_name}.zip"
 }
 
 data "terraform_remote_state" "vpc" {

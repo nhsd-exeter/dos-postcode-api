@@ -8,6 +8,7 @@ import psycopg2
 import psycopg2.extras
 import os
 import json
+import logging
 
 s3 = boto3.resource(u"s3")
 SOURCE_BUCKET = os.environ.get("SOURCE_BUCKET")
@@ -20,8 +21,11 @@ PORT = os.environ.get("PORT")
 REGION = os.environ.get("REGION")
 BATCH_SIZE = int(os.environ.get("BATCH_SIZE"))
 SECRET_NAME = os.environ.get("SECRET_NAME")
-DOS_CREDS = os.environ.get("DOS_CREDS")
+DOS_READ_ONLY_USER = os.environ.get("DOS_READ_ONLY_USER")
+LOGGING_LEVEL = os.environ.get("LOGGING_LEVEL")
 
+logging.basicConfig(level=LOGGING_LEVEL)
+logger=logging.getLogger(__name__)
 
 def get_secret():
 
@@ -77,24 +81,24 @@ def connect():
             port=PORT,
             user=USR,
             database=SOURCE_DB,
-            password=secret_dict[KEY],
+            password=secret_dict[DOS_READ_ONLY_USER],
         )
         return conn
     except Exception as e:
-        print("Database connection failed due to {}".format(e))
+        logger.error("Database connection failed due to {}".format(e))
         raise e
 
 
 # Method to get cursor from db
 def getCursor(conn):
     try:
-        cur = conn.cursor("sf-ccg-extract-odspostcodes")
+        cur = conn.cursor("sf-postcode-extract-odspostcodes")
         cur.itersize = BATCH_SIZE
         cur.arraysize = BATCH_SIZE
         print("Created cur")
         return cur
     except Exception as e:
-        print("unable to retrieve cursor due to {}".format(e))
+        logger.error("unable to retrieve cursor due to {}".format(e))
         conn.close()
         raise e
 
@@ -119,9 +123,9 @@ def extract_postcodes():
                             where o.deletedtime is null) as pl
                         where (pl.organisationtypeid = 1 or pl.org_name is null)"""
 
-    print("Open connection")
+    logger.info("Open connection")
     conn = connect()
-    print("Connection opened")
+    logger.info("Connection opened")
     cur = getCursor(conn)
     try:
         cur.execute(selectStatement)
@@ -135,17 +139,16 @@ def extract_postcodes():
             save_to_csv(records, count)
         return count
     except Exception as e:
-        print("Extract postcode failed due to {}".format(e))
+        logger.error("Extract postcode failed due to {}".format(e))
     finally:
         cur.close()
         conn.close()
-        print("PostgreSQL connection is closed")
+        logger.info("PostgreSQL connection is closed")
 
 
 def save_to_csv(query_results, count):
     strCount = str(count)
     fileName = SOURCE_FOLDER + FILE_PREFIX + strCount + ".csv"
-    print(fileName)
     try:
         csv_buffer = io.StringIO()
         writer = csv.writer(csv_buffer)
@@ -161,18 +164,18 @@ def save_to_csv(query_results, count):
         csv_buffer_to_binary = io.BytesIO(csv_buffer.getvalue().encode("utf-8"))
 
         # save to s3 bucket
-        print("Saving file to: " + fileName)
+        logger.info("Saving file to: " + fileName)
         bucket = s3.Bucket(SOURCE_BUCKET)
         bucket.put_object(Key=fileName, Body=csv_buffer_to_binary)
     except Exception as e:
-        print("Failed to create file in s3 bucket due to {}".format(e))
+        logger.error("Failed to create file in s3 bucket due to {}".format(e))
         raise e
 
 
 # This is the entry point for the Lambda function
 def lambda_handler(event, context):
 
-    print("Start of postcode_extract")
+    logger.info("Start of postcode_extract")
     fileCount = extract_postcodes()
 
     return {"statusCode": 200, "body": str(fileCount) + " file(s) created in s3 bucket"}
