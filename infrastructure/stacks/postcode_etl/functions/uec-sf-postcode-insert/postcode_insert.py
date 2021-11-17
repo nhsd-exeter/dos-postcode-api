@@ -1,6 +1,7 @@
 from __future__ import print_function
 import boto3
 import os
+import logging
 
 s3 = boto3.resource(u"s3")
 dynamodb = boto3.resource("dynamodb")
@@ -10,7 +11,10 @@ PROCESSED_FOLDER = os.environ.get("PROCESSED_FOLDER")
 SUCCESS_FOLDER = PROCESSED_FOLDER + "success/"
 ERROR_FOLDER = PROCESSED_FOLDER + "error/"
 DYNAMODB_DESTINATION_TABLE = os.environ.get("DYNAMODB_DESTINATION_TABLE")
+LOGGING_LEVEL = os.environ.get("LOGGING_LEVEL")
 
+logging.basicConfig(level=LOGGING_LEVEL)
+logger=logging.getLogger(__name__)
 
 # method to loop over items in s3 Bucket
 def readCsvFiles():
@@ -34,7 +38,7 @@ def readCsvFiles():
                 processCompletedCsvFiles(bucket, status, postcode_location_csv_file)
 
     except Exception as e:
-        print("unable to retrieve csv files due to {}".format(e))
+        logger.error("unable to retrieve csv files due to {}".format(e))
     finally:
         return response
 
@@ -49,7 +53,7 @@ def processCompletedCsvFiles(bucket, status, postcode_location_csv_file):
             INPUT_FOLDER, ""
         )
 
-    print("moving processed file to: " + postProcessFilePath)
+    logger.info("moving processed file to: " + postProcessFilePath)
 
     # copy the processed file to the relevant processed folder
     copy_source = {"Bucket": SOURCE_BUCKET, "Key": postcode_location_csv_file.key}
@@ -92,7 +96,7 @@ def readCsvFileData(postcode_location_csv_file):
         insert_bulk_data(postcode_location_records)
         status = "PASSED"
     except Exception as e:
-        print("read csv failed due to {}".format(e))
+        logger.error("read csv failed due to {}".format(e))
         status = "FAILED {}".format(e)
     finally:
         return status
@@ -119,9 +123,9 @@ def insert_bulk_data(postcode_location_records):
 # This is the entry point for the Lambda function
 def lambda_handler(event, context):
 
-    print("Start of uec-sf-ccg-location-etl")
-    print("Reading csv files from: " + SOURCE_BUCKET)
-    print("Inserting ccg data to: " + DYNAMODB_DESTINATION_TABLE)
+    logger.info("Start of uec-sf-postcode-location-etl")
+    logger.info("Reading csv files from: " + SOURCE_BUCKET)
+    logger.info("Inserting postcode data to: " + DYNAMODB_DESTINATION_TABLE)
 
     response = readCsvFiles()
 

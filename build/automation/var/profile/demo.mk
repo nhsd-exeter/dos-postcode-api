@@ -10,7 +10,7 @@ ENVIRONMENT := $(PROFILE)
 SPRING_PROFILES_ACTIVE := $(PROFILE)
 
 DEPLOYMENT_STACKS := application
-INFRASTRUCTURE_STACKS := service,datastore,lambda
+INFRASTRUCTURE_STACKS := service,datastore,postcode_etl,postcode_etl_sns
 
 SERVER_PORT := 443
 IMAGE_TAG := v0.0.1
@@ -25,3 +25,6 @@ TTL := 2d
 TF_VAR_service_prefix := $(PROJECT_GROUP_NAME_SHORT)-$(PROFILE)
 TF_VAR_postcode_mapping_dynamo_name := $(TF_VAR_service_prefix)-postcode-location-mapping
 TF_VAR_sf_resources_bucket := $(TF_VAR_service_prefix)-application-resources
+TF_VAR_postcode_etl_logging_level := INFO
+TF_VAR_postcode_etl_sns_logging_level := INFO
+TF_VAR_postcode_etl_sns_email := postcode-etl-alerts-p-aaaae5ldnncapl2nsysfdnhbii@a2si.slack.com
