@@ -68,7 +68,7 @@ resource "aws_lambda_function" "postcode_etl_sns_lambda" {
   handler          = "postcode_etl_sns.lambda_handler"
   source_code_hash = data.archive_file.postcode_etl_sns_function.output_base64sha256
   runtime          = "python3.8"
-  publish          = true
+  publish          = false
   tags             = local.standard_tags
   environment {
     variables = {
@@ -93,7 +93,7 @@ resource "aws_lambda_permission" "allow_cloudwatch_extract" {
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.postcode_etl_sns_lambda.function_name
   principal     = "logs.${var.aws_region}.amazonaws.com"
-  source_arn    = "${data.aws_cloudwatch_log_group.postcode_etl_extract_log_group.arn}"
+  source_arn    = data.aws_cloudwatch_log_group.postcode_etl_extract_log_group.arn
 }
 
 resource "aws_cloudwatch_log_subscription_filter" "postcode_etl_extract_sns_cloudwatch_log_trigger" {
@@ -109,7 +109,7 @@ resource "aws_lambda_permission" "allow_cloudwatch_insert" {
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.postcode_etl_sns_lambda.function_name
   principal     = "logs.${var.aws_region}.amazonaws.com"
-  source_arn    = "${data.aws_cloudwatch_log_group.postcode_etl_insert_log_group.arn}"
+  source_arn    = data.aws_cloudwatch_log_group.postcode_etl_insert_log_group.arn
 }
 
 resource "aws_cloudwatch_log_subscription_filter" "postcode_etl_insert_sns_cloudwatch_log_trigger" {
