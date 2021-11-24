@@ -8,7 +8,7 @@ resource "aws_lambda_function" "postcode_extract_lambda" {
   runtime          = local.postcode_extract_runtime
   timeout          = local.postcode_extract_timeout
   memory_size      = local.postcode_extract_memory_size
-  publish          = true
+  publish          = false
   tags             = local.standard_tags
   layers           = [local.postcode_extract_core_dos_python_libs_arn]
   environment {

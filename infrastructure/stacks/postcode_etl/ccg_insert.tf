@@ -9,7 +9,7 @@ resource "aws_lambda_function" "postcode_insert_lambda" {
   runtime          = local.postcode_insert_runtime
   timeout          = local.postcode_insert_timeout
   memory_size      = local.postcode_insert_memory_size
-  publish          = true
+  publish          = false
   tags             = local.standard_tags
   environment {
     variables = {
