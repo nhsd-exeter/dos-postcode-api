@@ -36,7 +36,7 @@ public class PostcodeMappingControllerTest {
   }
 
   @Test
-  public void testHomeController() {
+  public void testPostcodeMappingHome() {
     ResponseEntity<?> response = postcodeMappingController.getPostcodeMappingHome();
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
