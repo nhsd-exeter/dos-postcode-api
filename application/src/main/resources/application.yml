@@ -18,4 +18,4 @@ invalid:
 api:
   version: 1.0
   title: NHS Postcode Mapping Application Interface
-  description: NHS Postcode Mapping APIs provide NHS Services information to the users
+  description: NHS Postcode Mapping API provides northing and easting location coordinates for a given postcode
