@@ -1,8 +1,10 @@
 package uk.nhs.digital.uec.api.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
+import io.netty.util.internal.StringUtil;
 import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.BeforeAll;
@@ -57,7 +59,7 @@ public class PostcodeMappingControllerTest {
   public void testPostcodes() throws InvalidPostcodeException {
     when(postcodeService.getByPostCodes(postcodes)).thenReturn(Arrays.asList(postcodeMapping));
     ResponseEntity<?> response =
-        postcodeMappingController.getPostcodeMapping(postcodes, serviceName);
+        postcodeMappingController.getPostcodeMapping(postcodes, StringUtil.EMPTY_STRING);
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
   }
@@ -68,5 +70,12 @@ public class PostcodeMappingControllerTest {
     ResponseEntity<?> response = postcodeMappingController.getPostcodeMapping(null, serviceName);
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
+  }
+
+  @Test
+  public void testNameInvalidPostcode() {
+    assertThrows(
+        InvalidPostcodeException.class,
+        () -> postcodeMappingController.getPostcodeMapping(null, null));
   }
 }
