@@ -36,6 +36,14 @@ public class PostcodeMappingControllerTest {
   }
 
   @Test
+  public void testPostcodeMappingHome() {
+    ResponseEntity<?> response = postcodeMappingController.getPostcodeMappingHome();
+
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertEquals("Welcome to postcode details search service", response.getBody());
+  }
+
+  @Test
   public void testPostcodesWithName() throws InvalidPostcodeException {
     when(postcodeService.getByPostCodesAndName(postcodes, serviceName))
         .thenReturn(Arrays.asList(postcodeMapping));

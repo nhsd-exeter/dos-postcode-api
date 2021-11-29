@@ -1,12 +1,8 @@
-springdoc:
-  api-docs:
-    path: /postcode-api-docs
-
 server:
   port: ${SERVER_PORT}
   ssl:
     key-store-type: PKCS12
-    keystore: classpath:certificate/certificate.p12
+    keystore: classpath:certificate/${CERTIFICATE_DOMAIN}.p12
     key-store-password:
 
 dynamo:
@@ -18,3 +14,8 @@ dynamo:
 
 invalid:
   postcode: Please enter a valid postcode
+
+api:
+  version: 1.0
+  title: NHS Postcode Mapping Application Interface
+  description: NHS Postcode Mapping API provides northing and easting location coordinates for a given postcode
