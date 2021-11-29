@@ -6,6 +6,7 @@ services:
     container_name: dos-postcode-api
     environment:
       SPRING_PROFILES_ACTIVE: default
+      CERTIFICATE_DOMAIN: $CERTIFICATE_DOMAIN
       SERVER_PORT: $SERVER_PORT
       VERSION: $VERSION
       POSTCODE_LOCATION_DYNAMO_URL: $POSTCODE_LOCATION_DYNAMO_URL
@@ -14,7 +15,7 @@ services:
       DYNAMODB_POSTCODE_LOC_MAP_TABLE: $DYNAMODB_POSTCODE_LOC_MAP_TABLE
     ports:
       - 8443:8443
-    command: ["java", "-jar", "/application/dos-postcode-api.jar"]
+    command: [ "java", "-jar", "/application/dos-postcode-api.jar" ]
     networks:
       default:
         aliases:
