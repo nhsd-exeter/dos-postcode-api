@@ -34,5 +34,5 @@ jobs:
             -Dsonar.organization=nhsd-exeter
             -Dsonar.projectKey=uec-dos-api-pca
             -Dsonar.java.binaries=target/classes
-            -Dsonar.coverage.exclusions=src/main/java/**/config/*.*,src/main/java/**/model/*.*,src/main/java/**/exception/*.*,src/test/**/*.*
+            -Dsonar.coverage.exclusions=src/main/java/**/config/*.*,src/main/java/**/domain/*.*,src/main/java/**/exception/*.*,src/test/**/*.*,src/main/java/**/filter/*.*,src/main/java/**/PostcodeMappingApplication.*
             -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco

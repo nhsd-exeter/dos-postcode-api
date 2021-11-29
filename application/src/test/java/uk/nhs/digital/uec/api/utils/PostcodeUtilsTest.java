@@ -11,6 +11,8 @@ import static uk.nhs.digital.uec.api.util.PostcodeUtils.validatePostCode;
 import static uk.nhs.digital.uec.api.util.PostcodeUtils.validatePostCodes;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import uk.nhs.digital.uec.api.exception.InvalidPostcodeException;
 
@@ -52,6 +54,12 @@ public class PostcodeUtilsTest {
         assertThrows(
             InvalidPostcodeException.class, () -> validatePostCodes(Arrays.asList("N4%2QZ")));
     assertNotNull(invalidPostcodeException);
+  }
+
+  @Test
+  public void invalidPostcodeOnEmptyPostcodeListTest() throws InvalidPostcodeException {
+    List<String> postCodes = validatePostCodes(Collections.<String>emptyList());
+    assertEquals(Collections.emptyList(), postCodes);
   }
 
   @Test
