@@ -1,7 +1,7 @@
 package uk.nhs.digital.uec.api.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -52,35 +52,35 @@ public class PostcodeMappingServiceTest {
         .thenReturn(postcodeMappingOptList);
     List<PostcodeMapping> findByPostCodeIn =
         postcodeMappingService.getByPostCodesAndName(postCodes, serviceName);
-    assertTrue(findByPostCodeIn.size() > 0);
+    assertFalse(findByPostCodeIn.isEmpty());
   }
 
   @Test
   public void testGetByPostCodes() throws InvalidPostcodeException {
     when(postcodeMappingRepository.findByPostCodeIn(postCodes)).thenReturn(postcodeMappingOptList);
     List<PostcodeMapping> findByPostCodeIn = postcodeMappingService.getByPostCodes(postCodes);
-    assertTrue(findByPostCodeIn.size() > 0);
+    assertFalse(findByPostCodeIn.isEmpty());
   }
 
   @Test
   public void testGetByCcgName() throws InvalidPostcodeException {
     when(postcodeMappingRepository.findByName(serviceName)).thenReturn(postcodeMappingOptList);
     List<PostcodeMapping> findByPostCodeIn = postcodeMappingService.getByName(serviceName);
-    assertTrue(findByPostCodeIn.size() > 0);
+    assertFalse(findByPostCodeIn.isEmpty());
   }
 
   @Test
   public void testGetAll() throws InvalidPostcodeException {
     when(postcodeMappingRepository.findAll()).thenReturn(postcodeMappingList);
     List<PostcodeMapping> findByPostCodeIn = postcodeMappingService.getAll();
-    assertTrue(findByPostCodeIn.size() > 0);
+    assertFalse(findByPostCodeIn.isEmpty());
   }
 
   @Test
   public void testEastingAndNorthing() throws InvalidPostcodeException {
     when(postcodeMappingRepository.findByName(serviceName)).thenReturn(postcodeMappingOptList);
     List<PostcodeMapping> findByPostCodeIn = postcodeMappingService.getByName(serviceName);
-    PostcodeMapping postCodeMapping = findByPostCodeIn.stream().findAny().get();
+    PostcodeMapping postCodeMapping = findByPostCodeIn.get(0);
     int easting = postCodeMapping.getEasting();
     int northing = postCodeMapping.getNorthing();
     assertEquals(12345, easting);
