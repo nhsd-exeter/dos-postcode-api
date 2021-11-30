@@ -63,7 +63,7 @@ pipeline {
     stage("Smoke Tests") {
       steps {
         script {
-          echo "to do"
+          sh "make run-smoke-test"
         }
       }
     }

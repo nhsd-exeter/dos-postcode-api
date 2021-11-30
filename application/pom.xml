@@ -1,21 +1,23 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-  <project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
-  xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
   <modelVersion>4.0.0</modelVersion>
 
   <properties>
-        <mockito.version>3.7.7</mockito.version>
-        <aws-java-sdk-dynamodb.version>1.11.948</aws-java-sdk-dynamodb.version>
-        <aws-java-sdk-sts.version>1.11.699</aws-java-sdk-sts.version>
-        <spring-data-dynamodb.version>5.2.1</spring-data-dynamodb.version>
-        <amazon.awssdk.sts.version>2.10.40</amazon.awssdk.sts.version>
-        <spring-data-jpa.version>2.4.3</spring-data-jpa.version>
-        <mockito-junit-jupiter.version>2.23.4</mockito-junit-jupiter.version>
-        <commons-lang3.version>3.11</commons-lang3.version>
-        <commons-collections4.version>4.4</commons-collections4.version>
-        <springdoc-openapi-ui.version>1.5.2</springdoc-openapi-ui.version>
-        <log4j2.version>2.16.0</log4j2.version> <!-- Springboot does not use Log4J, this is here to force other dependencies to use the latest version -->
+    <mockito.version>3.7.7</mockito.version>
+    <aws-java-sdk-dynamodb.version>1.12.130</aws-java-sdk-dynamodb.version>
+    <aws-java-sdk-sts.version>1.12.130</aws-java-sdk-sts.version>
+    <spring-data-dynamodb.version>5.2.1</spring-data-dynamodb.version>
+    <amazon.awssdk.sts.version>2.10.40</amazon.awssdk.sts.version>
+    <aws-java-sdk-core.version>1.12.130</aws-java-sdk-core.version>
+    <spring-data-jpa.version>2.4.3</spring-data-jpa.version>
+    <mockito-junit-jupiter.version>2.23.4</mockito-junit-jupiter.version>
+    <commons-lang3.version>3.11</commons-lang3.version>
+    <commons-collections4.version>4.4</commons-collections4.version>
+    <springdoc-openapi-ui.version>1.5.2</springdoc-openapi-ui.version>
+    <log4j2.version>2.16.0</log4j2.version>    <!-- Springboot does not use Log4J, this is here to force other dependencies to use the latest version -->
   </properties>
 
   <groupId>uec</groupId>
@@ -30,6 +32,13 @@
   </parent>
 
   <dependencies>
+
+    <dependency>
+      <groupId>com.amazonaws</groupId>
+      <artifactId>aws-java-sdk-core</artifactId>
+      <version>${aws-java-sdk-core.version}</version>
+    </dependency>
+
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
@@ -155,21 +164,21 @@
     </dependency>
 
     <dependency>
-        <groupId>io.springfox</groupId>
-        <artifactId>springfox-boot-starter</artifactId>
-        <version>3.0.0</version>
+      <groupId>io.springfox</groupId>
+      <artifactId>springfox-boot-starter</artifactId>
+      <version>3.0.0</version>
     </dependency>
 
     <dependency>
-        <groupId>io.springfox</groupId>
-        <artifactId>springfox-swagger2</artifactId>
-        <version>3.0.0</version>
+      <groupId>io.springfox</groupId>
+      <artifactId>springfox-swagger2</artifactId>
+      <version>3.0.0</version>
     </dependency>
 
     <dependency>
-        <groupId>io.springfox</groupId>
-        <artifactId>springfox-swagger-ui</artifactId>
-        <version>2.9.2</version>
+      <groupId>io.springfox</groupId>
+      <artifactId>springfox-swagger-ui</artifactId>
+      <version>2.9.2</version>
     </dependency>
 
   </dependencies>

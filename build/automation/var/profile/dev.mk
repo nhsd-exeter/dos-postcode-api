@@ -14,6 +14,8 @@ INFRASTRUCTURE_STACKS := service,datastore,postcode_etl,postcode_etl_sns
 
 SERVER_PORT := 443
 IMAGE_TAG := v0.0.1
+VERSION := v0.0.1
+
 
 POSTCODE_LOCATION_DYNAMO_URL := https://dynamodb.$(AWS_REGION).amazonaws.com
 DYNAMODB_POSTCODE_LOC_MAP_TABLE := $(PROJECT_GROUP_NAME_SHORT)-$(PROFILE)-postcode-location-mapping

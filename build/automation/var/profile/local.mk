@@ -4,13 +4,13 @@
 # Service variables
 
 PROFILE := local
+ENVIRONMENT := $(PROFILE)
+SPRING_PROFILES_ACTIVE := $(PROFILE)
 
-SERVER_PORT := 8443
+SERVER_PORT := 443
 VERSION := v0.0.1
 
-POSTCODE_LOCATION_DYNAMO_URL := http://host.docker.internal:8000/
+POSTCODE_LOCATION_DYNAMO_URL := http://dynamo.pc.local:8000/
 DYNAMODB_POSTCODE_LOC_MAP_TABLE := service-finder-${PROFILE}-postcode-location-mapping
 
-ALLOWED_ORIGINS := *
-
-CERTIFICATE_DOMAIN := localhost
+CERTIFICATE_DOMAIN := certificate

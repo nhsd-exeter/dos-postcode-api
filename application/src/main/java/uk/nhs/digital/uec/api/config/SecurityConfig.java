@@ -21,7 +21,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
   public static final String HEALTH_CHECK_READINESS_URL = "/actuator/health/readiness";
   public static final String HEALTH_CHECK_LIVENESS_URL = "/actuator/health/liveness";
-  public static final String WELCOME_URL = "/home";
+  public static final String WELCOME_URL = "/api/search/home";
 
   public static final String SWAGGER_URL = "/swagger-ui.html";
   public static final String SWAGGER_API_DOCS = "/v2/api-docs";

@@ -34,6 +34,33 @@ stop: project-stop # Stop project
 
 restart: stop start # Restart project
 
+debug:
+	make project-start 2> /dev/null ||:
+	docker rm --force dos-postcode-api 2> /dev/null ||:
+	make docker-run-mvn-lib-mount \
+		NAME=dos-postcode-api \
+		DIR=application \
+		CMD="spring-boot:run \
+			-Dspring-boot.run.jvmArguments=' \
+				-Xdebug \
+				-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=*:9999 \
+			' \
+		" \
+		ARGS=" \
+		--env SPRING_PROFILES_ACTIVE='local' \
+		--env DYNAMODB_POSTCODE_LOC_MAP_TABLE='$(DYNAMODB_POSTCODE_LOC_MAP_TABLE)' \
+		--env CERTIFICATE_DOMAIN='$(CERTIFICATE_DOMAIN)' \
+		--env POSTCODE_LOCATION_DYNAMO_URL='$(POSTCODE_LOCATION_DYNAMO_URL)' \
+		--env SERVER_PORT='$(SERVER_PORT)' \
+		--env VERSION='$(VERSION)' \
+		--env AWS_ACCESS_KEY_ID='dummy' \
+		--env AWS_SECRET_ACCESS_KEY='dummy' \
+		\
+		--publish 9999:9999 \
+		--publish 443:443 \
+		"
+		make project-start
+
 log: project-log # Show project logs
 
 unit-test:
@@ -75,10 +102,23 @@ clean: # Clean up project
 	make stop
 	docker network rm $(DOCKER_NETWORK) 2> /dev/null ||:
 
+run-smoke-test:
+	eval "$$(make aws-assume-role-export-variables)"
+	make run-smoke COGNITO_USER_PASS=$$(make aws-secret-get NAME=$(PROJECT_GROUP_SHORT)-sfsa-dev-cognito-passwords | jq .POSTCODE_PASSWORD | tr -d '"')
+
+run-contract-test:
+	eval "$$(make aws-assume-role-export-variables)"
+	make run-contract COGNITO_USER_PASS=$$(make aws-secret-get NAME=$(PROJECT_GROUP_SHORT)-sfsa-dev-cognito-passwords | jq .POSTCODE_PASSWORD | tr -d '"')
+
 # ==============================================================================
 # Supporting targets
 
 trust-certificate: ssl-trust-certificate-project ## Trust the SSL development certificate
+
+docker-run-mvn-lib-mount: ### Build Docker image mounting library volume - mandatory: DIR, CMD
+	make docker-run-mvn LIB_VOLUME_MOUNT=true \
+		DIR="$(DIR)" \
+		CMD="$(CMD)"
 
 # ==============================================================================
 # Pipeline targets
@@ -99,7 +139,7 @@ deploy-artefact:
 	echo TODO: $(@)
 
 apply-data-changes:
-	echo TODO: $(@)
+	echo TODO: $(@)S
 
 # --------------------------------------
 
@@ -109,13 +149,28 @@ run-static-analisys:
 run-unit-test:
 	echo TODO: $(@)
 
-run-smoke-test:
-	echo TODO: $(@)
+run-contract:
+	sed -i -e 's|SECRET_TO_REPLACE|$(COGNITO_USER_PASS)|g' $(APPLICATION_TEST_DIR)/contract/environment/postcode_contract.postman_environment.json
+	make stop
+	make start PROFILE=local
+	make docker-run-postman \
+		DIR="$(APPLICATION_TEST_DIR)/contract" \
+		CMD=" \
+			run PostcodeAPIContractTests.postman_collection.json -e environment/postcode_contract.postman_environment.json --verbose --insecure \
+		"
+	make project-stop
+
+run-smoke:
+	sed -i -e 's|SECRET_TO_REPLACE|$(COGNITO_USER_PASS)|g' $(APPLICATION_TEST_DIR)/contract/environment/postcode_smoke.postman_environment.json
+	make restart
+	make docker-run-postman \
+		DIR="$(APPLICATION_TEST_DIR)/contract" \
+		CMD=" \
+			run PostcodeAPISmokeTests.postman_collection.json -e environment/postcode_smoke.postman_environment.json --verbose --insecure \
+		"
+	make project-stop
 
 run-integration-test:
-	echo TODO: $(@)
-
-run-contract-test:
 	echo TODO: $(@)
 
 run-functional-test:
