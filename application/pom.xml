@@ -15,6 +15,7 @@
         <commons-lang3.version>3.11</commons-lang3.version>
         <commons-collections4.version>4.4</commons-collections4.version>
         <springdoc-openapi-ui.version>1.5.2</springdoc-openapi-ui.version>
+        <log4j2.version>2.16.0</log4j2.version> <!-- Springboot does not use Log4J, this is here to force other dependencies to use the latest version -->
   </properties>
 
   <groupId>uec</groupId>
