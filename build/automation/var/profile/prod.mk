@@ -29,4 +29,4 @@ TF_VAR_postcode_etl_logging_level := INFO
 TF_VAR_postcode_etl_sns_logging_level := INFO
 TF_VAR_postcode_etl_sns_email := postcode-etl-alerts-p-aaaae5ldnncapl2nsysfdnhbii@a2si.slack.com
 
-CERTIFICATE_DOMAIN := ${CERTIFICATE_DOMAIN}
+CERTIFICATE_DOMAIN := certificate
