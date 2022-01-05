@@ -81,8 +81,8 @@ def readCsvFileData(postcode_location_csv_file):
             # Create the DynamoDB postcode_location records
             record = {}
             record["postcode"] = postcode_location_attributes[0]
-            record["easting"] = postcode_location_attributes[1]
-            record["northing"] = postcode_location_attributes[2]
+            record["easting"] = int(postcode_location_attributes[1])
+            record["northing"] = int(postcode_location_attributes[2])
             record["name"] = (
                 postcode_location_attributes[3]
                 if postcode_location_attributes[3] != ""
