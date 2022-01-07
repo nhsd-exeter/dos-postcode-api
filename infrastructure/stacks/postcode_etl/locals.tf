@@ -6,15 +6,12 @@ locals {
   postcode_insert_timeout       = 900
   postcode_insert_memory_size   = 1024
 
-
   postcode_extract_function_name            = "${var.service_prefix}-postcode-extract"
   postcode_extract_description              = "Service Finder function to extract postcode and postcode mapping from DoS database into csv files"
   postcode_extract_runtime                  = "python3.8"
   postcode_extract_timeout                  = 300
   postcode_extract_memory_size              = 1024
   postcode_extract_core_dos_python_libs_arn = data.aws_lambda_layer_version.dos_python_libs.arn
-
-  postcode_extract_vpc_security_group = data.aws_security_group.dos_application_security_group.id
 
   //Environment variables for lambda
   postcode_insert_dynamoDb_destination_table = var.postcode_mapping_dynamo_name
@@ -25,7 +22,7 @@ locals {
   postcode_etl_s3_processed_folder           = "processed_postcodes/"
   postcode_extract_db_user                   = var.postcode_etl_db_user
   postcode_extract_source_db                 = var.postcode_etl_source_db
-  postcode_extract_db_endpoint               = var.dos_replica_db
+  postcode_extract_db_endpoint               = var.sf_read_replica_db
   postcode_extract_db_port                   = "5432"
   postcode_extract_db_region                 = "eu-west-2"
   postcode_extract_db_batch_size             = "100000"

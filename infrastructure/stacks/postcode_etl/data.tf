@@ -20,8 +20,8 @@ data "terraform_remote_state" "vpc" {
   }
 }
 
-data "aws_security_group" "dos_application_security_group" {
-  name = var.dos_security_group
+data "aws_security_group" "sf_read_replica_db_sg" {
+  name = var.sf_read_replica_db_sg
 }
 
 data "aws_lambda_layer_version" "dos_python_libs" {

@@ -2,7 +2,6 @@ locals {
 
   postcode_insert_function_name       = "${var.service_prefix}-postcode-insert"
   postcode_extract_function_name      = "${var.service_prefix}-postcode-extract"
-  postcode_extract_vpc_security_group = data.aws_security_group.dos_application_security_group.id
 
   postcode_etl_sns_name                         = "${var.service_prefix}-postcode-etl-sns"
   postcode_etl_sns_description                  = "Triggers when the service-etl process fails and sends a notification to the sns service"

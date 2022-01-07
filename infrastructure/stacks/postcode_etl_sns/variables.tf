@@ -18,5 +18,3 @@ variable "service_prefix" { description = "service prefix for all infrastructure
 variable "postcode_etl_sns_email" { description = "email desitination for critical failures of etl process" }
 
 variable "postcode_etl_sns_logging_level" { description = "Logging level for postcode_etl_sns lambda" }
-
-variable "dos_security_group" { description = "The security group for the dos read replica" }
