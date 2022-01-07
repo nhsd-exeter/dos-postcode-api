@@ -8,8 +8,6 @@ resource "aws_sns_topic_subscription" "postcode_etl_sns_subscription" {
   endpoint  = var.postcode_etl_sns_email
 }
 
-
-
 resource "aws_iam_role" "postcode_etl_sns_role" {
   name               = local.postcode_etl_sns_name
   assume_role_policy = <<EOF
@@ -94,6 +92,16 @@ resource "aws_security_group" "sns_lambda_sg" {
   vpc_id      = data.terraform_remote_state.vpc.outputs.vpc_id
 
   tags = local.standard_tags
+}
+
+resource "aws_security_group_rule" "sns_lambda_egress_443" {
+  type              = "egress"
+  from_port         = "443"
+  to_port           = "443"
+  protocol          = "tcp"
+  security_group_id = aws_security_group.sns_lambda_sg.id
+  cidr_blocks       = ["0.0.0.0/0"]
+  description       = "A rule to allow outgoing connections AWS APIs from the  lambda Security Group"
 }
 
 resource "aws_lambda_permission" "allow_cloudwatch_extract" {
