@@ -13,8 +13,8 @@ locals {
 
   standard_tags = {
     "Programme"   = "uec"
-    "Service"     = "dos-api"
-    "Product"     = "postcode"
+    "Service"     = "service-finder"
+    "Product"     = "service-finder"
     "Environment" = var.profile
   }
 
