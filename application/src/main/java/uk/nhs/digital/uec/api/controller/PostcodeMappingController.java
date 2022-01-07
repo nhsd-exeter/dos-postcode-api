@@ -1,5 +1,9 @@
 package uk.nhs.digital.uec.api.controller;
 
+import static uk.nhs.digital.uec.api.constants.SwaggerConstants.NAME_DESC;
+import static uk.nhs.digital.uec.api.constants.SwaggerConstants.POSTCODES_DESC;
+
+import io.swagger.annotations.ApiParam;
 import java.util.List;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -33,8 +37,9 @@ public class PostcodeMappingController {
 
   @GetMapping()
   public ResponseEntity<List<PostcodeMapping>> getPostcodeMapping(
-      @RequestParam(name = "postcodes", required = false) List<String> postCodes,
-      @RequestParam(name = "name", required = false) String name)
+      @ApiParam(POSTCODES_DESC) @RequestParam(name = "postcodes", required = false)
+          List<String> postCodes,
+      @ApiParam(NAME_DESC) @RequestParam(name = "name", required = false) String name)
       throws InvalidPostcodeException {
     List<PostcodeMapping> postcodeMapping = null;
     if (CollectionUtils.isNotEmpty(postCodes) && StringUtils.isNotBlank(name)) {

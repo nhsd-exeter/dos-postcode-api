@@ -16,6 +16,6 @@ invalid:
   postcode: Please enter a valid postcode
 
 api:
-  version: 1.0
-  title: NHS Postcode Mapping Application Interface
+  version: 1.0.0
+  title: NHS Postcode Mapping API
   description: NHS Postcode Mapping API provides northing and easting location coordinates for a given postcode
