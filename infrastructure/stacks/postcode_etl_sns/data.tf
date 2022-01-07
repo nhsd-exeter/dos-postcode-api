@@ -15,10 +15,6 @@ data "terraform_remote_state" "vpc" {
   }
 }
 
-data "aws_security_group" "dos_application_security_group" {
-  name = var.dos_security_group
-}
-
 data "aws_cloudwatch_log_group" "postcode_etl_extract_log_group" {
   name = "/aws/lambda/${local.postcode_extract_function_name}"
 }

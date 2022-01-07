@@ -83,9 +83,17 @@ resource "aws_lambda_function" "postcode_etl_sns_lambda" {
       data.terraform_remote_state.vpc.outputs.private_subnets[2]
     ]
     security_group_ids = [
-      local.postcode_extract_vpc_security_group
+      aws_security_group.sns_lambda_sg.id
     ]
   }
+}
+
+resource "aws_security_group" "sns_lambda_sg" {
+  name        = "${var.service_prefix}-sns-lambda-sg"
+  description = "Security group for the SNS lambda"
+  vpc_id      = data.terraform_remote_state.vpc.outputs.vpc_id
+
+  tags = local.standard_tags
 }
 
 resource "aws_lambda_permission" "allow_cloudwatch_extract" {

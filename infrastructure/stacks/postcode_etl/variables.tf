@@ -17,9 +17,9 @@ variable "postcode_mapping_dynamo_name" { description = "The name of the postcod
 
 variable "sf_resources_bucket" { description = "Bucket containing resources and images that the application pulls from in real time." }
 
-variable "dos_replica_db" { description = "The DOS read replica to get the postcodes from" }
+variable "sf_read_replica_db" { description = "The SF read replica to get the postcodes from" }
 
-variable "dos_security_group" { description = "The security group for the dos read replica" }
+variable "sf_read_replica_db_sg" { description = "The security group for the dos SF read replica" }
 
 variable "dos_read_replica_secret_name" { description = "The dos read replica secret name" }
 

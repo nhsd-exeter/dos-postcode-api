@@ -33,9 +33,68 @@ resource "aws_lambda_function" "postcode_extract_lambda" {
       data.terraform_remote_state.vpc.outputs.private_subnets[1],
       data.terraform_remote_state.vpc.outputs.private_subnets[2]
     ]
-    security_group_ids = [local.postcode_extract_vpc_security_group]
+    security_group_ids = [aws_security_group.extract_lambda_sg.id]
   }
 }
+
+resource "aws_security_group" "extract_lambda_sg" {
+  name        = "${var.service_prefix}-extract-lambda-sg"
+  description = "Security group for the extract lambda"
+  vpc_id      = data.terraform_remote_state.vpc.outputs.vpc_id
+
+  tags = local.standard_tags
+}
+
+resource "aws_security_group_rule" "extract_lambda_sg_egress" {
+  type                     = "egress"
+  from_port                = 5432
+  to_port                  = 5432
+  protocol                 = "tcp"
+  security_group_id        = aws_security_group.extract_lambda_sg.id
+  source_security_group_id = data.aws_security_group.sf_read_replica_db_sg.id
+  description              = "A rule to allow outgoing connections from the SF postcode extract lambda SG to the SF read replica SG"
+}
+
+resource "aws_security_group_rule" "sf_replica_db_sg_ingress" {
+  type                     = "ingress"
+  from_port                = 5432
+  to_port                  = 5432
+  protocol                 = "tcp"
+  security_group_id        = data.aws_security_group.sf_read_replica_db_sg.id
+  source_security_group_id = aws_security_group.extract_lambda_sg.id
+  description              = "A rule to allow incoming connections to the SF read replica SG from the SF postcode extract lambda SG"
+}
+
+resource "aws_security_group_rule" "sf_replica_db_sg_egress" {
+  type                     = "egress"
+  from_port                = 5432
+  to_port                  = 5432
+  protocol                 = "tcp"
+  security_group_id        = data.aws_security_group.sf_read_replica_db_sg.id
+  source_security_group_id = aws_security_group.extract_lambda_sg.id
+  description              = "A rule to allow outgoing connections from the SF read replica SG to the SF postcode extract lambda SG"
+}
+
+resource "aws_security_group_rule" "extract_lambda_sg_ingress" {
+  type                     = "ingress"
+  from_port                = 5432
+  to_port                  = 5432
+  protocol                 = "tcp"
+  security_group_id        = aws_security_group.extract_lambda_sg.id
+  source_security_group_id = data.aws_security_group.sf_read_replica_db_sg.id
+  description              = "A rule to allow incoming connections to the SF postcode extract lambda SG from the SF read replica SG"
+}
+
+resource "aws_security_group_rule" "extract_lambda_egress_443" {
+  type              = "egress"
+  from_port         = "443"
+  to_port           = "443"
+  protocol          = "tcp"
+  security_group_id = aws_security_group.extract_lambda_sg.id
+  cidr_blocks       = ["0.0.0.0/0"]
+  description       = "A rule to allow outgoing connections AWS APIs from the  lambda Security Group"
+}
+
 resource "aws_iam_role" "postcode_extract_lambda_role" {
   name               = local.postcode_extract_iam_name
   assume_role_policy = <<EOF
@@ -93,11 +152,6 @@ EOF
 resource "aws_iam_role_policy_attachment" "AWSLambdaVPCAccessExecutionRole" {
   role       = aws_iam_role.postcode_extract_lambda_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
-}
-
-resource "aws_iam_role_policy_attachment" "rdsDataReadOnlyAccessExtract" {
-  role       = aws_iam_role.postcode_extract_lambda_role.name
-  policy_arn = local.rds_data_read_only_access_policy_arn
 }
 
 resource "aws_cloudwatch_event_rule" "postcode_extract_cloudwatch_event" {
