@@ -16,7 +16,7 @@ locals {
   //Environment variables for lambda
   postcode_insert_dynamoDb_destination_table = var.postcode_mapping_dynamo_name
   postcode_etl_s3_bucket                     = var.sf_resources_bucket
-  postcode_etl_s3_bucket_arn                 = data.aws_s3_bucket.s3_bucket.arn
+  postcode_etl_s3_bucket_arn                 = aws_s3_bucket.postcode_etl_s3.arn
   postcode_etl_s3_source_folder              = "postcode_locations/"
   postcode_etl_s3_file_prefix                = "postcode_extract"
   postcode_etl_s3_processed_folder           = "processed_postcodes/"

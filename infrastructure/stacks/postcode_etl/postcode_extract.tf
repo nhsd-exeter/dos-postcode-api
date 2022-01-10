@@ -133,7 +133,7 @@ resource "aws_iam_role_policy" "uec-sf-postcode-dos-extract" {
     {
       "Effect": "Allow",
       "Action": ["s3:PutObject*"],
-      "Resource": "${local.postcode_etl_s3_bucket_arn}/*"
+      "Resource": "${aws_s3_bucket.postcode_etl_s3.arn}/*"
     },
     {
       "Effect": "Allow",
