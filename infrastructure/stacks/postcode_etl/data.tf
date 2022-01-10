@@ -31,7 +31,3 @@ data "aws_lambda_layer_version" "dos_python_libs" {
 data "aws_secretsmanager_secret" "dos_read_replica_secret_name" {
   name = var.dos_read_replica_secret_name
 }
-
-data "aws_s3_bucket" "s3_bucket" {
-  bucket = var.sf_resources_bucket
-}
