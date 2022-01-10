@@ -10,7 +10,8 @@ ENVIRONMENT := $(PROFILE)
 SPRING_PROFILES_ACTIVE := $(PROFILE)
 
 DEPLOYMENT_STACKS := application
-INFRASTRUCTURE_STACKS := datastore,postcode_etl,postcode_etl_sns
+INFRASTRUCTURE_STACKS := datastore,postcode_etl
+SNS_INFRASTRUCTURE_STACKS := postcode_etl_sns
 
 SERVER_PORT := 443
 IMAGE_TAG := v0.0.1
