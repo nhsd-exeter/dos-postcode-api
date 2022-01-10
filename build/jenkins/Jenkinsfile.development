@@ -58,7 +58,7 @@ pipeline {
     stage('Run Contract Tests') {
       steps {
         script {
-          echo "to do"
+          sh "make run-contract-test"
         }
       }
     }

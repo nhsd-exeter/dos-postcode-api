@@ -5,6 +5,10 @@ server:
     keystore: classpath:certificate/${CERTIFICATE_DOMAIN}.p12
     key-store-password:
 
+aws:
+  accessKeyId: ${AWS_ACCESS_KEY_ID}
+  secretAccessKey: ${AWS_SECRET_ACCESS_KEY}
+
 dynamo:
   config:
     region: eu-west-2
