@@ -1,66 +1,10 @@
 {
   "info": {
-    "_postman_id": "6cb999ab-28c2-41ce-83da-fd4cb483f9cb",
+    "_postman_id": "e347d655-a3d1-4626-990e-b6779fe17e7f",
     "name": "PostcodeAPISmokeTests",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
-    {
-      "name": "Login as a POSTCODE API USER",
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              " var jsonData = JSON.parse(responseBody);",
-              "",
-              "pm.test(\"Login test\", function() {",
-              "    pm.response.to.have.status(200);",
-              "});",
-              "       ",
-              "pm.test(\"Save access_token as an environment variable\", function() {",
-              "    postman.setEnvironmentVariable(\"ACCESS_TOKEN\", jsonData.accessToken);",
-              "});",
-              "            ",
-              "pm.test(\"Save refresh_token as an environment variable\", function() {",
-              "    postman.setEnvironmentVariable(\"REFRESH_TOKEN\", jsonData.refreshToken);",
-              "});"
-            ],
-            "type": "text/javascript"
-          }
-        }
-      ],
-      "request": {
-        "method": "POST",
-        "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json;charset=UTF-8",
-            "type": "text"
-          }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n    \"emailAddress\":\"{{AUTH_USERNAME}}\",\n    \"password\":\"{{AUTH_PASSWORD}}\"\n}",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
-        "url": {
-          "raw": "https://{{AUTHENTICATION_HOST}}/{{AUTHENTICATION_ENDPOINT}}",
-          "protocol": "https",
-          "host": [
-            "{{AUTHENTICATION_HOST}}"
-          ],
-          "path": [
-            "{{AUTHENTICATION_ENDPOINT}}"
-          ]
-        }
-      },
-      "response": []
-    },
     {
       "name": "GET Visit Home Endpoint",
       "event": [
@@ -80,13 +24,12 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "https://{{HOST}}/{{POSTCODE_ENDPOINT}}/home",
-          "protocol": "https",
+          "raw": "{{HOST}}/api/home",
           "host": [
             "{{HOST}}"
           ],
           "path": [
-            "{{POSTCODE_ENDPOINT}}",
+            "api",
             "home"
           ]
         }
@@ -109,6 +52,16 @@
         }
       ],
       "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{ACCESS_TOKEN}}",
+              "type": "string"
+            }
+          ]
+        },
         "method": "GET",
         "header": [
           {
@@ -118,8 +71,7 @@
           }
         ],
         "url": {
-          "raw": "https://{{HOST}}/{{POSTCODE_ENDPOINT}}?name=Nhs%20Halton%20CCG&postcodes=EX11SR",
-          "protocol": "https",
+          "raw": "{{HOST}}/{{POSTCODE_ENDPOINT}}?name=Nhs%20Halton%20CCG&postcodes=EX11SR",
           "host": [
             "{{HOST}}"
           ],

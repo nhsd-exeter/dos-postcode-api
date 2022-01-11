@@ -1,66 +1,10 @@
 {
   "info": {
-    "_postman_id": "cedf00bf-e049-408b-b905-fb6451b650c3",
+    "_postman_id": "4b6809e0-f85f-4a82-95f0-14a2b5cc5e49",
     "name": "PostcodeAPIContractTests",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
-    {
-      "name": "Login as a POSTCODE API USER",
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              " var jsonData = JSON.parse(responseBody);",
-              "",
-              "pm.test(\"Login test\", function() {",
-              "    pm.response.to.have.status(200);",
-              "});",
-              "       ",
-              "pm.test(\"Save access_token as an environment variable\", function() {",
-              "    postman.setEnvironmentVariable(\"ACCESS_TOKEN\", jsonData.accessToken);",
-              "});",
-              "            ",
-              "pm.test(\"Save refresh_token as an environment variable\", function() {",
-              "    postman.setEnvironmentVariable(\"REFRESH_TOKEN\", jsonData.refreshToken);",
-              "});"
-            ],
-            "type": "text/javascript"
-          }
-        }
-      ],
-      "request": {
-        "method": "POST",
-        "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json;charset=UTF-8",
-            "type": "text"
-          }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n    \"emailAddress\":\"{{AUTH_USERNAME}}\",\n    \"password\":\"{{AUTH_PASSWORD}}\"\n}",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
-        "url": {
-          "raw": "https://{{AUTHENTICATION_HOST}}/{{AUTHENTICATION_ENDPOINT}}",
-          "protocol": "https",
-          "host": [
-            "{{AUTHENTICATION_HOST}}"
-          ],
-          "path": [
-            "{{AUTHENTICATION_ENDPOINT}}"
-          ]
-        }
-      },
-      "response": []
-    },
     {
       "name": "GET Visit Home Endpoint",
       "event": [
@@ -80,7 +24,7 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "https://{{HOST}}:{{PORT}}/api/search/home",
+          "raw": "https://{{HOST}}:{{PORT}}/api/home",
           "protocol": "https",
           "host": [
             "{{HOST}}"
@@ -88,7 +32,6 @@
           "port": "{{PORT}}",
           "path": [
             "api",
-            "search",
             "home"
           ]
         }

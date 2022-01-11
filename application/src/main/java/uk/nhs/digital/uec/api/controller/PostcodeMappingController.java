@@ -30,11 +30,6 @@ public class PostcodeMappingController {
   @Value("${invalid.postcode}")
   private String validPostCodeMessage;
 
-  @GetMapping("/home")
-  public ResponseEntity<String> getPostcodeMappingHome() {
-    return ResponseEntity.ok("Welcome to postcode details search service");
-  }
-
   @GetMapping()
   public ResponseEntity<List<PostcodeMapping>> getPostcodeMapping(
       @ApiParam(POSTCODES_DESC) @RequestParam(name = "postcodes", required = false)

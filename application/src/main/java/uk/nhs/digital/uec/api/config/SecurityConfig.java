@@ -23,7 +23,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
   public static final String HEALTH_CHECK_READINESS_URL = "/actuator/health/readiness";
   public static final String HEALTH_CHECK_LIVENESS_URL = "/actuator/health/liveness";
-  public static final String WELCOME_URL = "/api/search/home";
+  public static final String WELCOME_URL = "/api/home";
 
   public static final String SWAGGER_URL = "/swagger-ui.html";
   public static final String SWAGGER_API_DOCS = "/v2/api-docs";
@@ -42,13 +42,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         Arrays.asList(
             HEALTH_CHECK_READINESS_URL,
             HEALTH_CHECK_LIVENESS_URL,
-            WELCOME_URL,
             SWAGGER_URL,
             SWAGGER_API_DOCS,
             SWAGGER_RESOURCES_DIR,
             SWAGGER_WEBJARS,
             SWAGGER_API_DOCS_DIR,
-            SWAGGER_UI_DIR);
+            SWAGGER_UI_DIR,
+            WELCOME_URL);
 
     http.addFilterBefore(accessTokenFilter, AbstractPreAuthenticatedProcessingFilter.class)
         .cors()
