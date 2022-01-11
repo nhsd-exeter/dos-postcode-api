@@ -169,11 +169,11 @@ resource "aws_cloudwatch_event_target" "daily_postcode_extract_job" {
 resource "aws_lambda_permission" "allow_cloudwatch_to_call_extract_postcode" {
   statement_id  = local.postcode_extract_cloudwatch_event_statement
   action        = local.postcode_extract_cloudwatch_event_action
-  function_name = local.postcode_extract_function_name
+  function_name = aws_lambda_function.postcode_extract_lambda.function_name
   principal     = local.postcode_extract_cloudwatch_event_princinple
   source_arn    = aws_cloudwatch_event_rule.postcode_extract_cloudwatch_event.arn
 }
 
 resource "aws_cloudwatch_log_group" "postcode_extract_log_group" {
-  name = "/aws/lambda/${local.postcode_extract_function_name}"
+  name = "/aws/lambda/${aws_lambda_function.postcode_extract_lambda.function_name}"
 }
