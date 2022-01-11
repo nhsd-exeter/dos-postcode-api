@@ -15,7 +15,7 @@
     - [Test data and mock services](#test-data-and-mock-services)
     - [Manual check](#manual-check)
   - [Deployment](#deployment)
-    - [Artifact Versioning](#artifact-versioning)
+    - [Artefact Versioning](#artefact-versioning)
     - [CI/CD Pipelines](#cicd-pipelines)
     - [Deployment From the Command-line](#deployment-from-the-command-line)
     - [Secrets](#secrets)
@@ -82,8 +82,14 @@ Generate and trust a self-signed certificate that will be used locally to enable
     make build
     make start log
 
+<<<<<<< HEAD
     Swagger endpoint (default port 443):
     https://localhost/swagger-ui.html
+=======
+    TODO - Put swagger link in here
+    open https://ui.project.local:8443
+    # https://localhost:8443/api/search?postcodes=<postcode>
+>>>>>>> ea81e0b (Addition of demo and prod deployment jenkins files)
 
 ## Contributing
 
@@ -97,35 +103,52 @@ Here is the list of the development practices that have to be followed by the te
 
 Before starting any work, please read [CONTRIBUTING.md](documentation/CONTRIBUTING.md) for more detailed instructions.
 
+
 ## Development
 
-- Describe how to
-  - Connect to a local database
-  - Interact with mock components
-  - Switch each individual component to the dev mode
-- Code formatting
-- Code quality
-- Reference the [TODO.md](documentation/TODO.md) file
-- Provide guidance on how to use feature toggles and branching by abstraction
+This project consists of the following components:
 
+- Springboot API
+- DynamoDB
+- S3 bucket
+- Service extraction and insertion Lambda functions
+- Alerting Lambda functions
+
+When running locally, the Spingboot API and a local DynamoDB are spun up, containing mocked service data. The S3 and Lambda components are only available in the cloud environments. In the cloud environments the endpoints are authenticated and as such an API token is required to access them.
+
+Refer to the Local Project Setup section to see how to build and start the project locally.
+
+TODO: We need to bypass authentication when running locally.
 ## Testing
 
-List all the type of test suites included and provide instructions how to execute them
+The following tests are setup in this project:
 
 - Unit
-- Integration
+
+TODO: Check this command
+To run the unit tests locally, run the following make target:
+  make unit-test
+
 - Contract
-- End-to-end
-- Performance
-- Security
+
+TODO: Add make target for running contract tests
+To run the contract tests locally, run the following make target:
+  make
+
+- Performance TODO: We need performance tests
+
+Run using JMeter.
+
 - Smoke
 
-How to run test suite in the pipeline
+Smoke tests will be run against the cloud environments and are triggered in the pipelines.
 
+TODO: We are here.
 ### Test data and mock services
 
-- How the test data set is produced
-- Are there any mock services in place
+In the local environment a local DynamoDB is spun up containing test services. The data for the DynamoDB is configured in the /data section of the project.
+
+In the cloud environment, service data is imported into the DynamoDB from the DoS read replica database via the ETL processes. The DoS read replica that the ETL points to is configured in the profile make files for the specific environment.
 
 Authentication access token to be used:
 
@@ -133,15 +156,19 @@ MOCK_POSTCODE_API_ACCESS_TOKEN
 
 ### Manual check
 
-Here are the steps to perform meaningful local system check:
+Once the application is spun up, use postman to call the available endpoints of the API. Full API documentation can be found at this endpoint:
 
-- Log in to the system using a well known username role
+TODO: mention swagger endpoint
 
 ## Deployment
 
-### Artifact Versioning
+The API can be deployed into the dev environment by running the following make target:
 
-E.g. semantic versioning vs. timestamp-based
+  make deploy PROFILE=dev
+
+### Artefact Versioning
+
+This project uses semantic versioning. i.e. 0.0.1 (major, minor, patch)
 
 ### CI/CD Pipelines
 
