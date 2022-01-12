@@ -315,5 +315,14 @@ derive-build-tag:
 
 # ==============================================================================
 
+pipeline-send-notification:
+	echo TODO: $(@)
+
+pipeline-on-success:
+	echo TODO: $(@)
+
+pipeline-on-failure:
+	echo TODO: $(@)
+
 .SILENT: \
 	derive-build-tag
