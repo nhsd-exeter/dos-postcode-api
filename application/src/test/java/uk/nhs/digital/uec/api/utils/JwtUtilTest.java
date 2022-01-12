@@ -63,10 +63,17 @@ public class JwtUtilTest {
   }
 
   @Test
-  public void invalidMockTokenTest() {
+  public void invalidMockTokenNullTest() {
     String accessToken = null;
     AccessTokenNullException accessTokenNullException =
         assertThrows(AccessTokenNullException.class, () -> jwtUtil.isMockTokenValid(accessToken));
     assertNotNull(accessTokenNullException);
+  }
+
+  @Test
+  public void invalidMockTokenNotNullTest() throws AccessTokenNullException {
+    String mockToken = jwtUtil.isMockTokenValid(expiredAccessToken);
+    assertNotNull(mockToken);
+    assertEquals(expiredAccessToken, mockToken);
   }
 }

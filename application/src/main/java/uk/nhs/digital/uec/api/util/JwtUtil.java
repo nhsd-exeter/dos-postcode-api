@@ -56,10 +56,12 @@ public class JwtUtil {
     return DigestUtils.sha1Hex(identityProviderId);
   }
 
-  public void isMockTokenValid(String accessToken) throws AccessTokenNullException {
+  public String isMockTokenValid(String accessToken) throws AccessTokenNullException {
     if (accessToken == null) {
       log.info("Access Token is null");
       throw new AccessTokenNullException();
+    } else {
+      return accessToken;
     }
   }
 }
