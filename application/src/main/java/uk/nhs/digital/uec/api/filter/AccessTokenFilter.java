@@ -31,7 +31,7 @@ import uk.nhs.digital.uec.api.util.JwtUtil;
 
 @Component
 @Slf4j
-@Profile("!local")
+@Profile("!mock-auth")
 public class AccessTokenFilter extends OncePerRequestFilter {
 
   @Autowired private JwtUtil jwtUtil;

@@ -56,7 +56,7 @@ public class JwtUtil {
     return DigestUtils.sha1Hex(identityProviderId);
   }
 
-  public void isLocalTokenValid(String accessToken) throws AccessTokenNullException {
+  public void isMockTokenValid(String accessToken) throws AccessTokenNullException {
     if (accessToken == null) {
       log.info("Access Token is null");
       throw new AccessTokenNullException();

@@ -38,7 +38,7 @@ public class MockAccessTokenFilter extends OncePerRequestFilter {
       throws ServletException, IOException {
     String token = jwtUtil.getTokenFromHeader(request);
     try {
-      jwtUtil.isLocalTokenValid(token);
+      jwtUtil.isMockTokenValid(token);
     } catch (AccessTokenNullException
         | IllegalStateException
         | IllegalArgumentException
