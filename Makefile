@@ -4,6 +4,11 @@ include $(abspath $(PROJECT_DIR)/build/automation/init.mk)
 # ==============================================================================
 # Development workflow targets
 
+prepare: ## Prepare environment
+	make \
+		git-config \
+		docker-config
+
 compile:
 	make docker-run-mvn \
 		DIR="application" \
