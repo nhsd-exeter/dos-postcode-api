@@ -315,9 +315,6 @@ derive-build-tag:
 
 # ==============================================================================
 
-pipeline-send-notification:
-	echo TODO: $(@)
-
 pipeline-on-success:
 	echo TODO: $(@)
 
