@@ -5,14 +5,17 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
-import uk.nhs.digital.uec.api.filter.LocalAccessTokenFilter;
+import uk.nhs.digital.uec.api.filter.MockAccessTokenFilter;
+import uk.nhs.digital.uec.api.filter.TokenEntryPoint;
 
-@Profile("local")
+@Profile("mock-auth")
 @Configuration
-public class LocalConfig extends WebSecurityConfigurerAdapter {
+public class MockAuthConfig extends WebSecurityConfigurerAdapter {
 
-  @Autowired private LocalAccessTokenFilter localAccessTokenFilter;
+  @Autowired private MockAccessTokenFilter localAccessTokenFilter;
+  @Autowired private TokenEntryPoint tokenEndpoint;
 
   @Override
   protected void configure(HttpSecurity http) throws Exception {
@@ -23,7 +26,13 @@ public class LocalConfig extends WebSecurityConfigurerAdapter {
         .csrf()
         .disable()
         .authorizeRequests()
-        .antMatchers("/**")
-        .permitAll();
+        .anyRequest()
+        .authenticated()
+        .and()
+        .exceptionHandling()
+        .authenticationEntryPoint(tokenEndpoint)
+        .and()
+        .sessionManagement()
+        .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
   }
 }

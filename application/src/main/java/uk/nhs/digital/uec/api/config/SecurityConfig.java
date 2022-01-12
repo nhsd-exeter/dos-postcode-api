@@ -18,7 +18,7 @@ import uk.nhs.digital.uec.api.filter.TokenEntryPoint;
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-@Profile("!local")
+@Profile("!mock-auth")
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
   public static final String HEALTH_CHECK_READINESS_URL = "/actuator/health/readiness";

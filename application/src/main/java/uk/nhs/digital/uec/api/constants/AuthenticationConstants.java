@@ -12,4 +12,5 @@ public class AuthenticationConstants {
   public static final String IDENTITY_PROVIDER_ID = "IDENTITY_PROVIDER_ID";
   public static final String USER_HASH = "USER_HASH";
   public static final String ROLE_PREFIX = "ROLE_";
+  public static final String AUTH_MOCK_GROUP = "POSTCODE_API_ACCESS";
 }
