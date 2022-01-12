@@ -110,30 +110,26 @@ clean: # Clean up project
 
 run-smoke-test:
 	eval "$$(make aws-assume-role-export-variables)"
-	make run-smoke COGNITO_USER_PASS=$$(make aws-secret-get NAME=$(PROJECT_GROUP_SHORT)-sfsa-dev-cognito-passwords | jq .POSTCODE_PASSWORD | tr -d '"')
+	make run-smoke COGNITO_USER_PASS=$$(make aws-secret-get NAME=$(PROJECT_GROUP_SHORT)-sfsa-${PROFILE}-cognito-passwords | jq .POSTCODE_PASSWORD | tr -d '"')
 
 run-contract-test:
 	eval "$$(make aws-assume-role-export-variables)"
-	make run-contract COGNITO_USER_PASS=$$(make aws-secret-get NAME=$(PROJECT_GROUP_SHORT)-sfsa-dev-cognito-passwords | jq .POSTCODE_PASSWORD | tr -d '"')
+	make run-contract COGNITO_USER_PASS=$$(make aws-secret-get NAME=$(PROJECT_GROUP_SHORT)-sfsa-${PROFILE}-cognito-passwords | jq .POSTCODE_PASSWORD | tr -d '"')
 
 run-jmeter-performance-test:
 	eval "$$(make aws-assume-role-export-variables)"
-	eval "$$(make project-populate-application-variables)"
-	make run-jmeter ADMIN_PASSWORD=$$(make -s project-aws-get-admin-secret | jq .ADMIN_PASSWORD | tr -d '"') JMETER_TEST_FOLDER_PATH=test/jmeter/tests/performance JMETER_TEST_FILE_PATH=test/jmeter/tests/performance/performanceTest.jmx
+	make run-jmeter ACCESS_TOKEN=$$(make -s extract-access-token) JMETER_TEST_FOLDER_PATH=test/jmeter/tests/performance JMETER_TEST_FILE_PATH=test/jmeter/tests/performance/performanceTest.jmx
 
 run-jmeter-load-test:
 	eval "$$(make aws-assume-role-export-variables)"
-	eval "$$(make project-populate-application-variables)"
-	make run-jmeter ADMIN_PASSWORD=$$(make -s project-aws-get-admin-secret | jq .ADMIN_PASSWORD | tr -d '"') JMETER_TEST_FOLDER_PATH=test/jmeter/tests/load JMETER_TEST_FILE_PATH=test/jmeter/tests/load/loadTest.jmx
+	make run-jmeter ACCESS_TOKEN=$$(make -s extract-access-token) JMETER_TEST_FOLDER_PATH=test/jmeter/tests/load JMETER_TEST_FILE_PATH=test/jmeter/tests/load/loadTest.jmx
 
 run-jmeter-stress-test:
 	eval "$$(make aws-assume-role-export-variables)"
-	eval "$$(make project-populate-application-variables)"
-	make run-jmeter ADMIN_PASSWORD=$$(make -s project-aws-get-admin-secret | jq .ADMIN_PASSWORD | tr -d '"') JMETER_TEST_FOLDER_PATH=test/jmeter/tests/stress JMETER_TEST_FILE_PATH=test/jmeter/tests/stress/stressTest.jmx
+	make run-jmeter ACCESS_TOKEN=$$(make -s extract-access-token) JMETER_TEST_FOLDER_PATH=test/jmeter/tests/stress JMETER_TEST_FILE_PATH=test/jmeter/tests/stress/stressTest.jmx
 
 deploy-jmeter-namespace:
 	eval "$$(make aws-assume-role-export-variables)"
-	eval "$$(make project-populate-application-variables)"
 	make k8s-kubeconfig-get
 	eval "$$(make k8s-kubeconfig-export-variables)"
 	kubectl create ns ${PROJECT_ID}-${PROFILE}-jmeter
@@ -144,7 +140,6 @@ deploy-jmeter-namespace:
 
 destroy-jmeter-namespace:
 	eval "$$(make aws-assume-role-export-variables)"
-	eval "$$(make project-populate-application-variables)"
 	make k8s-kubeconfig-get
 	eval "$$(make k8s-kubeconfig-export-variables)"
 	kubectl delete ns ${PROJECT_ID}-${PROFILE}-jmeter
@@ -152,8 +147,24 @@ destroy-jmeter-namespace:
 
 # ==============================================================================
 # Supporting targets
+project-aws-get-authentication-secret: #Get AWS Pass
+	aws secretsmanager get-secret-value \
+		--secret-id $(PROJECT_GROUP_SHORT)-sfsa-$(ENVIRONMENT)-cognito-passwords \
+		--region $(AWS_REGION) \
+		--query 'SecretString' \
+		--output text
+
+extract-access-token:
+	make -s get-authentication-access-token ADMIN_PASSWORD=$$(make -s project-aws-get-authentication-secret | jq .ADMIN_PASSWORD | tr -d '"') | jq .accessToken | tr -d '"'
+
+get-authentication-access-token:
+		curl --request POST ${AUTHENTICATION_ENDPOINT} \
+			--header 'Content-Type: application/json' \
+			--data-raw '{"emailAddress": "service-finder-admin@nhs.net","password": "${ADMIN_PASSWORD}"}'
+
+
 run-jmeter: # Run jmeter tests - mandatory: JMETER_TEST_FOLDER_PATH - test directory JMETER_TEST_FILE_PATH - the path of the jmeter tests to run
-	sed -i 's|1|$(ADMIN_PASSWORD)|g' ${JMETER_TEST_FILE_PATH}
+	sed -i 's|ACCESS_TOKEN_TO_REPLACE|$(ACCESS_TOKEN)|g' ${JMETER_TEST_FILE_PATH}
 	make k8s-kubeconfig-get
 	eval "$$(make k8s-kubeconfig-export-variables)"
 	kubectl config set-context --current --namespace=${PROJECT_ID}-${PROFILE}-jmeter
