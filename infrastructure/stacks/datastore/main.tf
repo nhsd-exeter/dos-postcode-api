@@ -12,5 +12,8 @@ module "dynamodb_table_postcode" {
       type = "S"
     }
   ]
+
+  billing_mode = "PAY_PER_REQUEST"
+
   tags = local.standard_tags
 }
