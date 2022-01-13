@@ -28,8 +28,8 @@ TF_VAR_postcode_etl_logging_level := INFO
 TF_VAR_postcode_etl_sns_logging_level := INFO
 TF_VAR_postcode_etl_sns_email := postcode-etl-alerts-d-aaaafmi4x7xvayo2zzqr5sojpa@a2si.slack.com
 
-TF_VAR_dos_replica_db := uec-core-dos-put-db-replica-sf.dos-db-put
-TF_VAR_dos_security_group := uec-core-dos-put-db-12-replica-sf-sg
+TF_VAR_sf_read_replica_db := uec-core-dos-put-db-replica-sf.dos-db-put
+TF_VAR_sf_read_replica_db_sg := uec-core-dos-put-db-12-replica-sf-sg
 TF_VAR_dos_read_replica_secret_name := core-dos/deployment
 TF_VAR_dos_read_replica_key := DB_SF_READONLY_PASSWORD
 TF_VAR_postcode_etl_db_user := dos_sf_readonly
