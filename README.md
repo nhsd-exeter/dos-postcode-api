@@ -15,7 +15,7 @@
     - [Test data and mock services](#test-data-and-mock-services)
     - [Manual check](#manual-check)
   - [Deployment](#deployment)
-    - [Artefact Versioning](#artefact-versioning)
+    - [Artifact Versioning](#artifact-versioning)
     - [CI/CD Pipelines](#cicd-pipelines)
     - [Deployment From the Command-line](#deployment-from-the-command-line)
     - [Secrets](#secrets)
@@ -81,8 +81,9 @@ Generate and trust a self-signed certificate that will be used locally to enable
 
     make build
     make start log
-    open https://ui.project.local:8443
-    # https://localhost:8443/api/search?postcodes=<postcode>
+
+    Swagger endpoint (default port 443):
+    https://localhost/swagger-ui.html
 
 ## Contributing
 
@@ -126,6 +127,10 @@ How to run test suite in the pipeline
 - How the test data set is produced
 - Are there any mock services in place
 
+Authentication access token to be used:
+
+MOCK_POSTCODE_API_ACCESS_TOKEN
+
 ### Manual check
 
 Here are the steps to perform meaningful local system check:
@@ -134,7 +139,7 @@ Here are the steps to perform meaningful local system check:
 
 ## Deployment
 
-### Artefact Versioning
+### Artifact Versioning
 
 E.g. semantic versioning vs. timestamp-based
 
@@ -230,6 +235,10 @@ What sort of data system operates on and processes
 - Authentication method
 
 It is recommended that any other documentation related to the aspect of security should be stored in a private workspace.
+
+Authentication access token to be used:
+
+MOCK_POSTCODE_API_ACCESS_TOKEN
 
 ### Technology Stack
 
