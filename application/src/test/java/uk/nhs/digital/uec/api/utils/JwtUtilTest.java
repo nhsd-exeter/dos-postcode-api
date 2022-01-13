@@ -8,7 +8,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 import uk.nhs.digital.uec.api.exception.AccessTokenExpiredException;
-import uk.nhs.digital.uec.api.exception.AccessTokenNullException;
 import uk.nhs.digital.uec.api.util.JwtUtil;
 
 public class JwtUtilTest {
@@ -60,20 +59,5 @@ public class JwtUtilTest {
     String identityProviderIdDigest = jwtUtil.getIdentityProviderIdDigest(user);
     String hexValue = "ebde84c8271f499e218354cc9024b65732f417fb";
     assertEquals(hexValue, identityProviderIdDigest);
-  }
-
-  @Test
-  public void invalidMockTokenNullTest() {
-    String accessToken = null;
-    AccessTokenNullException accessTokenNullException =
-        assertThrows(AccessTokenNullException.class, () -> jwtUtil.isMockTokenValid(accessToken));
-    assertNotNull(accessTokenNullException);
-  }
-
-  @Test
-  public void invalidMockTokenNotNullTest() throws AccessTokenNullException {
-    String mockToken = jwtUtil.isMockTokenValid(expiredAccessToken);
-    assertNotNull(mockToken);
-    assertEquals(expiredAccessToken, mockToken);
   }
 }

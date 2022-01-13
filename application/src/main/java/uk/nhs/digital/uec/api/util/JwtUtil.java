@@ -11,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.stereotype.Component;
 import uk.nhs.digital.uec.api.exception.AccessTokenExpiredException;
-import uk.nhs.digital.uec.api.exception.AccessTokenNullException;
 
 @Component
 @Slf4j
@@ -54,14 +53,5 @@ public class JwtUtil {
 
   public String getIdentityProviderIdDigest(String identityProviderId) {
     return DigestUtils.sha1Hex(identityProviderId);
-  }
-
-  public String isMockTokenValid(String accessToken) throws AccessTokenNullException {
-    if (accessToken == null) {
-      log.info("Access Token is null");
-      throw new AccessTokenNullException();
-    } else {
-      return accessToken;
-    }
   }
 }

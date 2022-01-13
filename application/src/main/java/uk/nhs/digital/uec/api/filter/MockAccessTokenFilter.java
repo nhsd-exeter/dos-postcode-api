@@ -1,7 +1,8 @@
 package uk.nhs.digital.uec.api.filter;
 
-import static uk.nhs.digital.uec.api.constants.AuthenticationConstants.AUTH_MOCK_GROUP;
 import static uk.nhs.digital.uec.api.constants.AuthenticationConstants.ROLE_PREFIX;
+import static uk.nhs.digital.uec.api.constants.MockAuthenticationConstants.MOCK_ACCESS_TOKEN;
+import static uk.nhs.digital.uec.api.constants.MockAuthenticationConstants.MOCK_AUTH_GROUP;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -22,7 +23,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.filter.OncePerRequestFilter;
-import uk.nhs.digital.uec.api.exception.AccessTokenNullException;
+import uk.nhs.digital.uec.api.exception.InvalidAccessToken;
 import uk.nhs.digital.uec.api.util.JwtUtil;
 
 @Component
@@ -38,8 +39,8 @@ public class MockAccessTokenFilter extends OncePerRequestFilter {
       throws ServletException, IOException {
     String token = jwtUtil.getTokenFromHeader(request);
     try {
-      jwtUtil.isMockTokenValid(token);
-    } catch (AccessTokenNullException
+      isMockTokenValid(token);
+    } catch (InvalidAccessToken
         | IllegalStateException
         | IllegalArgumentException
         | RestClientException e) {
@@ -56,7 +57,7 @@ public class MockAccessTokenFilter extends OncePerRequestFilter {
   }
 
   private Authentication createNewAuthentication(Authentication origAuthentication) {
-    List<String> groupList = Arrays.asList(AUTH_MOCK_GROUP);
+    List<String> groupList = Arrays.asList(MOCK_AUTH_GROUP);
     List<GrantedAuthority> authorities = convertCognitoGroupsToAuthorities(groupList);
     Object principal = origAuthentication != null ? origAuthentication.getPrincipal() : null;
     Object details = origAuthentication != null ? origAuthentication.getDetails() : null;
@@ -70,5 +71,13 @@ public class MockAccessTokenFilter extends OncePerRequestFilter {
           authorities.add(new SimpleGrantedAuthority(ROLE_PREFIX + cognitoGroupName));
         });
     return authorities;
+  }
+
+  private void isMockTokenValid(String accessToken) throws InvalidAccessToken {
+    if (accessToken == null) return;
+    if (!accessToken.equalsIgnoreCase(MOCK_ACCESS_TOKEN)) {
+      log.info("Invalid access token");
+      throw new InvalidAccessToken();
+    }
   }
 }

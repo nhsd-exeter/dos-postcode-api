@@ -14,13 +14,13 @@ import uk.nhs.digital.uec.api.filter.TokenEntryPoint;
 @Configuration
 public class MockAuthConfig extends WebSecurityConfigurerAdapter {
 
-  @Autowired private MockAccessTokenFilter localAccessTokenFilter;
-  @Autowired private TokenEntryPoint tokenEndpoint;
+  @Autowired private MockAccessTokenFilter mockAccessTokenFilter;
+  @Autowired private TokenEntryPoint tokenEntrypoint;
 
   @Override
   protected void configure(HttpSecurity http) throws Exception {
 
-    http.addFilterBefore(localAccessTokenFilter, AbstractPreAuthenticatedProcessingFilter.class)
+    http.addFilterBefore(mockAccessTokenFilter, AbstractPreAuthenticatedProcessingFilter.class)
         .cors()
         .and()
         .csrf()
@@ -30,7 +30,7 @@ public class MockAuthConfig extends WebSecurityConfigurerAdapter {
         .authenticated()
         .and()
         .exceptionHandling()
-        .authenticationEntryPoint(tokenEndpoint)
+        .authenticationEntryPoint(tokenEntrypoint)
         .and()
         .sessionManagement()
         .sessionCreationPolicy(SessionCreationPolicy.STATELESS);

@@ -127,6 +127,10 @@ How to run test suite in the pipeline
 - How the test data set is produced
 - Are there any mock services in place
 
+Authentication access token to be used:
+
+MOCK_POSTCODE_API_ACCESS_TOKEN
+
 ### Manual check
 
 Here are the steps to perform meaningful local system check:
@@ -231,6 +235,10 @@ What sort of data system operates on and processes
 - Authentication method
 
 It is recommended that any other documentation related to the aspect of security should be stored in a private workspace.
+
+Authentication access token to be used:
+
+MOCK_POSTCODE_API_ACCESS_TOKEN
 
 ### Technology Stack
 
