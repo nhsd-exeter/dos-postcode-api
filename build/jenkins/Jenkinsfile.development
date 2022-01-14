@@ -25,7 +25,7 @@ pipeline {
         }
       }
     }
-    stage('Scan for secrets') {
+    stage('Scan for Secrets') {
       steps {
         script {
           sh 'make pipeline-secret-scan'
