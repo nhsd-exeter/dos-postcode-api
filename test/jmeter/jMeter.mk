@@ -17,9 +17,9 @@ deploy-jmeter-namespace:
 	eval "$$(make aws-assume-role-export-variables)"
 	make k8s-kubeconfig-get
 	eval "$$(make k8s-kubeconfig-export-variables)"
-	sed -i 's|ECR_TEXAS_URL_NONPROD_TO_REPLACE|$(ECR_TEXAS_URL)|g' deployment/jmeter/jmeter_slaves_deploy.yaml
+	sed -i 's|ECR_TEXAS_URL_NONPROD_TO_REPLACE|$(ECR_TEXAS_URL_NONPROD)|g' deployment/jmeter/jmeter_slaves_deploy.yaml
 	sed -i 's|JMETER_SLAVE_IMAGE_TO_REPLACE|$(JMETER_SLAVE_IMAGE)|g' deployment/jmeter/jmeter_slaves_deploy.yaml
-	sed -i 's|ECR_TEXAS_URL_NONPROD_TO_REPLACE|$(ECR_TEXAS_URL)|g' deployment/jmeter/jmeter_master_deploy.yaml
+	sed -i 's|ECR_TEXAS_URL_NONPROD_TO_REPLACE|$(ECR_TEXAS_URL_NONPROD)|g' deployment/jmeter/jmeter_master_deploy.yaml
 	sed -i 's|JMETER_MASTER_IMAGE_TO_REPLACE|$(JMETER_MASTER_IMAGE)|g' deployment/jmeter/jmeter_master_deploy.yaml
 	kubectl create ns ${PROJECT_ID}-${PROFILE}-jmeter
 	kubectl apply -n ${PROJECT_ID}-${PROFILE}-jmeter -f deployment/jmeter/jmeter_slaves_deploy.yaml
@@ -49,10 +49,6 @@ get-authentication-access-token:
 		curl --request POST ${AUTHENTICATION_ENDPOINT} \
 			--header 'Content-Type: application/json' \
 			--data-raw '{"emailAddress": "service-finder-admin@nhs.net","password": "${ADMIN_PASSWORD}"}'
-
-inject-profile-vars-into-yamls:
-	sed -i 's|ECR_TEXAS_URL_NONPROD_TO_REPLACE|$(ECR_TEXAS_URL)|g' $(FILEPATH)
-	sed -i 's|JMETER_SLAVE_IMAGE_TO_REPLACE|$(JMETER_SLAVE_IMAGE)|g' $(FILEPATH)
 
 run-jmeter: # Run jmeter tests - mandatory: JMETER_TEST_FOLDER_PATH - test directory JMETER_TEST_FILE_PATH - the path of the jmeter tests to run
 	sed -i 's|ACCESS_TOKEN_TO_REPLACE|$(ACCESS_TOKEN)|g' ${JMETER_TEST_FILE_PATH}
