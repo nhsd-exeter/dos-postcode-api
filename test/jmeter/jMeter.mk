@@ -29,7 +29,6 @@ destroy-jmeter-namespace:
 	eval "$$(make k8s-kubeconfig-export-variables)"
 	kubectl delete ns ${PROJECT_ID}-${PROFILE}-jmeter
 
-
 # ==============================================================================
 # Supporting targets
 project-aws-get-authentication-secret: #Get AWS Pass
@@ -46,7 +45,6 @@ get-authentication-access-token:
 		curl --request POST ${AUTHENTICATION_ENDPOINT} \
 			--header 'Content-Type: application/json' \
 			--data-raw '{"emailAddress": "service-finder-admin@nhs.net","password": "${ADMIN_PASSWORD}"}'
-
 
 run-jmeter: # Run jmeter tests - mandatory: JMETER_TEST_FOLDER_PATH - test directory JMETER_TEST_FILE_PATH - the path of the jmeter tests to run
 	sed -i 's|ACCESS_TOKEN_TO_REPLACE|$(ACCESS_TOKEN)|g' ${JMETER_TEST_FILE_PATH}
