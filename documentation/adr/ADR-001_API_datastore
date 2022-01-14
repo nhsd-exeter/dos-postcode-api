@@ -4,11 +4,11 @@
 * Status:Accepted
 * Deciders: Jonathan Pearce, Arif Mohammed, Geoff Waardenburg
 
-## Context
+## 1 Context
 
 A datastore is required which contains a mapping of postcodes to easting and northing location coordinates in order for the Postcode API to return location coordinates for a given postcode or list of postcodes.
 
-## Decision
+## 2 Decision
 
 Since the data to store and manage is of the form of a key-value lookup pair, we have decided on using a managed AWS DynamoDB to hold the data. The data fits easily into a single lookup table and has one primary key (or index). Dynamo is very fast with this type of data setup.
 
@@ -16,7 +16,7 @@ The following key configuration will be applied to the DynamoDB. For the full se
 
 General information regarding DynamoDBs can be found here: https://digitalcloud.training/certification-training/aws-solutions-architect-associate/database/amazon-dynamodb/
 
-### Billing mode
+### billing_mode = PAY_PER_REQUEST
 
 DynamoDB supports two types of billing options: on-demand or provisioned. Both types were considered and estimates for both were worked out as follows using the AWS pricing calculator:
 
@@ -67,21 +67,21 @@ Although having a provisioned DynamoDB costs less per month, we found that the D
 
 Configuring a provisioned DynamoDB with enough write units to cope with our daily spike actually made the provisioned option far more expensive than the pay per request option. So the proposal is to setup the DynamoDB on a pay per request basis (90USD per month) and we monitor the costs.
 
-### Point in time recovery enabled
+### point_in_time_recovery_enabled = false
 
 This attribute will not be specified, meaning that we will not be enabling point in time recovery. The reason for this is because the data comes from a DoS read replica database, and can be restored at any point by triggering the postcode ETL extract and insertion lambdas. Moreover, the data held in the DynamoDB is only ever refreshed from the source replica DB - nothing else updates it, and as such, there is no risk of data loss.  All of this means that point in time recovery is not required.
 
-### Replica regions
+### replica_regions = null
 
 Since a live service (Service Finder) will be dependent on this data being available at all times, we require a high level of availability. DynamoDB is multi-AZ out of the box and so already provides us with a high level of availability should one zone in our region die. At this stage therefore, there is no requirement to spin up another DynamoDB in a different region.
 
-### Server side encryption enabled
+### server_side_encryption_enabled = false
 
 NHSD Policy dictates that all data should be encrypted when stored at rest. Therefore, even though the data stored in the DynamoDB is not sensitive and is freely available it will need to be encrypted. By default all data stored in a DynamoDB is encrypted at rest by an AWS owned key, and so we do not need to set this parameter to true which would mean that we would need to either explicitly provide a key, or not provide a key in which case it would encrypt the data using the default account KMS key. Both of these later options incur additional charges.
 
 See: https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/EncryptionAtRest.html
 
-### TTL enabled
+### ttl_enabled = false
 
 Since the data in the DynamoDB is refreshed every evening, there is no requirement to automatically delete data from the datastore that is older than the TTL setting. We will therefore not be enabling TTL.
 
