@@ -1,6 +1,3 @@
-PROJECT_DIR := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
-include $(abspath $(PROJECT_DIR)/Makefile)
-
 # ==============================================================================
 # Jmeter workflow targets
 

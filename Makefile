@@ -1,5 +1,6 @@
 PROJECT_DIR := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 include $(abspath $(PROJECT_DIR)/build/automation/init.mk)
+include $(abspath $(PROJECT_DIR)/test/jmeter/jMeter.mk)
 
 # ==============================================================================
 # Development workflow targets
