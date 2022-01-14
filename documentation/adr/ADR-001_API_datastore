@@ -1,0 +1,92 @@
+# ADR-001: API datastore
+
+* Date: 2022/01/12
+* Status:Accepted
+* Deciders: Jonathan Pearce, Arif Mohammed, Geoff Waardenburg
+
+## 1 Context
+
+A datastore is required which contains a mapping of postcodes to easting and northing location coordinates in order for the Postcode API to return location coordinates for a given postcode or list of postcodes.
+
+## 2 Decision
+
+Since the data to store and manage is of the form of a key-value lookup pair, we have decided on using a managed AWS DynamoDB to hold the data. The data fits easily into a single lookup table and has one primary key (or index). Dynamo is very fast with this type of data setup.
+
+The following key configuration will be applied to the DynamoDB. For the full set of configuration options, and for further reading, please see: https://registry.terraform.io/modules/terraform-aws-modules/dynamodb-table/aws/latest
+
+General information regarding DynamoDBs can be found here: https://digitalcloud.training/certification-training/aws-solutions-architect-associate/database/amazon-dynamodb/
+
+### billing_mode = PAY_PER_REQUEST
+
+DynamoDB supports two types of billing options: on-demand or provisioned. Both types were considered and estimates for both were worked out as follows using the AWS pricing calculator:
+
+#### On Demand (pay per request)
+
+Data storage size - the storage size of the Dynamo datastore with all rows populated is 105MB. We will however provision ourselves for 3x this amount to allow for some degree of flex within our datastore. The data storage size of the DynamoDB will therefore be 300MB (0.3 GB).
+
+Average item size - the average item size of the items contained within our datastore is 60 bytes. Since all of the data items are similar in structure and size, there will be little variation on this. However, to have a degree of flex, we will provision the average data size to be 100 bytes.
+
+This give us a total monthly data storage cost of: 0.09 USD
+
+Number of writes per day - we will be writing 1.7 million items into the DynamoDB on a daily basis. For the purposes of pricing, we will round this up to 2 million items. This gives us a monthly write cost of 90 USD
+
+Number of reads per day - Location coordinates will need to be obtained at most once for every search performed by the Service Finder application. (This will be to obtain the location coordinates of the search location postcode). On average, Service Finder performs around 3,500 searches per day, so we will provision for 5,000 reads per day for the purposes of the estimate. This gives us a monthly cost of 0.02 USD per day.
+
+Therefore, using an On-Demand billing option, the total monthly cost estimate is: 90 USD
+
+#### Provisioned
+
+The same values for calculating the estimate for the On-Demand billing option are used here. Some of the values do differ however because of the slightly different way AWS bills with the provisioned option. I have stated below where the values differ.
+
+Data storage size - although the size of our DynamoDB is 0.3GB, this billing mode has to round up the data storage size to the nearest GB. Therefore the storage size for this option is 1GB.
+
+Total monthly storage cost: 0.3 USD
+
+The provisioned model also needs to know about the baseline write rate, the peak write rate, and the duration of time that the peak write rate will be performed for.
+
+Since we only write to the DynamoDB once per day in one batch, I have opted to apply the following settings for these values:
+
+Base write rate (per second) - 0
+Peak write rate (per second) - 5,000 - (we write 2,000,000 items per day via a Lambda that on average takes 800 seconds to run. 2,000,000 / 800 = 2,500 writes per second)
+Duration of peak write activity (hours per month) - 7 - (the Lambda takes on average 800 seconds to run. In hours per day: 800/(60 * 60) = 0.23
+In hours per month: 0.23 * 31 = 7
+
+Total monthly write cost: 27 USD
+
+Base read rate (per second) - between 1 to 10 - (5000 lookups per day - 5000/(24 * 60 * 60))
+Peak read rate (per second) - between 10 and 100
+Duration of peak activity per month (in hours) - 272 - (estimated at 12 hours per day)
+
+Total monthly read cost: 2.26 USD with a one-off upfront read cost of 35 USD
+
+Therefore using the Provisioned option, there is an initial upfront cost of 35 USD, followed by a monthly cost of 30 USD. This works out at about a third of the cost of the On-demand option.
+
+### Conclusion and other concerns
+
+Although having a provisioned DynamoDB costs less per month, we found that the DynamoDB autoscaling was far too slow for our sudden spike in write units. This lead to the write requests being throttled, and since the DynamoDB could not scale fast enough to meet the demand, eventually led to the Lambda function that inserts the data timing out, and very few records were actually inserted.
+
+Configuring a provisioned DynamoDB with enough write units to cope with our daily spike actually made the provisioned option far more expensive than the pay per request option. So the proposal is to setup the DynamoDB on a pay per request basis (90USD per month) and we monitor the costs.
+
+### point_in_time_recovery_enabled = false
+
+This attribute will not be specified, meaning that we will not be enabling point in time recovery. The reason for this is because the data comes from a DoS read replica database, and can be restored at any point by triggering the postcode ETL extract and insertion lambdas. Moreover, the data held in the DynamoDB is only ever refreshed from the source replica DB - nothing else updates it, and as such, there is no risk of data loss.  All of this means that point in time recovery is not required.
+
+### replica_regions = null
+
+Since a live service (Service Finder) will be dependent on this data being available at all times, we require a high level of availability. DynamoDB is multi-AZ out of the box and so already provides us with a high level of availability should one zone in our region die. At this stage therefore, there is no requirement to spin up another DynamoDB in a different region.
+
+### server_side_encryption_enabled = false
+
+NHSD Policy dictates that all data should be encrypted when stored at rest. Therefore, even though the data stored in the DynamoDB is not sensitive and is freely available it will need to be encrypted. By default all data stored in a DynamoDB is encrypted at rest by an AWS owned key, and so we do not need to set this parameter to true which would mean that we would need to either explicitly provide a key, or not provide a key in which case it would encrypt the data using the default account KMS key. Both of these later options incur additional charges.
+
+See: https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/EncryptionAtRest.html
+
+### ttl_enabled = false
+
+Since the data in the DynamoDB is refreshed every evening, there is no requirement to automatically delete data from the datastore that is older than the TTL setting. We will therefore not be enabling TTL.
+
+## Consequences
+
+Location coordinates can be quickly retrieved from the datastore for a given postcode value. Since the datastore is separate from DoS, an additional API to extract this information from DoS is not required.
+
+There is additional cost associated with spinning up the DynamoDB for the postcode service. Costing details are outlined below:
