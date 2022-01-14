@@ -21,3 +21,7 @@ PROJECT_TECH_STACK_LIST = java,terraform
 DOCKER_REPOSITORIES =
 SSL_DOMAINS_PROD =
 DEPLOYMENT_SECRETS = $(PROJECT_ID)-$(PROFILE)/deployment
+
+AUTHENTICATION_ENDPOINT = https://uec-dos-api-sfsa-$(PROFILE)-uec-dos-api-sfs-service.$(TEXAS_HOSTED_ZONE)/authentication/login
+POSTCODE_DOMAIN = $(PROJECT_ID)-$(PROFILE)-uec-dos-api-pc-ingress.$(TEXAS_HOSTED_ZONE)
+POSTCODE_ENDPOINT = https://$(POSTCODE_DOMAIN)

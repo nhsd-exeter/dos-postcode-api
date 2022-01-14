@@ -132,7 +132,7 @@
           <collectionProp name="Arguments.arguments">
             <elementProp name="URL" elementType="Argument">
               <stringProp name="Argument.name">URL</stringProp>
-              <stringProp name="Argument.value">uec-dos-api-pca-dev-uec-dos-api-pc-ingress.k8s-nonprod.texasplatform.uk</stringProp>
+              <stringProp name="Argument.value">POSTCODE_DOMAIN_TO_REPLACE</stringProp>
               <stringProp name="Argument.metadata">=</stringProp>
               <stringProp name="Argument.desc">Main URL</stringProp>
             </elementProp>
