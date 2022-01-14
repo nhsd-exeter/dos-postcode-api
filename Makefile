@@ -1,8 +1,14 @@
 PROJECT_DIR := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 include $(abspath $(PROJECT_DIR)/build/automation/init.mk)
+include $(abspath $(PROJECT_DIR)/test/jmeter/jMeter.mk)
 
 # ==============================================================================
 # Development workflow targets
+
+prepare: ## Prepare environment
+	make \
+		git-config \
+		docker-config
 
 compile:
 	make docker-run-mvn \
@@ -110,15 +116,14 @@ clean: # Clean up project
 
 run-smoke-test:
 	eval "$$(make aws-assume-role-export-variables)"
-	make run-smoke COGNITO_USER_PASS=$$(make aws-secret-get NAME=$(PROJECT_GROUP_SHORT)-sfsa-dev-cognito-passwords | jq .POSTCODE_PASSWORD | tr -d '"')
+	make run-smoke COGNITO_USER_PASS=$$(make aws-secret-get NAME=$(PROJECT_GROUP_SHORT)-sfsa-${PROFILE}-cognito-passwords | jq .POSTCODE_PASSWORD | tr -d '"')
 
 run-contract-test:
 	eval "$$(make aws-assume-role-export-variables)"
-	make run-contract COGNITO_USER_PASS=$$(make aws-secret-get NAME=$(PROJECT_GROUP_SHORT)-sfsa-dev-cognito-passwords | jq .POSTCODE_PASSWORD | tr -d '"')
+	make run-contract COGNITO_USER_PASS=$$(make aws-secret-get NAME=$(PROJECT_GROUP_SHORT)-sfsa-${PROFILE}-cognito-passwords | jq .POSTCODE_PASSWORD | tr -d '"')
 
 # ==============================================================================
 # Supporting targets
-
 trust-certificate: ssl-trust-certificate-project ## Trust the SSL development certificate
 
 docker-run-mvn-lib-mount: ### Build Docker image mounting library volume - mandatory: DIR, CMD
@@ -257,6 +262,12 @@ derive-build-tag:
 				sed "s/hash/$$(git rev-parse --short HEAD)/g"
 
 # ==============================================================================
+
+pipeline-on-success:
+	echo TODO: $(@)
+
+pipeline-on-failure:
+	echo TODO: $(@)
 
 .SILENT: \
 	derive-build-tag
