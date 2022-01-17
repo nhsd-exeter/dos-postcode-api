@@ -82,14 +82,8 @@ Generate and trust a self-signed certificate that will be used locally to enable
     make build
     make start log
 
-<<<<<<< HEAD
     Swagger endpoint (default port 443):
     https://localhost/swagger-ui.html
-=======
-    TODO - Put swagger link in here
-    open https://ui.project.local:8443
-    # https://localhost:8443/api/search?postcodes=<postcode>
->>>>>>> ea81e0b (Addition of demo and prod deployment jenkins files)
 
 ## Contributing
 
