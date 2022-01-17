@@ -25,6 +25,13 @@ pipeline {
         }
       }
     }
+    stage('Scan for Secrets') {
+      steps {
+        script {
+          sh 'make pipeline-secret-scan'
+        }
+      }
+    }
     /*
     stage("Plan Infrastructure") {
       steps {

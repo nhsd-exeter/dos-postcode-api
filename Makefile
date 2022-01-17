@@ -247,6 +247,14 @@ pipeline-create-resources: ## Create all the pipeline deployment supporting reso
 	#make docker-create-repository NAME=NAME_TEMPLATE_TO_REPLACE
 	#make aws-codeartifact-setup REPOSITORY_NAME=$(PROJECT_GROUP_SHORT)
 
+pipeline-secret-scan:
+	make -s git-secrets-load
+	result=$$(make git-secrets-scan-repo-files)
+	if [ -z result ]; then
+		echo "Secrets found: $$result"
+		exit 1
+	fi
+
 # ==============================================================================
 
 derive-build-tag:
@@ -270,4 +278,5 @@ pipeline-on-failure:
 	echo TODO: $(@)
 
 .SILENT: \
-	derive-build-tag
+	derive-build-tag \
+	pipeline-secret-scan
