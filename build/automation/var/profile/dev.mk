@@ -8,7 +8,7 @@ ECR_TEXAS_URL_NONPROD = $(AWS_ECR_NON_PROD)/texas
 
 PROFILE := dev
 ENVIRONMENT := $(PROFILE)
-SPRING_PROFILES_ACTIVE := $(PROFILE)
+SPRING_PROFILES_ACTIVE := $(PROFILE),mock-auth
 
 DEPLOYMENT_STACKS := application
 INFRASTRUCTURE_STACKS := datastore,postcode_etl
@@ -35,3 +35,5 @@ TF_VAR_postcode_etl_logging_level := INFO
 TF_VAR_postcode_etl_sns_logging_level := INFO
 TF_VAR_postcode_etl_sns_email := postcode-etl-alerts-d-aaaae6gm4hnjepwaspcqoeuh7i@a2si.slack.com
 CERTIFICATE_DOMAIN := certificate
+CHECK_DEPLOYMENT_TIME_LIMIT := 600
+CHECK_DEPLOYMENT_POLL_INTERVAL := 10

@@ -119,8 +119,10 @@ run-smoke-test:
 	make run-smoke COGNITO_USER_PASS=$$(make aws-secret-get NAME=$(PROJECT_GROUP_SHORT)-sfsa-${PROFILE}-cognito-passwords | jq .POSTCODE_PASSWORD | tr -d '"')
 
 run-contract-test:
-	eval "$$(make aws-assume-role-export-variables)"
-	make run-contract COGNITO_USER_PASS=$$(make aws-secret-get NAME=$(PROJECT_GROUP_SHORT)-sfsa-${PROFILE}-cognito-passwords | jq .POSTCODE_PASSWORD | tr -d '"')
+	make run-contract
+
+monitor-deployment:
+	make k8s-check-deployment-of-replica-sets
 
 # ==============================================================================
 # Supporting targets
@@ -130,6 +132,15 @@ docker-run-mvn-lib-mount: ### Build Docker image mounting library volume - manda
 	make docker-run-mvn LIB_VOLUME_MOUNT=true \
 		DIR="$(DIR)" \
 		CMD="$(CMD)"
+
+k8s-get-replica-sets-not-yet-updated:
+	echo -e
+	kubectl get deployments -n $(K8S_APP_NAMESPACE) \
+	-o=jsonpath='{range .items[?(@.spec.replicas!=@.status.updatedReplicas)]}{.metadata.name}{"("}{.status.updatedReplicas}{"/"}{.spec.replicas}{")"}{" "}{end}'
+
+k8s-get-pod-status:
+	echo -e
+	kubectl get pods -n $(K8S_APP_NAMESPACE)
 
 # ==============================================================================
 # Pipeline targets
@@ -160,10 +171,71 @@ run-static-analisys:
 run-unit-test:
 	echo TODO: $(@)
 
+monitor-r53-connection:
+	attempt_counter=0
+	max_attempts=5
+	http_status_code=0
+
+	until [[ $$http_status_code -eq 200 ]]; do
+		if [[ $$attempt_counter -eq $$max_attempts ]]; then
+			echo "Maximum attempts reached unable to connect to deployed instance"
+			exit 0
+		fi
+
+		echo 'Pinging deployed instance'
+		attempt_counter=$$(($$attempt_counter+1))
+		http_status_code=$$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 $(POSTCODE_ENDPOINT)/api/home)
+		echo Status code is: $$http_status_code
+		sleep 10
+	done
+
+k8s-check-deployment-of-replica-sets:
+	eval "$$(make aws-assume-role-export-variables)"
+	make k8s-kubeconfig-get
+	eval "$$(make k8s-kubeconfig-export-variables)"
+	sleep 10
+	elaspedtime=10
+	until [ $$elaspedtime -gt $(CHECK_DEPLOYMENT_TIME_LIMIT) ]; do
+		replicasNotYetUpdated=$$(make -s k8s-get-replica-sets-not-yet-updated)
+		if [ -z "$$replicasNotYetUpdated" ]
+		then
+			echo "Success - all replica sets in the deployment have been updated."
+			exit 0
+		else
+			echo "Waiting for all replicas to be updated: " $$replicasNotYetUpdated
+
+			echo "----------------------"
+			echo "Pod status: "
+			make k8s-get-pod-status
+			podStatus=$$(make -s k8s-get-pod-status)
+			echo "-------"
+
+			#Check failure conditions
+			if [[ $$podStatus = *"ErrImagePull"*
+					|| $$podStatus = *"ImagePullBackOff"* ]]; then
+				echo "Failure: Error pulling Image"
+				exit 1
+			elif [[ $$podStatus = *"Error"*
+								|| $$podStatus = *"error"*
+								|| $$podStatus = *"ERROR"* ]]; then
+				echo "Failure: Error with deployment"
+				exit 1
+			fi
+
+		fi
+		sleep 10
+		((elaspedtime=elaspedtime+$(CHECK_DEPLOYMENT_POLL_INTERVAL)))
+		echo "Elapsed time: " $$elaspedtime
+	done
+
+	echo "Conditional Success: The deployment has not completed within the timescales, but carrying on anyway"
+	exit 0
+
+
 run-contract:
-	sed -i -e 's|SECRET_TO_REPLACE|$(COGNITO_USER_PASS)|g' $(APPLICATION_TEST_DIR)/contract/environment/postcode_contract.postman_environment.json
 	make stop
 	make start PROFILE=local
+	sleep 20
 	make docker-run-postman \
 		DIR="$(APPLICATION_TEST_DIR)/contract" \
 		CMD=" \
@@ -172,7 +244,11 @@ run-contract:
 	make project-stop
 
 run-smoke:
+## -- Will be used for demo and prod smoke tests
+	sed -i -e 's|AUTH_REPLACE|$(AUTHENTICATION_ENDPOINT)|g' $(APPLICATION_TEST_DIR)/contract/environment/postcode_smoke.postman_environment.json
 	sed -i -e 's|SECRET_TO_REPLACE|$(COGNITO_USER_PASS)|g' $(APPLICATION_TEST_DIR)/contract/environment/postcode_smoke.postman_environment.json
+## --
+	sed -i -e 's|HOST_TO_REPLACE|$(POSTCODE_ENDPOINT)|g' $(APPLICATION_TEST_DIR)/contract/environment/postcode_smoke.postman_environment.json
 	make restart
 	make docker-run-postman \
 		DIR="$(APPLICATION_TEST_DIR)/contract" \

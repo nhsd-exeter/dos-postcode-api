@@ -23,6 +23,7 @@ import uk.nhs.digital.uec.api.service.PostcodeMappingService;
 public class PostcodeMappingControllerTest {
 
   @InjectMocks PostcodeMappingController postcodeMappingController;
+  @InjectMocks PostcodeMappingHomeController postcodeMappingHomeController;
   @Mock PostcodeMappingService postcodeService;
   private static List<String> postcodes = null;
   private static PostcodeMapping postcodeMapping = null;
@@ -39,7 +40,7 @@ public class PostcodeMappingControllerTest {
 
   @Test
   public void testPostcodeMappingHome() {
-    ResponseEntity<?> response = postcodeMappingController.getPostcodeMappingHome();
+    ResponseEntity<?> response = postcodeMappingHomeController.getPostcodeMappingHome();
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertEquals("Welcome to postcode details search service", response.getBody());

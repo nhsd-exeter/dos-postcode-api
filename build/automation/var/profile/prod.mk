@@ -37,3 +37,5 @@ TF_VAR_postcode_etl_source_db := pathwaysdos
 TF_VAR_core_dos_python_libs := core-dos-python-libs
 
 CERTIFICATE_DOMAIN := certificate
+CHECK_DEPLOYMENT_TIME_LIMIT := 600
+CHECK_DEPLOYMENT_POLL_INTERVAL := 10
