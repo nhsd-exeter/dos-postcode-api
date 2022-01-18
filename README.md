@@ -25,7 +25,6 @@
       - [System Context Diagram](#system-context-diagram)
       - [Container Diagram](#container-diagram)
       - [Component Diagram](#component-diagram)
-      - [Processes and Data Flow](#processes-and-data-flow)
       - [Infrastructure](#infrastructure)
       - [Networking](#networking)
     - [Integration](#integration)
@@ -79,11 +78,17 @@ Generate and trust a self-signed certificate that will be used locally to enable
 
 ### Local Project Setup
 
+    To build the API, run the following make target:
+
     make build
+
+    To start the API locally, run the following make target:
+
     make start log
 
-    Swagger endpoint (default port 443):
-    https://localhost/swagger-ui.html
+    In the local environment, a mock authentication token is required to be provided in all requests to the API endpoints. Please provide the token of 'MOCK_POSTCODE_API_ACCESS_TOKEN' in the request in order to pass authentication in the local environment.
+
+    Once started, full Swagger API documentation can be found at this endpoint: https://localhost/swagger-ui.html
 
 ## Contributing
 
@@ -108,51 +113,26 @@ This project consists of the following components:
 - Service extraction and insertion Lambda functions
 - Alerting Lambda functions
 
-When running locally, the Spingboot API and a local DynamoDB are spun up, containing mocked service data. The S3 and Lambda components are only available in the cloud environments. In the cloud environments the endpoints are authenticated and as such an API token is required to access them.
-
-Refer to the Local Project Setup section to see how to build and start the project locally.
-
-TODO: We need to bypass authentication when running locally.
 ## Testing
 
-The following tests are setup in this project:
+The following test types are present in this project:
 
-- Unit
+- Unit - to run unit tests run the following make target: make unit-test
+- Contract - to run contract tests run the following make target: make run-contract-test
+- Performance - these tests are run in the performance pipeline
+- Smoke - to run smoke tests run the following make target: make run-smoke-test
 
-TODO: Check this command
-To run the unit tests locally, run the following make target:
-  make unit-test
-
-- Contract
-
-TODO: Add make target for running contract tests
-To run the contract tests locally, run the following make target:
-  make
-
-- Performance TODO: We need performance tests
-
-Run using JMeter.
-
-- Smoke
-
-Smoke tests will be run against the cloud environments and are triggered in the pipelines.
-
-TODO: We are here.
 ### Test data and mock services
 
 In the local environment a local DynamoDB is spun up containing test services. The data for the DynamoDB is configured in the /data section of the project.
 
 In the cloud environment, service data is imported into the DynamoDB from the DoS read replica database via the ETL processes. The DoS read replica that the ETL points to is configured in the profile make files for the specific environment.
 
-Authentication access token to be used:
-
-MOCK_POSTCODE_API_ACCESS_TOKEN
+In the local and in the dev environments, the Authentication mechanism of the API is mocked, and as such, the following token must be provided in API requests: MOCK_POSTCODE_API_ACCESS_TOKEN
 
 ### Manual check
 
-Once the application is spun up, use postman to call the available endpoints of the API. Full API documentation can be found at this endpoint:
-
-TODO: mention swagger endpoint
+Once the application is spun up, use postman to call the available endpoints of the API. Full API documentation can be found at the Swagger endpoint
 
 ## Deployment
 
@@ -168,22 +148,26 @@ This project uses semantic versioning. i.e. 0.0.1 (major, minor, patch)
 
 List all the pipelines and their purpose
 
-- Development
-- Test
-- Cleanup
-- Production (deployment)
-
-Reference the [jenkins/README.md](build/automation/lib/jenkins/README.md) file
-
-<img src="./documentation/diagrams/DevOps-Pipelines.png" width="1024" /><br /><br />
+- Development - this pipeline is used to plan infrastructure, build and test the API, push the built image to the ECR. The pipeline will be triggered with each code check in.
+- Development Deployment - this pipeline is used to create and update infrastructure, deploy a pre-built image, run smoke tests against the deployed image. This pipeline is configured to deploy into the dev environment in the texas nonprod account, and is manually triggered.
+- Demo (deployment) - this pipeline is similar to the Development Deployment pipeline, but is deploys to the demo environment in the texas prod account.
+- Production (deployment) - this pipeline is similar to the Development Deployment pipeline, but is deploys to the production environment in the texas prod account.
+- Performance Test - this pipeline is used to run a performance test suite against the API.
+- Load Test - this pipeline is used to run a load test suite against the API.
+- Stress Test - this pipeline is used to run a stress test suite against the API.
 
 ### Deployment From the Command-line
 
-    make deploy PROFILE=dev
+  To deploy the API into the dev environment directly from the command line, run the following make target:
 
+    make deploy PROFILE=dev IMAGE_TAG=<The image that you want to deploy>
+
+  To deploy (create or update) the infrastructure into the dev environment directly from the command line, run the following make target:
+
+    make terraform-apply PROFILE=dev STACKS=<a list of stacks that you want to apply>
 ### Secrets
 
-Where are the secrets located, i.e. AWS Secrets Manager, under the `$(PROJECT_ID)-$(PROFILE)/deployment` secret name and variable `$(DEPLOYMENT_SECRETS)` should be set accordingly.
+There are no secrets stored in this project.
 
 ### AWS Access
 
@@ -198,7 +182,7 @@ MFA to the right AWS account using the following command
 
 #### System Context Diagram
 
-Include an image of the [C4 model](https://c4model.com/) System Context diagram exported as a `.png` file from the draw.io application.
+See below for the system context diagram:
 
 <img src="./documentation/diagrams/C4model-SystemContext.png" width="1024" /><br /><br />
 
@@ -213,10 +197,6 @@ Include an image of the [C4 model](https://c4model.com/) Container diagram expor
 Include an image of the [C4 model](https://c4model.com/) Component diagram exported as a `.png` file from the draw.io application.
 
 <img src="./documentation/diagrams/C4model-Component.png" width="1024" /><br /><br />
-
-#### Processes and Data Flow
-
-Include an image of the Processes and Data Flow diagram
 
 #### Infrastructure
 
