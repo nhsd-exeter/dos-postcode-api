@@ -25,8 +25,7 @@
       - [System Context Diagram](#system-context-diagram)
       - [Container Diagram](#container-diagram)
       - [Component Diagram](#component-diagram)
-      - [Infrastructure](#infrastructure)
-      - [Networking](#networking)
+      - [Infrastructure / Networking](#infrastructure--networking)
     - [Integration](#integration)
       - [Interfaces](#interfaces)
       - [Dependencies](#dependencies)
@@ -78,17 +77,17 @@ Generate and trust a self-signed certificate that will be used locally to enable
 
 ### Local Project Setup
 
-    To build the API, run the following make target:
+  To build the API, run the following make target:
 
     make build
 
-    To start the API locally, run the following make target:
+  To start the API locally, run the following make target:
 
     make start log
 
-    In the local environment, a mock authentication token is required to be provided in all requests to the API endpoints. Please provide the token of 'MOCK_POSTCODE_API_ACCESS_TOKEN' in the request in order to pass authentication in the local environment.
+  In the local environment, a mock authentication token is required to be provided in all requests to the API endpoints. Please provide the token of 'MOCK_POSTCODE_API_ACCESS_TOKEN' in the request in order to pass authentication in the local environment.
 
-    Once started, full Swagger API documentation can be found at this endpoint: https://localhost/swagger-ui.html
+  Once started, full Swagger API documentation can be found at this endpoint: https://localhost/swagger-ui.html
 
 ## Contributing
 
@@ -101,7 +100,6 @@ Here is the list of the development practices that have to be followed by the te
 - Announce your PR/MR on the development Slack channel to allow any team member to review it and to share the knowledge. A change can be merged only if all comments have been addressed and it has been **approved by at least one peer**. Make good use of paring/mobbing/swarming practices for collaborative coding.
 
 Before starting any work, please read [CONTRIBUTING.md](documentation/CONTRIBUTING.md) for more detailed instructions.
-
 
 ## Development
 
@@ -120,6 +118,8 @@ The following test types are present in this project:
 - Unit - to run unit tests run the following make target: make unit-test
 - Contract - to run contract tests run the following make target: make run-contract-test
 - Performance - these tests are run in the performance pipeline
+- Load - these tests are run in the load pipeline
+- Stress - these tests are run in the stress pipeline
 - Smoke - to run smoke tests run the following make target: make run-smoke-test
 
 ### Test data and mock services
@@ -132,7 +132,7 @@ In the local and in the dev environments, the Authentication mechanism of the AP
 
 ### Manual check
 
-Once the application is spun up, use postman to call the available endpoints of the API. Full API documentation can be found at the Swagger endpoint
+Once the application is spun up, use postman to call the available endpoints of the API. Full API documentation can be found at the Swagger endpoint.
 
 ## Deployment
 
@@ -182,87 +182,78 @@ MFA to the right AWS account using the following command
 
 #### System Context Diagram
 
-See below for the system context diagram:
-
 <img src="./documentation/diagrams/C4model-SystemContext.png" width="1024" /><br /><br />
 
 #### Container Diagram
-
-Include an image of the [C4 model](https://c4model.com/) Container diagram exported as a `.png` file from the draw.io application.
 
 <img src="./documentation/diagrams/C4model-Container.png" width="1024" /><br /><br />
 
 #### Component Diagram
 
-Include an image of the [C4 model](https://c4model.com/) Component diagram exported as a `.png` file from the draw.io application.
-
 <img src="./documentation/diagrams/C4model-Component.png" width="1024" /><br /><br />
 
-#### Infrastructure
+#### Infrastructure / Networking
 
-Include an image of the Infrastructure diagram. Please, be aware that any sensitive information that can be potentially misused either directly or indirectly must not be stored and accessible publicly. This could be IP addresses, domain names or detailed infrastructure information.
-
-<img src="./documentation/diagrams/Infrastructure-Component.png" width="1024" /><br /><br />
-
-#### Networking
-
-Include an image of the Networking diagram. Please, be aware that any sensitive information must not be stored and accessible publicly. This could be IP addresses, domain names or detailed networking information.
+<img src="./documentation/diagrams/Infrastructure.png" width="1024" /><br /><br />
 
 ### Integration
 
 #### Interfaces
 
-Document all the system external interfaces
+Although the API itself does not interface with anything external to this project, the extraction ETL process interface with the Core DoS SF Read Replica RDS.
 
-- API documentation should be generated automatically
-
+In addition, the endpoints of the API are protected by a token based authentication mechanism. A token can be retrieved from the Authentication API given user name and password credentials. The token must be present in all requests to the API endpoints, except for the api home pages and swagger documentation.
 #### Dependencies
 
-Document all the system external dependencies and integration points
+The following are dependencies for this project:
+
+- Core DoS SF Read Replica RDS
 
 ### Data
 
-What sort of data system operates on and processes
-
-- Data set
-- Consistency and integrity
-- Persistence
+This project stores postcode location information in a DynamoDB datastore. The ETL processes are responsible for inserting and maintaining the data in the datastore whereby the source of the information is extracted out from Core DoS. The API is responsible for returning postcode location information from the datastore via its various endpoints.
 
 ### Authentication and authorisation
 
-- Default user login for testing
-- Different user roles
-- Authosrisation type
-- Authentication method
+The endpoints of the API are protected by a token based authentication mechanism. The token itself is generated by a user pool configured in AWS Cognito. The token will contain a set of authorisation groups in which the group 'POSTCODE_API_ACCESS' must be present for the token to be authorised access to the API endpoints.
 
-It is recommended that any other documentation related to the aspect of security should be stored in a private workspace.
-
-Authentication access token to be used:
-
-MOCK_POSTCODE_API_ACCESS_TOKEN
+In the local and dev environments, a mock authentication token of 'MOCK_POSTCODE_API_ACCESS_TOKEN' can be used in the requests to access the API endpoints.
 
 ### Technology Stack
 
-What are the technologies and programing languages used to implement the solution
+The following technology is used in this project:
+
+- Java (Springboot)
+- Python
+- Terraform
+- K8s
+- Docker
+- JMeter
+- Postman
+
+Key AWS Components:
+
+- S3
+- Lambda
+- Dynamo
 
 ### Key Architectural Decisions
 
-Link or include the abbreviated list of the ADRs
+Decision records are here: /documentation/adr
+
+- ADR-001_API_datastore
+- ADR-002_ETL_process
 
 ### System Quality Attributes
 
-- Accessibility, usability
-- Resilience, durability, fault-tolerance
-- Scalability, elasticity
-- Consistency
-- Performance
-- Interoperability
-- Security
-- Supportability
+- Resilience - service operates in multi-AZ and has 3 replicas.
+- Performance - high performing DynamoDB for fast retrieval of data.
+- Security - all data encrypted at rest and in transit, api endpoints are protected by a token based authentication mechanism
+- Supportability - swagger API documentation
 
 ### Guiding Principles
 
-List of the high level principles that a product /development team must adhere to:
+The high level principles that the product /development team must adhere to are:
 
 - The solution has to be coded in the open - e.g. NHSD GitHub org
 - Be based on the open standards, frameworks and libraries
@@ -276,61 +267,61 @@ List of the high level principles that a product /development team must adhere t
 
 ### Error Handling
 
-- What is the system response under the erroneous conditions
+- Refer to the Swagger API documentation.
 
 ### Observability
 
 - Logging
-  - Indexes
-  - Format
-- Tracing
-  - Correlation ID
-- Monitoring
-  - Dashboards
-- Alerting
-  - Triggers
-  - Service status
-- Fitness functions
-  - What do we measure?
 
-What are the links of the supporting systems?
+  All API logging is written to Splunk under the following two indexes:
+
+  eks_logs_service_finder_nonprod
+  eks_logs_service_finder_prod
+
+  In the event of ETL failure, an error log will be written to the postcode-etl-alerts slack channels. There will be a slack channel per environment.
+
+  Cloudwatch logs for the ETLs are also available under the log group of: /aws/lambda/uec-dos-api-pca-dev...
+
+- Monitoring
+
+  Instana will be used for monitoring of the service. In addition, metrics for the DynamoDB datastore can be obtained from the AWS console.
+
+- Alerting
+  TODO
+
+- Fitness functions
+
+  Standard out of the box Instana monitoring is used to measure the fitness of the service.
+
 
 ### Auditing
 
-Are there any auditing requirements in accordance with the data retention policies?
+No auditing is required in this project
 
 ### Backups
 
-- Frequency and type of the backups
-- Instructions on how to recover the data
+No backups are required for this project since we do not change the underlying data and the data itself is sourced from Core DoS.
 
 ### Cloud Environments
 
-List all the environments and their relation to profiles
-
 - Development
   - Profile: `dev`
-  - URL address: [https://?.k8s-dev.texasplatform.uk/](https://?.k8s-dev.texasplatform.uk/)
-  - Username: ?@nhs.net
-  - Password: _stored in the AWS Secrets Manager `?`_
-- Test
+  - URL address: [ https://uec-dos-api-pca-dev-uec-dos-api-pc-ingress.k8s-nonprod.texasplatform.uk/]( https://uec-dos-api-pca-dev-uec-dos-api-pc-ingress.k8s-nonprod.texasplatform.uk/)
 - Demo
+  - Profile `demo`
+  - URL address: [ https://uec-dos-api-pca-demo-uec-dos-api-pc-ingress.k8s-prod.texasplatform.uk/]( https://uec-dos-api-pca-demo-uec-dos-api-pc-ingress.k8s-prod.texasplatform.uk/)
 - Live
+  - Profile `live`
+  - URL address: [ https://uec-dos-api-pca-live-uec-dos-api-pc-ingress.k8s-prod.texasplatform.uk/]( https://uec-dos-api-pca-live-uec-dos-api-pc-ingress.k8s-prod.texasplatform.uk/)
 
-Describe how to provision and deploy to a task branch environment
 
 ### Runbooks
 
-List all the operational runbooks
+No runbooks present at this point in time.
 
 ## Product
 
 ### Communications
 
 - Slack channels
-  - Development, e.g. `[service-name]-development`
-  - CI/CD and data pipelines, processes, e.g. `[service-name]-automation`
-  - Service status, e.g. `[service-name]-status`
-- Email addresses in use, e.g. `[service.name]@nhs.net`
-
-All of the above can be service, product, application or even team specific.
+  - ETL alerts: postcode-etl-alerts
