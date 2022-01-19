@@ -81,6 +81,20 @@ pipeline {
         }
       }
     }
+    stage("Perform Extract Lambda function") {
+      steps {
+        script {
+          sh "make postcode-extract-etl"
+        }
+      }
+    }
+    stage("Perform Insert Lambda function") {
+      steps {
+        script {
+          sh "make postcode-insert-etl"
+        }
+      }
+    }
     stage("Smoke Tests") {
       steps {
         script {

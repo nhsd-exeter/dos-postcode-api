@@ -145,6 +145,29 @@ k8s-get-pod-status:
 # ==============================================================================
 # Pipeline targets
 
+
+postcode-extract-etl:
+	eval "$$(make aws-assume-role-export-variables)"
+	http_result=$$(aws lambda invoke --function-name uec-dos-api-pca-dev-postcode-extract out.json --log-type Tail | jq .StatusCode)
+	if [[ ! $$http_result -eq 200 ]]; then
+		cat out.json
+		rm -r out.json
+		exit 1
+	fi
+	echo $$http_result
+	rm -r out.json
+
+postcode-insert-etl:
+	eval "$$(make aws-assume-role-export-variables)"
+	http_result=$$(aws lambda invoke --function-name uec-dos-api-pca-dev-postcode-insert out.json --log-type Tail | jq .StatusCode)
+	if [[ ! $$http_result -eq 200 ]]; then
+		cat out.json
+		rm -r out.json
+		exit 1
+	fi
+	echo $$http_result
+	rm -r out.json
+
 build-artefact:
 	echo TODO: $(@)
 
