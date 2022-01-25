@@ -14,6 +14,7 @@ import static uk.nhs.digital.uec.api.util.PostcodeUtils.validatePostCodes;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import uk.nhs.digital.uec.api.domain.PostcodeMapping;
 import uk.nhs.digital.uec.api.exception.ErrorMessageEnum;
@@ -96,6 +97,8 @@ public class PostcodeUtilsTest {
     mapping.setEasting(654321);
     List<PostcodeMapping> response = validateAndReturn(Arrays.asList(mapping));
     assertNotNull(response);
-    assertEquals("EX1 1SR", response.stream().findAny().get().getPostCode());
+    Optional<PostcodeMapping> mappingOptional = response.stream().findAny();
+    PostcodeMapping mappingResponse = mappingOptional.isPresent() ? mappingOptional.get() : null;
+    assertEquals("EX1 1SR", mappingResponse.getPostCode());
   }
 }
