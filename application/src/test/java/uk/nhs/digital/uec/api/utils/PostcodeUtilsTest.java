@@ -98,7 +98,8 @@ public class PostcodeUtilsTest {
     List<PostcodeMapping> response = validateAndReturn(Arrays.asList(mapping));
     assertNotNull(response);
     Optional<PostcodeMapping> mappingOptional = response.stream().findAny();
-    PostcodeMapping mappingResponse = mappingOptional.isPresent() ? mappingOptional.get() : null;
+    PostcodeMapping mappingResponse =
+        mappingOptional.isPresent() ? mappingOptional.get() : new PostcodeMapping();
     assertEquals("EX1 1SR", mappingResponse.getPostCode());
   }
 }
