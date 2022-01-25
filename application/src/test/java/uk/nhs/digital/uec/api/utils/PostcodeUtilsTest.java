@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static uk.nhs.digital.uec.api.util.PostcodeUtils.formatPostCodeWithSpace;
 import static uk.nhs.digital.uec.api.util.PostcodeUtils.formatPostCodeWithoutSpace;
+import static uk.nhs.digital.uec.api.util.PostcodeUtils.validateAndReturn;
 import static uk.nhs.digital.uec.api.util.PostcodeUtils.validatePostCode;
 import static uk.nhs.digital.uec.api.util.PostcodeUtils.validatePostCodes;
 
@@ -14,7 +15,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.Test;
+import uk.nhs.digital.uec.api.domain.PostcodeMapping;
+import uk.nhs.digital.uec.api.exception.ErrorMessageEnum;
 import uk.nhs.digital.uec.api.exception.InvalidPostcodeException;
+import uk.nhs.digital.uec.api.exception.NotFoundException;
 
 public class PostcodeUtilsTest {
 
@@ -53,11 +57,13 @@ public class PostcodeUtilsTest {
     InvalidPostcodeException invalidPostcodeException =
         assertThrows(
             InvalidPostcodeException.class, () -> validatePostCodes(Arrays.asList("N4%2QZ")));
-    assertNotNull(invalidPostcodeException);
+    assertNotNull(
+        ErrorMessageEnum.INVALID_POSTCODE.getMessage(), invalidPostcodeException.getMessage());
   }
 
   @Test
-  public void invalidPostcodeOnEmptyPostcodeListTest() throws InvalidPostcodeException {
+  public void invalidPostcodeOnEmptyPostcodeListTest()
+      throws InvalidPostcodeException, NotFoundException {
     List<String> postCodes = validatePostCodes(Collections.<String>emptyList());
     assertEquals(Collections.emptyList(), postCodes);
   }
@@ -73,5 +79,23 @@ public class PostcodeUtilsTest {
     String postCode = "N42QZ";
     boolean validatePostCode = validatePostCode(postCode);
     assertTrue(validatePostCode);
+  }
+
+  @Test
+  public void validateAndReturnEmptyListTest() {
+    NotFoundException notFoundException =
+        assertThrows(NotFoundException.class, () -> validateAndReturn(Collections.emptyList()));
+    assertNotNull(ErrorMessageEnum.NO_LOCATION_FOUND.getMessage(), notFoundException.getMessage());
+  }
+
+  @Test
+  public void validateAndReturnTest() throws NotFoundException {
+    PostcodeMapping mapping = new PostcodeMapping();
+    mapping.setPostCode("EX1 1SR");
+    mapping.setEasting(123456);
+    mapping.setEasting(654321);
+    List<PostcodeMapping> response = validateAndReturn(Arrays.asList(mapping));
+    assertNotNull(response);
+    assertEquals("EX1 1SR", response.stream().findAny().get().getPostCode());
   }
 }

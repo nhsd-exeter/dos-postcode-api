@@ -16,7 +16,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uk.nhs.digital.uec.api.domain.PostcodeMapping;
+import uk.nhs.digital.uec.api.exception.InvalidParameterException;
 import uk.nhs.digital.uec.api.exception.InvalidPostcodeException;
+import uk.nhs.digital.uec.api.exception.NotFoundException;
 import uk.nhs.digital.uec.api.service.PostcodeMappingService;
 
 @ExtendWith(SpringExtension.class)
@@ -39,7 +41,7 @@ public class PostcodeMappingControllerTest {
   }
 
   @Test
-  public void testPostcodeMappingHome() {
+  public void testGetByPostcodeMappingHome() {
     ResponseEntity<?> response = postcodeMappingHomeController.getPostcodeMappingHome();
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -47,7 +49,8 @@ public class PostcodeMappingControllerTest {
   }
 
   @Test
-  public void testPostcodesWithName() throws InvalidPostcodeException {
+  public void testGetByPostcodesWithName()
+      throws InvalidPostcodeException, InvalidParameterException, NotFoundException {
     when(postcodeService.getByPostCodesAndName(postcodes, serviceName))
         .thenReturn(Arrays.asList(postcodeMapping));
     ResponseEntity<?> response =
@@ -57,7 +60,8 @@ public class PostcodeMappingControllerTest {
   }
 
   @Test
-  public void testPostcodes() throws InvalidPostcodeException {
+  public void testGetByPostcodes()
+      throws InvalidPostcodeException, InvalidParameterException, NotFoundException {
     when(postcodeService.getByPostCodes(postcodes)).thenReturn(Arrays.asList(postcodeMapping));
     ResponseEntity<?> response =
         postcodeMappingController.getPostcodeMapping(postcodes, StringUtil.EMPTY_STRING);
@@ -66,7 +70,8 @@ public class PostcodeMappingControllerTest {
   }
 
   @Test
-  public void testName() throws InvalidPostcodeException {
+  public void testGetByName()
+      throws InvalidPostcodeException, InvalidParameterException, NotFoundException {
     when(postcodeService.getByName(serviceName)).thenReturn(Arrays.asList(postcodeMapping));
     ResponseEntity<?> response = postcodeMappingController.getPostcodeMapping(null, serviceName);
 

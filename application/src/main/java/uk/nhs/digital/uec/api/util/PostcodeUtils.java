@@ -9,7 +9,10 @@ import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import uk.nhs.digital.uec.api.domain.PostcodeMapping;
+import uk.nhs.digital.uec.api.exception.ErrorMessageEnum;
 import uk.nhs.digital.uec.api.exception.InvalidPostcodeException;
+import uk.nhs.digital.uec.api.exception.NotFoundException;
 
 @Slf4j
 public class PostcodeUtils {
@@ -21,7 +24,7 @@ public class PostcodeUtils {
   private PostcodeUtils() {}
 
   public static List<String> validatePostCodes(List<String> postCodes)
-      throws InvalidPostcodeException {
+      throws InvalidPostcodeException, NotFoundException {
     List<String> validPostcodes =
         CollectionUtils.isNotEmpty(postCodes)
             ? postCodes.stream()
@@ -33,7 +36,7 @@ public class PostcodeUtils {
     if (CollectionUtils.isNotEmpty(postCodes) && CollectionUtils.isEmpty(validPostcodes)) {
       log.error(
           "Invalid postcode/s entered : " + postCodes.stream().collect(Collectors.joining(",")));
-      throw new InvalidPostcodeException();
+      throw new InvalidPostcodeException(ErrorMessageEnum.INVALID_POSTCODE.getMessage());
     }
     return validPostcodes;
   }
@@ -63,5 +66,13 @@ public class PostcodeUtils {
                 .toString()
                 .toUpperCase();
     return postCode;
+  }
+
+  public static List<PostcodeMapping> validateAndReturn(List<PostcodeMapping> location)
+      throws NotFoundException {
+    if (CollectionUtils.isEmpty(location)) {
+      throw new NotFoundException(ErrorMessageEnum.NO_LOCATION_FOUND.getMessage());
+    }
+    return location;
   }
 }

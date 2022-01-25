@@ -1,5 +1,6 @@
 package uk.nhs.digital.uec.api.service;
 
+import static uk.nhs.digital.uec.api.util.PostcodeUtils.validateAndReturn;
 import static uk.nhs.digital.uec.api.util.PostcodeUtils.validatePostCodes;
 
 import java.util.ArrayList;
@@ -9,7 +10,9 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.nhs.digital.uec.api.domain.PostcodeMapping;
+import uk.nhs.digital.uec.api.exception.InvalidParameterException;
 import uk.nhs.digital.uec.api.exception.InvalidPostcodeException;
+import uk.nhs.digital.uec.api.exception.NotFoundException;
 import uk.nhs.digital.uec.api.repository.PostcodeMappingRepository;
 
 /**
@@ -23,7 +26,7 @@ public class PostcodeMappingServiceImpl implements PostcodeMappingService {
 
   @Override
   public List<PostcodeMapping> getByPostCodes(List<String> postCodes)
-      throws InvalidPostcodeException {
+      throws InvalidPostcodeException, NotFoundException {
     List<String> validPostcodes = validatePostCodes(postCodes);
     List<PostcodeMapping> results = new ArrayList<PostcodeMapping>();
     validPostcodes.stream().forEach(postcode -> results.addAll(getByPostcode(postcode)));
@@ -31,16 +34,18 @@ public class PostcodeMappingServiceImpl implements PostcodeMappingService {
   }
 
   @Override
-  public List<PostcodeMapping> getByName(String name) {
-    return postcodeMappingRepository.findByName(name).stream()
-        .filter(Optional::isPresent)
-        .map(Optional::get)
-        .collect(Collectors.toList());
+  public List<PostcodeMapping> getByName(String name)
+      throws InvalidParameterException, NotFoundException {
+    return validateAndReturn(
+        postcodeMappingRepository.findByName(name).stream()
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .collect(Collectors.toList()));
   }
 
   @Override
   public List<PostcodeMapping> getByPostCodesAndName(List<String> postCodes, String name)
-      throws InvalidPostcodeException {
+      throws InvalidPostcodeException, NotFoundException {
     List<String> validPostcodes = validatePostCodes(postCodes);
     List<PostcodeMapping> results = new ArrayList<PostcodeMapping>();
     validPostcodes.stream()

@@ -16,7 +16,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import uk.nhs.digital.uec.api.domain.PostcodeMapping;
+import uk.nhs.digital.uec.api.exception.ErrorMessageEnum;
+import uk.nhs.digital.uec.api.exception.InvalidParameterException;
 import uk.nhs.digital.uec.api.exception.InvalidPostcodeException;
+import uk.nhs.digital.uec.api.exception.NotFoundException;
 import uk.nhs.digital.uec.api.service.PostcodeMappingService;
 
 /** RestController for Postcode Mapping service */
@@ -35,7 +38,7 @@ public class PostcodeMappingController {
       @ApiParam(POSTCODES_DESC) @RequestParam(name = "postcodes", required = false)
           List<String> postCodes,
       @ApiParam(NAME_DESC) @RequestParam(name = "name", required = false) String name)
-      throws InvalidPostcodeException {
+      throws InvalidPostcodeException, InvalidParameterException, NotFoundException {
     List<PostcodeMapping> postcodeMapping = null;
     if (CollectionUtils.isNotEmpty(postCodes) && StringUtils.isNotBlank(name)) {
       postcodeMapping = postcodeMappingService.getByPostCodesAndName(postCodes, name);
@@ -44,7 +47,7 @@ public class PostcodeMappingController {
     } else if (StringUtils.isNotBlank(name) && CollectionUtils.isEmpty(postCodes)) {
       postcodeMapping = postcodeMappingService.getByName(name);
     } else {
-      throw new InvalidPostcodeException();
+      throw new InvalidPostcodeException(ErrorMessageEnum.NO_PARAMS_PROVIDED.getMessage());
     }
     return ResponseEntity.ok(postcodeMapping);
   }
