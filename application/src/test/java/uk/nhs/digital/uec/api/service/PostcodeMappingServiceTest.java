@@ -48,7 +48,7 @@ public class PostcodeMappingServiceTest {
 
   @Test
   public void testGetByPostCodeInAndName() throws InvalidPostcodeException {
-    when(postcodeMappingRepository.findByPostCodeInAndName(postCodes, serviceName))
+    when(postcodeMappingRepository.findByPostCodeAndName("WA11QY", serviceName))
         .thenReturn(postcodeMappingOptList);
     List<PostcodeMapping> findByPostCodeIn =
         postcodeMappingService.getByPostCodesAndName(postCodes, serviceName);
@@ -57,7 +57,7 @@ public class PostcodeMappingServiceTest {
 
   @Test
   public void testGetByPostCodes() throws InvalidPostcodeException {
-    when(postcodeMappingRepository.findByPostCodeIn(postCodes)).thenReturn(postcodeMappingOptList);
+    when(postcodeMappingRepository.findByPostCode("WA11QY")).thenReturn(postcodeMappingOptList);
     List<PostcodeMapping> findByPostCodeIn = postcodeMappingService.getByPostCodes(postCodes);
     assertFalse(findByPostCodeIn.isEmpty());
   }

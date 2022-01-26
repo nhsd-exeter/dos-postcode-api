@@ -2,6 +2,7 @@ package uk.nhs.digital.uec.api.service;
 
 import static uk.nhs.digital.uec.api.util.PostcodeUtils.validatePostCodes;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -23,10 +24,10 @@ public class PostcodeMappingServiceImpl implements PostcodeMappingService {
   @Override
   public List<PostcodeMapping> getByPostCodes(List<String> postCodes)
       throws InvalidPostcodeException {
-    return postcodeMappingRepository.findByPostCodeIn(validatePostCodes(postCodes)).stream()
-        .filter(Optional::isPresent)
-        .map(Optional::get)
-        .collect(Collectors.toList());
+    List<String> validPostcodes = validatePostCodes(postCodes);
+    List<PostcodeMapping> results = new ArrayList<PostcodeMapping>();
+    validPostcodes.stream().forEach(postcode -> results.addAll(getByPostcode(postcode)));
+    return results;
   }
 
   @Override
@@ -40,16 +41,29 @@ public class PostcodeMappingServiceImpl implements PostcodeMappingService {
   @Override
   public List<PostcodeMapping> getByPostCodesAndName(List<String> postCodes, String name)
       throws InvalidPostcodeException {
-    return postcodeMappingRepository
-        .findByPostCodeInAndName(validatePostCodes(postCodes), name)
-        .stream()
-        .filter(Optional::isPresent)
-        .map(Optional::get)
-        .collect(Collectors.toList());
+    List<String> validPostcodes = validatePostCodes(postCodes);
+    List<PostcodeMapping> results = new ArrayList<PostcodeMapping>();
+    validPostcodes.stream()
+        .forEach(postcode -> results.addAll(getByPostcodeAndName(postcode, name)));
+    return results;
   }
 
   @Override
   public List<PostcodeMapping> getAll() {
     return postcodeMappingRepository.findAll();
+  }
+
+  private List<PostcodeMapping> getByPostcode(String postcode) {
+    return postcodeMappingRepository.findByPostCode(postcode).stream()
+        .filter(Optional::isPresent)
+        .map(Optional::get)
+        .collect(Collectors.toList());
+  }
+
+  private List<PostcodeMapping> getByPostcodeAndName(String postcode, String name) {
+    return postcodeMappingRepository.findByPostCodeAndName(postcode, name).stream()
+        .filter(Optional::isPresent)
+        .map(Optional::get)
+        .collect(Collectors.toList());
   }
 }
