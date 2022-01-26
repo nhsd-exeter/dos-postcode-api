@@ -15,6 +15,4 @@ public interface PostcodeMappingService {
       throws InvalidPostcodeException, InvalidParameterException, NotFoundException;
 
   List<PostcodeMapping> getByName(String name) throws InvalidParameterException, NotFoundException;
-
-  List<PostcodeMapping> getAll();
 }

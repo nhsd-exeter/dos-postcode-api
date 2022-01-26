@@ -34,7 +34,6 @@ public class PostcodeMappingControllerAdvice {
             ? validationCodesOptional.get().getValidationCode()
             : null);
     errorResponse.setMessage(exception.getMessage());
-    errorResponse.setStatusCode(HttpStatus.BAD_REQUEST.value());
     return new ResponseEntity<>(errorResponse, HttpStatus.valueOf(HttpStatus.BAD_REQUEST.value()));
   }
 
@@ -55,7 +54,6 @@ public class PostcodeMappingControllerAdvice {
             ? validationCodesOptional.get().getValidationCode()
             : null);
     errorResponse.setMessage(exception.getMessage());
-    errorResponse.setStatusCode(HttpStatus.NOT_FOUND.value());
     return new ResponseEntity<>(errorResponse, HttpStatus.valueOf(HttpStatus.NOT_FOUND.value()));
   }
 

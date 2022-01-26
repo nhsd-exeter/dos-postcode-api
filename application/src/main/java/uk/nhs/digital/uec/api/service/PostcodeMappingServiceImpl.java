@@ -3,13 +3,16 @@ package uk.nhs.digital.uec.api.service;
 import static uk.nhs.digital.uec.api.util.PostcodeUtils.validateAndReturn;
 import static uk.nhs.digital.uec.api.util.PostcodeUtils.validatePostCodes;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import uk.nhs.digital.uec.api.domain.PostcodeMapping;
+import uk.nhs.digital.uec.api.exception.ErrorMessageEnum;
 import uk.nhs.digital.uec.api.exception.InvalidParameterException;
 import uk.nhs.digital.uec.api.exception.InvalidPostcodeException;
 import uk.nhs.digital.uec.api.exception.NotFoundException;
@@ -28,47 +31,50 @@ public class PostcodeMappingServiceImpl implements PostcodeMappingService {
   public List<PostcodeMapping> getByPostCodes(List<String> postCodes)
       throws InvalidPostcodeException, NotFoundException {
     List<String> validPostcodes = validatePostCodes(postCodes);
-    List<PostcodeMapping> results = new ArrayList<PostcodeMapping>();
-    validPostcodes.stream().forEach(postcode -> results.addAll(getByPostcode(postcode)));
-    return results;
+    List<PostcodeMapping> location =
+        validPostcodes.stream()
+            .map(this::getByPostcode)
+            .filter(Objects::nonNull)
+            .collect(Collectors.toList());
+    return validateAndReturn(location);
   }
 
   @Override
   public List<PostcodeMapping> getByName(String name)
       throws InvalidParameterException, NotFoundException {
-    return validateAndReturn(
+    List<PostcodeMapping> location =
         postcodeMappingRepository.findByName(name).stream()
             .filter(Optional::isPresent)
             .map(Optional::get)
-            .collect(Collectors.toList()));
+            .filter(Objects::nonNull)
+            .collect(Collectors.toList());
+    return validateAndReturn(location);
   }
 
   @Override
   public List<PostcodeMapping> getByPostCodesAndName(List<String> postCodes, String name)
       throws InvalidPostcodeException, NotFoundException {
+    if (CollectionUtils.isEmpty(postCodes) && StringUtils.isAllBlank(name)) {
+      throw new InvalidPostcodeException(ErrorMessageEnum.NO_PARAMS_PROVIDED.getMessage());
+    }
     List<String> validPostcodes = validatePostCodes(postCodes);
-    List<PostcodeMapping> results = new ArrayList<PostcodeMapping>();
-    validPostcodes.stream()
-        .forEach(postcode -> results.addAll(getByPostcodeAndName(postcode, name)));
-    return results;
+    List<PostcodeMapping> location =
+        validPostcodes.stream()
+            .map(t -> getByPostcodeAndName(t, name))
+            .filter(Objects::nonNull)
+            .collect(Collectors.toList());
+    return validateAndReturn(location);
   }
 
-  @Override
-  public List<PostcodeMapping> getAll() {
-    return postcodeMappingRepository.findAll();
+  private PostcodeMapping getByPostcode(String postcode) {
+    Optional<PostcodeMapping> findByPostCodeOptional =
+        postcodeMappingRepository.findByPostCode(postcode);
+    return findByPostCodeOptional.isPresent() ? findByPostCodeOptional.get() : null;
   }
 
-  private List<PostcodeMapping> getByPostcode(String postcode) {
-    return postcodeMappingRepository.findByPostCode(postcode).stream()
-        .filter(Optional::isPresent)
-        .map(Optional::get)
-        .collect(Collectors.toList());
-  }
-
-  private List<PostcodeMapping> getByPostcodeAndName(String postcode, String name) {
-    return postcodeMappingRepository.findByPostCodeAndName(postcode, name).stream()
-        .filter(Optional::isPresent)
-        .map(Optional::get)
-        .collect(Collectors.toList());
+  private PostcodeMapping getByPostcodeAndName(String postcode, String name) {
+    Optional<PostcodeMapping> findByPostCodeAndNameOptional =
+        postcodeMappingRepository.findByPostCodeAndName(postcode, name);
+    return findByPostCodeAndNameOptional.isPresent() ? findByPostCodeAndNameOptional.get() : null;
   }
 }

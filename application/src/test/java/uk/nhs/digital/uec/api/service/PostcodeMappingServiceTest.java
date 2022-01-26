@@ -54,7 +54,7 @@ public class PostcodeMappingServiceTest {
   @Test
   public void testGetByPostCodeInAndName() throws InvalidPostcodeException, NotFoundException {
     when(postcodeMappingRepository.findByPostCodeAndName("WA11QY", serviceName))
-        .thenReturn(postcodeMappingOptList);
+        .thenReturn(postcodeMappingOptList.get(0));
     List<PostcodeMapping> findByPostCodeIn =
         postcodeMappingService.getByPostCodesAndName(postCodes, serviceName);
     assertFalse(findByPostCodeIn.isEmpty());
@@ -62,7 +62,8 @@ public class PostcodeMappingServiceTest {
 
   @Test
   public void testGetByPostCodes() throws InvalidPostcodeException, NotFoundException {
-    when(postcodeMappingRepository.findByPostCode("WA11QY")).thenReturn(postcodeMappingOptList);
+    when(postcodeMappingRepository.findByPostCode("WA11QY"))
+        .thenReturn(postcodeMappingOptList.get(0));
     List<PostcodeMapping> findByPostCodeIn = postcodeMappingService.getByPostCodes(postCodes);
     assertFalse(findByPostCodeIn.isEmpty());
   }
@@ -87,18 +88,11 @@ public class PostcodeMappingServiceTest {
   }
 
   @Test
-  public void testGetAll() throws InvalidPostcodeException {
-    when(postcodeMappingRepository.findAll()).thenReturn(postcodeMappingList);
-    List<PostcodeMapping> findByPostCodeIn = postcodeMappingService.getAll();
-    assertFalse(findByPostCodeIn.isEmpty());
-  }
-
-  @Test
   public void testEastingAndNorthing()
       throws InvalidPostcodeException, InvalidParameterException, NotFoundException {
     when(postcodeMappingRepository.findByName(serviceName)).thenReturn(postcodeMappingOptList);
-    List<PostcodeMapping> findByPostCodeIn = postcodeMappingService.getByName(serviceName);
-    PostcodeMapping postCodeMapping = findByPostCodeIn.get(0);
+    List<PostcodeMapping> postcodeMappings = postcodeMappingService.getByName(serviceName);
+    PostcodeMapping postCodeMapping = postcodeMappings.get(0);
     int easting = postCodeMapping.getEasting();
     int northing = postCodeMapping.getNorthing();
     assertEquals(12345, easting);
