@@ -27,6 +27,8 @@ TF_VAR_sf_resources_bucket := $(TF_VAR_service_prefix)-application-resources
 TF_VAR_postcode_etl_logging_level := INFO
 TF_VAR_postcode_etl_sns_logging_level := INFO
 TF_VAR_postcode_etl_sns_email := postcode-etl-alerts-p-aaaae5ldnncapl2nsysfdnhbii@a2si.slack.com
+TF_VAR_postcode_etl_extract_alarm_period := 86400
+TF_VAR_postcode_etl_insert_alarm_period := 86400
 
 TF_VAR_dos_replica_db := uec-core-dos-db-replica-sf.dos-db
 TF_VAR_dos_security_group := uec-core-dos-db-12-replica-sf-sg
