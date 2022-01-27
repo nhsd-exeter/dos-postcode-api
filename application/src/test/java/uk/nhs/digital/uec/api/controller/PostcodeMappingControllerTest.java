@@ -81,7 +81,7 @@ public class PostcodeMappingControllerTest {
   @Test
   public void testNameInvalidPostcode() {
     assertThrows(
-        InvalidPostcodeException.class,
+        InvalidParameterException.class,
         () -> postcodeMappingController.getPostcodeMapping(null, null));
   }
 }

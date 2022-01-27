@@ -7,12 +7,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 import uk.nhs.digital.uec.api.domain.PostcodeMapping;
-import uk.nhs.digital.uec.api.exception.ErrorMessageEnum;
 import uk.nhs.digital.uec.api.exception.InvalidParameterException;
 import uk.nhs.digital.uec.api.exception.InvalidPostcodeException;
 import uk.nhs.digital.uec.api.exception.NotFoundException;
@@ -54,9 +51,6 @@ public class PostcodeMappingServiceImpl implements PostcodeMappingService {
   @Override
   public List<PostcodeMapping> getByPostCodesAndName(List<String> postCodes, String name)
       throws InvalidPostcodeException, NotFoundException {
-    if (CollectionUtils.isEmpty(postCodes) && StringUtils.isAllBlank(name)) {
-      throw new InvalidPostcodeException(ErrorMessageEnum.NO_PARAMS_PROVIDED.getMessage());
-    }
     List<String> validPostcodes = validatePostCodes(postCodes);
     List<PostcodeMapping> location =
         validPostcodes.stream()

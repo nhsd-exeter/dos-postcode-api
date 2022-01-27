@@ -86,7 +86,7 @@ public class PostcodeUtilsTest {
   public void validateAndReturnEmptyListTest() {
     NotFoundException notFoundException =
         assertThrows(NotFoundException.class, () -> validateAndReturn(Collections.emptyList()));
-    assertNotNull(ErrorMessageEnum.NO_LOCATION_FOUND.getMessage(), notFoundException.getMessage());
+    assertEquals(ErrorMessageEnum.NO_LOCATION_FOUND.getMessage(), notFoundException.getMessage());
   }
 
   @Test

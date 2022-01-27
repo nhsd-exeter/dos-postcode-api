@@ -47,7 +47,7 @@ public class PostcodeMappingController {
     } else if (StringUtils.isNotBlank(name) && CollectionUtils.isEmpty(postCodes)) {
       postcodeMapping = postcodeMappingService.getByName(name);
     } else {
-      throw new InvalidPostcodeException(ErrorMessageEnum.NO_PARAMS_PROVIDED.getMessage());
+      throw new InvalidParameterException(ErrorMessageEnum.NO_PARAMS_PROVIDED.getMessage());
     }
     return ResponseEntity.ok(postcodeMapping);
   }

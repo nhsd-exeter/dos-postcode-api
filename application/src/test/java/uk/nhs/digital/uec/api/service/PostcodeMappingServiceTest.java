@@ -34,6 +34,7 @@ public class PostcodeMappingServiceTest {
   private List<PostcodeMapping> postcodeMappingList;
   private List<Optional<PostcodeMapping>> postcodeMappingOptList;
   private static String serviceName = "Nhs Halton CCG";
+  private static String POST_CODE = "WA11QY";
   private List<String> postCodes = null;
 
   @BeforeEach
@@ -53,7 +54,7 @@ public class PostcodeMappingServiceTest {
 
   @Test
   public void testGetByPostCodeInAndName() throws InvalidPostcodeException, NotFoundException {
-    when(postcodeMappingRepository.findByPostCodeAndName("WA11QY", serviceName))
+    when(postcodeMappingRepository.findByPostCodeAndName(postCodes.get(0), serviceName))
         .thenReturn(postcodeMappingOptList.get(0));
     List<PostcodeMapping> findByPostCodeIn =
         postcodeMappingService.getByPostCodesAndName(postCodes, serviceName);
@@ -62,7 +63,7 @@ public class PostcodeMappingServiceTest {
 
   @Test
   public void testGetByPostCodes() throws InvalidPostcodeException, NotFoundException {
-    when(postcodeMappingRepository.findByPostCode("WA11QY"))
+    when(postcodeMappingRepository.findByPostCode(postCodes.get(0)))
         .thenReturn(postcodeMappingOptList.get(0));
     List<PostcodeMapping> findByPostCodeIn = postcodeMappingService.getByPostCodes(postCodes);
     assertFalse(findByPostCodeIn.isEmpty());
@@ -71,12 +72,11 @@ public class PostcodeMappingServiceTest {
   @Test
   public void testGetByPostCodesExceptionTest()
       throws InvalidPostcodeException, InvalidParameterException, NotFoundException {
-    InvalidPostcodeException invalidPostcodeException =
+    NotFoundException notFoundException =
         assertThrows(
-            InvalidPostcodeException.class,
+            NotFoundException.class,
             () -> postcodeMappingService.getByPostCodesAndName(Collections.emptyList(), null));
-    assertEquals(
-        ErrorMessageEnum.NO_PARAMS_PROVIDED.getMessage(), invalidPostcodeException.getMessage());
+    assertEquals(ErrorMessageEnum.NO_LOCATION_FOUND.getMessage(), notFoundException.getMessage());
   }
 
   @Test
