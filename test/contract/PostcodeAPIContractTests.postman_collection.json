@@ -21,6 +21,16 @@
         }
       ],
       "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{ACCESS_TOKEN}}",
+              "type": "string"
+            }
+          ]
+        },
         "method": "GET",
         "header": [],
         "url": {
@@ -55,7 +65,7 @@
           "bearer": [
             {
               "key": "token",
-              "value": "MOCK_POSTCODE_API_ACCESS_TOKEN",
+              "value": "{{ACCESS_TOKEN}}",
               "type": "string"
             }
           ]
@@ -94,7 +104,7 @@
           "bearer": [
             {
               "key": "token",
-              "value": "MOCK_POSTCODE_API_ACCESS_TOKEN",
+              "value": "{{ACCESS_TOKEN}}",
               "type": "string"
             }
           ]
@@ -143,7 +153,7 @@
           "bearer": [
             {
               "key": "token",
-              "value": "MOCK_POSTCODE_API_ACCESS_TOKEN",
+              "value": "{{ACCESS_TOKEN}}",
               "type": "string"
             }
           ]
@@ -187,6 +197,16 @@
         }
       ],
       "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{ACCESS_TOKEN}}",
+              "type": "string"
+            }
+          ]
+        },
         "method": "GET",
         "header": [
           {
