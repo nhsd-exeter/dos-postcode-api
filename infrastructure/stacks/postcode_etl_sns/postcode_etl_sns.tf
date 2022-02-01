@@ -168,4 +168,6 @@ resource "aws_cloudwatch_metric_alarm" "postcode_insert_alarm" {
   dimensions = {
     FunctionName = local.postcode_insert_function_name
   }
+
+  tags = local.standard_tags
 }
