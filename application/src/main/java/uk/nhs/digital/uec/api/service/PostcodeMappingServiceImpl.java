@@ -1,8 +1,5 @@
 package uk.nhs.digital.uec.api.service;
 
-import static uk.nhs.digital.uec.api.util.PostcodeUtils.validateAndReturn;
-import static uk.nhs.digital.uec.api.util.PostcodeUtils.validatePostCodes;
-
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -23,17 +20,18 @@ import uk.nhs.digital.uec.api.repository.PostcodeMappingRepository;
 public class PostcodeMappingServiceImpl implements PostcodeMappingService {
 
   @Autowired private PostcodeMappingRepository postcodeMappingRepository;
+  @Autowired private ValidationService validationService;
 
   @Override
   public List<PostcodeMapping> getByPostCodes(List<String> postCodes)
       throws InvalidPostcodeException, NotFoundException {
-    List<String> validPostcodes = validatePostCodes(postCodes);
+    List<String> validPostcodes = validationService.validatePostCodes(postCodes);
     List<PostcodeMapping> location =
         validPostcodes.stream()
             .map(this::getByPostcode)
             .filter(Objects::nonNull)
             .collect(Collectors.toList());
-    return validateAndReturn(location);
+    return validationService.validateAndReturn(location);
   }
 
   @Override
@@ -45,19 +43,19 @@ public class PostcodeMappingServiceImpl implements PostcodeMappingService {
             .map(Optional::get)
             .filter(Objects::nonNull)
             .collect(Collectors.toList());
-    return validateAndReturn(location);
+    return validationService.validateAndReturn(location);
   }
 
   @Override
   public List<PostcodeMapping> getByPostCodesAndName(List<String> postCodes, String name)
       throws InvalidPostcodeException, NotFoundException {
-    List<String> validPostcodes = validatePostCodes(postCodes);
+    List<String> validPostcodes = validationService.validatePostCodes(postCodes);
     List<PostcodeMapping> location =
         validPostcodes.stream()
             .map(t -> getByPostcodeAndName(t, name))
             .filter(Objects::nonNull)
             .collect(Collectors.toList());
-    return validateAndReturn(location);
+    return validationService.validateAndReturn(location);
   }
 
   private PostcodeMapping getByPostcode(String postcode) {
