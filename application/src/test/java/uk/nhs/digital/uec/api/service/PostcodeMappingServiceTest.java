@@ -3,6 +3,7 @@ package uk.nhs.digital.uec.api.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -31,6 +32,8 @@ public class PostcodeMappingServiceTest {
 
   @MockBean private PostcodeMappingRepository postcodeMappingRepository;
 
+  @MockBean private ValidationService validationService;
+
   private List<PostcodeMapping> postcodeMappingList;
   private List<Optional<PostcodeMapping>> postcodeMappingOptList;
   private static String serviceName = "Nhs Halton CCG";
@@ -56,6 +59,8 @@ public class PostcodeMappingServiceTest {
   public void testGetByPostCodeInAndName() throws InvalidPostcodeException, NotFoundException {
     when(postcodeMappingRepository.findByPostCodeAndName(postCodes.get(0), serviceName))
         .thenReturn(postcodeMappingOptList.get(0));
+    when(validationService.validatePostCodes(postCodes)).thenReturn(postCodes);
+    when(validationService.validateAndReturn(anyList())).thenReturn(postcodeMappingList);
     List<PostcodeMapping> findByPostCodeIn =
         postcodeMappingService.getByPostCodesAndName(postCodes, serviceName);
     assertFalse(findByPostCodeIn.isEmpty());
@@ -65,13 +70,17 @@ public class PostcodeMappingServiceTest {
   public void testGetByPostCodes() throws InvalidPostcodeException, NotFoundException {
     when(postcodeMappingRepository.findByPostCode(postCodes.get(0)))
         .thenReturn(postcodeMappingOptList.get(0));
+    when(validationService.validatePostCodes(postCodes)).thenReturn(postCodes);
+    when(validationService.validateAndReturn(anyList())).thenReturn(postcodeMappingList);
     List<PostcodeMapping> findByPostCodeIn = postcodeMappingService.getByPostCodes(postCodes);
     assertFalse(findByPostCodeIn.isEmpty());
   }
 
   @Test
-  public void testGetByPostCodesExceptionTest()
+  public void testNotFoundExceptionTest()
       throws InvalidPostcodeException, InvalidParameterException, NotFoundException {
+    when(validationService.validateAndReturn(anyList()))
+        .thenThrow(new NotFoundException(ErrorMessageEnum.NO_LOCATION_FOUND.getMessage()));
     NotFoundException notFoundException =
         assertThrows(
             NotFoundException.class,
@@ -80,9 +89,24 @@ public class PostcodeMappingServiceTest {
   }
 
   @Test
+  public void testInvalidPostcodeExceptionTest()
+      throws InvalidPostcodeException, InvalidParameterException, NotFoundException {
+    when(validationService.validatePostCodes(anyList()))
+        .thenThrow(new InvalidPostcodeException(ErrorMessageEnum.INVALID_POSTCODE.getMessage()));
+    InvalidPostcodeException invalidPostcodeException =
+        assertThrows(
+            InvalidPostcodeException.class,
+            () -> postcodeMappingService.getByPostCodesAndName(Collections.emptyList(), null));
+    assertEquals(
+        ErrorMessageEnum.INVALID_POSTCODE.getMessage(), invalidPostcodeException.getMessage());
+  }
+
+  @Test
   public void testGetByCcgName()
       throws InvalidPostcodeException, InvalidParameterException, NotFoundException {
     when(postcodeMappingRepository.findByName(serviceName)).thenReturn(postcodeMappingOptList);
+    when(validationService.validatePostCodes(postCodes)).thenReturn(postCodes);
+    when(validationService.validateAndReturn(anyList())).thenReturn(postcodeMappingList);
     List<PostcodeMapping> findByPostCodeIn = postcodeMappingService.getByName(serviceName);
     assertFalse(findByPostCodeIn.isEmpty());
   }
@@ -91,6 +115,8 @@ public class PostcodeMappingServiceTest {
   public void testEastingAndNorthing()
       throws InvalidPostcodeException, InvalidParameterException, NotFoundException {
     when(postcodeMappingRepository.findByName(serviceName)).thenReturn(postcodeMappingOptList);
+    when(validationService.validatePostCodes(postCodes)).thenReturn(postCodes);
+    when(validationService.validateAndReturn(anyList())).thenReturn(postcodeMappingList);
     List<PostcodeMapping> postcodeMappings = postcodeMappingService.getByName(serviceName);
     PostcodeMapping postCodeMapping = postcodeMappings.get(0);
     int easting = postCodeMapping.getEasting();
