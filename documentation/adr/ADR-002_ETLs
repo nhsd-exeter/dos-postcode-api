@@ -38,12 +38,21 @@ Extract Lambda: Billed Duration: 12954 ms	Memory Size: 1024 MB
 1 GB x 401.57 seconds = 401.57 total compute (GB-s)
 401.57 GB-s x 0.0000166667 USD = 0.01 USD (monthly compute charges)
 
-
 Insert Lambda: Billed Duration: 705811 ms	Memory Size: 1024 MB
 
 31 requests x 705,811 ms x 0.001 ms to sec conversion factor = 21,880.14 total compute (seconds)
 1 GB x 21,880.14 seconds = 21,880.14 total compute (GB-s)
 21,880.14 GB-s x 0.0000166667 USD = 0.36 USD (monthly compute charges)
 
+Error SNS: Negligible
 
-Error SNS: Negilable
+S3 Bucket storage:
+
+Tiered price for: 0.3 GB
+0.3 GB x 0.0240000000 USD = 0.01 USD
+Total tier cost = 0.0072 USD (S3 Standard storage cost)
+31 PUT requests for S3 Storage x 0.0000053 USD per request = 0.0002 USD (S3 Standard PUT requests cost)
+31 GET requests in a month x 0.00000042 USD per request = 0.00 USD (S3 Standard GET requests cost)
+3 GB x 0.0008 USD = 0.0024 USD (S3 select returned cost)
+3 GB x 0.00225 USD = 0.0067 USD (S3 select scanned cost)
+0.0072 USD + 0.0002 USD + 0.0024 USD + 0.0067 USD = 0.02 USD (Total S3 Standard Storage, data requests, S3 select cost)
