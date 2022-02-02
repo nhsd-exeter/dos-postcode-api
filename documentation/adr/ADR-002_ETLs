@@ -24,6 +24,8 @@ The insert Lambda function will process each CSV file in the S3 bucket and will 
 
 Cloudwatch will be configured to scan through the logs written by the ETL process, looking for errors that have been raised. If an error is detected, Cloudwatch will fire a Lambda function that will send a message to a dedicated slack channel that team members are signed up to. This is our error alerting mechanism.
 
+In addition to error alerting, we will also configure a Cloudwatch event that will fire if the extract and insert Lambda functions fail to run within a 24 hour time frame.
+
 For more information see: https://nhsd-confluence.digital.nhs.uk/display/SFDEV/Postcode+Mappings+ETL
 
 ## Consequences
