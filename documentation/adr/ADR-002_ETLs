@@ -1,0 +1,60 @@
+# ADR-002: ETLs
+
+* Date: 2022/02/01
+* Status: Accepted
+* Deciders: Jonathan Pearce, Arif Mohammed, Geoff Waardenburg
+
+## Context
+
+In order to populate the SF Dynamo Postcode datastore with the current set of UK Postcodes together with their location coordinates and the NHS Organisation responsible for the Postcode area, an ETL process is required to extract the relevant data required from Core DoS and insert it into the SF Dynamo Postcode datastore.
+
+## Decision
+
+Since Core DoS already stores an up to date representation of UK Postcodes with location coordinates, and stores a relational route to the NHS Organisation responsible for the Postcode area, we will treat Core DoS as being the Primary Source of Truth for this data. Moreover, it makes little sense to obtain the data from other sources and deviate from/conflict with the view that Core DoS holds over Postcode mapping data.
+
+The ETL process will extract its data from the SF DoS Read Replica RDS so that performance on the Primary Core DoS RDS is not affected.
+
+Since Postcode mapping data is not considered to be business critical to the operation of Service Finder, and since this data changes infrequently, the ETL process will run once every 24 hours. This gives us a 'staleness' window of 24 hours, which has been accepted by the business.
+
+Due the the amount of data required to be transferred (there are 1.8 million records), the ETL process will run in two stages: an extract and an insert stage. Implementation wise, this translates into two separate Lambda functions that will run an hour apart one after the other (extract and then insert).
+
+The extract Lambda function will extract all required information out of the Replica, flatten it so it is appropriate for Dynamo, then chunk it up into a number of CSV files (max of 200K records per file) and store the files in an S3 bucket. This completes the extract Lambda.
+
+The insert Lambda function will process each CSV file in the S3 bucket and will insert/update the data in the DynamoDB table. Once a CSV file is successfully processed, it is moved out of the 'to process' S3 directory and into the 'success' directory. If an error is encountered while processing the CSV file, the error is logged and forwarded onto a dedicated Slack channel (see below), and the CSV file is moved into the 'error' directory.
+
+Cloudwatch will be configured to scan through the logs written by the ETL process, looking for errors that have been raised. If an error is detected, Cloudwatch will fire a Lambda function that will send a message to a dedicated slack channel that team members are signed up to. This is our error alerting mechanism.
+
+In addition to error alerting, we will also configure a Cloudwatch event that will fire if the extract and insert Lambda functions fail to run within a 24 hour time frame.
+
+For more information see: https://nhsd-confluence.digital.nhs.uk/display/SFDEV/Postcode+Mappings+ETL
+
+## Consequences
+
+Since the ETL process runs once every 24 hours, we have a potential staleness period of 24 hours. (i.e. it could take up to 24 hours for our postcode data to be updated to reflect what is in Core DoS). This is acceptable to the business.
+
+There are costs associated with running the Lambda functions that make up the ETL process, and costs for storing and accessing the CSV files in the S3 bucket. The costs are worked out as follows:
+
+Extract Lambda: Billed Duration: 12954 ms	Memory Size: 1024 MB
+
+31 requests x 12,954 ms x 0.001 ms to sec conversion factor = 401.57 total compute (seconds)
+1 GB x 401.57 seconds = 401.57 total compute (GB-s)
+401.57 GB-s x 0.0000166667 USD = 0.01 USD (monthly compute charges)
+
+Insert Lambda: Billed Duration: 705811 ms	Memory Size: 1024 MB
+
+31 requests x 705,811 ms x 0.001 ms to sec conversion factor = 21,880.14 total compute (seconds)
+1 GB x 21,880.14 seconds = 21,880.14 total compute (GB-s)
+21,880.14 GB-s x 0.0000166667 USD = 0.36 USD (monthly compute charges)
+
+Error SNS: Negligible
+
+S3 Bucket storage:
+
+Tiered price for: 0.3 GB
+0.3 GB x 0.0240000000 USD = 0.01 USD
+Total tier cost = 0.0072 USD (S3 Standard storage cost)
+31 PUT requests for S3 Storage x 0.0000053 USD per request = 0.0002 USD (S3 Standard PUT requests cost)
+31 GET requests in a month x 0.00000042 USD per request = 0.00 USD (S3 Standard GET requests cost)
+3 GB x 0.0008 USD = 0.0024 USD (S3 select returned cost)
+3 GB x 0.00225 USD = 0.0067 USD (S3 select scanned cost)
+0.0072 USD + 0.0002 USD + 0.0024 USD + 0.0067 USD = 0.02 USD (Total S3 Standard Storage, data requests, S3 select cost)
