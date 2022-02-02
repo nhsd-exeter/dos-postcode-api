@@ -31,3 +31,19 @@ For more information see: https://nhsd-confluence.digital.nhs.uk/display/SFDEV/P
 Since the ETL process runs once every 24 hours, we have a potential staleness period of 24 hours. (i.e. it could take up to 24 hours for our postcode data to be updated to reflect what is in Core DoS). This is acceptable to the business.
 
 There are costs associated with running the Lambda functions that make up the ETL process, and costs for storing and accessing the CSV files in the S3 bucket. The costs are worked out as follows:
+
+Extract Lambda: Billed Duration: 12954 ms	Memory Size: 1024 MB
+
+31 requests x 12,954 ms x 0.001 ms to sec conversion factor = 401.57 total compute (seconds)
+1 GB x 401.57 seconds = 401.57 total compute (GB-s)
+401.57 GB-s x 0.0000166667 USD = 0.01 USD (monthly compute charges)
+
+
+Insert Lambda: Billed Duration: 705811 ms	Memory Size: 1024 MB
+
+31 requests x 705,811 ms x 0.001 ms to sec conversion factor = 21,880.14 total compute (seconds)
+1 GB x 21,880.14 seconds = 21,880.14 total compute (GB-s)
+21,880.14 GB-s x 0.0000166667 USD = 0.36 USD (monthly compute charges)
+
+
+Error SNS: Negilable
