@@ -34,6 +34,10 @@ TF_VAR_sf_resources_bucket := $(TF_VAR_service_prefix)-application-resources
 TF_VAR_postcode_etl_logging_level := INFO
 TF_VAR_postcode_etl_sns_logging_level := INFO
 TF_VAR_postcode_etl_sns_email := postcode-etl-alerts-d-aaaae6gm4hnjepwaspcqoeuh7i@a2si.slack.com
+TF_VAR_postcode_etl_extract_alarm_period := 86400
+TF_VAR_postcode_etl_insert_alarm_period := 86400
+
+
 CERTIFICATE_DOMAIN := certificate
 CHECK_DEPLOYMENT_TIME_LIMIT := 600
 CHECK_DEPLOYMENT_POLL_INTERVAL := 10

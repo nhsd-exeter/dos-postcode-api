@@ -18,3 +18,7 @@ variable "service_prefix" { description = "service prefix for all infrastructure
 variable "postcode_etl_sns_email" { description = "email desitination for critical failures of etl process" }
 
 variable "postcode_etl_sns_logging_level" { description = "Logging level for postcode_etl_sns lambda" }
+
+variable "postcode_etl_extract_alarm_period" { description = "The period in seconds which the alarm monitors if the extract lambda has triggered" }
+
+variable "postcode_etl_insert_alarm_period" { description = "The period in seconds which the alarm monitors if the insert lambda has triggered" }

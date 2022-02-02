@@ -135,3 +135,41 @@ resource "aws_cloudwatch_log_subscription_filter" "postcode_etl_insert_sns_cloud
   filter_pattern  = "?ERROR ?WARN ?5xx"
   destination_arn = aws_lambda_function.postcode_etl_sns_lambda.arn
 }
+
+resource "aws_cloudwatch_metric_alarm" "postcode_extract_alarm" {
+  alarm_name                = local.postcode_etl_extract_alarm_name
+  comparison_operator       = "LessThanThreshold"
+  evaluation_periods        = "1"
+  metric_name               = "Invocations"
+  namespace                 = "AWS/Lambda"
+  period                    = var.postcode_etl_extract_alarm_period
+  statistic                 = "Average"
+  threshold                 = "1"
+  alarm_description         = "This metric monitors the postcode extract lambda and sends an alert to a slack channel if it hasnt triggered in the given period"
+  insufficient_data_actions = []
+  alarm_actions             = [aws_sns_topic.postcode_etl_sns_topic.arn]
+  dimensions = {
+    FunctionName = local.postcode_extract_function_name
+  }
+
+  tags = local.standard_tags
+}
+
+resource "aws_cloudwatch_metric_alarm" "postcode_insert_alarm" {
+  alarm_name                = local.postcode_etl_insert_alarm_name
+  comparison_operator       = "LessThanThreshold"
+  evaluation_periods        = "1"
+  metric_name               = "Invocations"
+  namespace                 = "AWS/Lambda"
+  period                    = var.postcode_etl_insert_alarm_period
+  statistic                 = "Average"
+  threshold                 = "1"
+  alarm_description         = "This metric monitors the postcode insert lambda and sends an alert to a slack channel if it hasnt triggered in the given period"
+  insufficient_data_actions = []
+  alarm_actions             = [aws_sns_topic.postcode_etl_sns_topic.arn]
+  dimensions = {
+    FunctionName = local.postcode_insert_function_name
+  }
+
+  tags = local.standard_tags
+}
