@@ -43,30 +43,30 @@ pipeline {
         }
       }
 
-    stage("Run Performance Tests"){
+    stage("Run Nominal Tests"){
       steps {
         script {
-          sh "make run-jmeter-performance-test PROFILE=${env.PROFILE}"
+          sh "make run-jmeter-nominal-test PROFILE=${env.PROFILE}"
         }
         // Make jMeter test report files available as build artifacts
           archiveArtifacts artifacts: 'performance-test-results/**'
       }
     }
 
-    stage("Run Load Tests"){
+    stage("Run Peak Tests"){
       steps {
         script {
-          sh "make run-jmeter-load-test PROFILE=${env.PROFILE}"
+          sh "make run-jmeter-peak-test PROFILE=${env.PROFILE}"
         }
         // Make jMeter test report files available as build artifacts
           archiveArtifacts artifacts: 'load-test-results/**'
       }
     }
 
-    stage("Run Stress Tests"){
+    stage("Run Double Peak Tests"){
       steps {
         script {
-          sh "make run-jmeter-stress-test PROFILE=${env.PROFILE}"
+          sh "make run-jmeter-double-peak-test PROFILE=${env.PROFILE}"
         }
         // Make jMeter test report files available as build artifacts
           archiveArtifacts artifacts: 'stress-test-results/**'

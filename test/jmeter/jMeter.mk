@@ -1,17 +1,17 @@
 # ==============================================================================
 # Jmeter workflow targets
 
-run-jmeter-performance-test:
+run-jmeter-nominal-test:
 	eval "$$(make aws-assume-role-export-variables)"
-	make run-jmeter ACCESS_TOKEN=$$(make -s extract-access-token) JMETER_TEST_FOLDER_PATH=test/jmeter/tests/performance JMETER_TEST_FILE_PATH=test/jmeter/tests/performance/performanceTest.jmx
+	make run-jmeter DURATION=60 THROUGHPUT=2.4 JMETER_TEST_FOLDER_PATH=test/jmeter/tests/nominal JMETER_TEST_FILE_PATH=test/jmeter/tests/nominal/nominal.jmx
 
-run-jmeter-load-test:
+run-jmeter-peak-test:
 	eval "$$(make aws-assume-role-export-variables)"
-	make run-jmeter ACCESS_TOKEN=$$(make -s extract-access-token) JMETER_TEST_FOLDER_PATH=test/jmeter/tests/load JMETER_TEST_FILE_PATH=test/jmeter/tests/load/loadTest.jmx
+	make run-jmeter DURATION=60 THROUGHPUT=16.7 JMETER_TEST_FOLDER_PATH=test/jmeter/tests/peak JMETER_TEST_FILE_PATH=test/jmeter/tests/peak.jmx
 
-run-jmeter-stress-test:
+run-jmeter-double-peak-test:
 	eval "$$(make aws-assume-role-export-variables)"
-	make run-jmeter ACCESS_TOKEN=$$(make -s extract-access-token) JMETER_TEST_FOLDER_PATH=test/jmeter/tests/stress JMETER_TEST_FILE_PATH=test/jmeter/tests/stress/stressTest.jmx
+	make run-jmeter DURATION=60 THROUGHPUT=33.3 JMETER_TEST_FOLDER_PATH=test/jmeter/tests/double_peak JMETER_TEST_FILE_PATH=test/jmeter/tests/double_peak.jmx
 
 deploy-jmeter-namespace:
 	eval "$$(make aws-assume-role-export-variables)"
@@ -51,10 +51,11 @@ get-authentication-access-token:
 			--data-raw '{"emailAddress": "service-finder-admin@nhs.net","password": "${ADMIN_PASSWORD}"}'
 
 run-jmeter: # Run jmeter tests - mandatory: JMETER_TEST_FOLDER_PATH - test directory JMETER_TEST_FILE_PATH - the path of the jmeter tests to run
-	sed -i 's|ACCESS_TOKEN_TO_REPLACE|$(ACCESS_TOKEN)|g' ${JMETER_TEST_FILE_PATH}
 	sed -i 's|POSTCODE_DOMAIN_TO_REPLACE|$(POSTCODE_DOMAIN)|g' ${JMETER_TEST_FILE_PATH}
+	sed -i 's|THROUGHPUT_TO_REPLACE|$(THROUGHPUT)|g' ${JMETER_TEST_FILE_PATH}
+	sed -i 's|DURATION_TO_REPLACE|$(DURATION)|g' ${JMETER_TEST_FILE_PATH}
 	make k8s-kubeconfig-get
 	eval "$$(make k8s-kubeconfig-export-variables)"
 	kubectl config set-context --current --namespace=${PROJECT_ID}-${PROFILE}-jmeter
 	test/jmeter/scripts/jmeter_stop.sh
-	test/jmeter/scripts/start_test.sh ${JMETER_TEST_FOLDER_PATH} ${JMETER_TEST_FILE_PATH}
+	test/jmeter/scripts/start_test.sh ${JMETER_TEST_FOLDER_PATH} ${JMETER_TEST_FILE_PATH} test/jmeter/properties/placeholder.user.properties

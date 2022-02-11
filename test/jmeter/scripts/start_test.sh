@@ -80,6 +80,7 @@ kubectl exec -i $master_pod -- rm -rf jm_report
 echo "removed previous csv report file"
 
 ## Copy latest JMX file to the master pod
+kubectl cp "$testdir" "$master_pod:/${testdir_basename}"
 kubectl cp "$jmxfile" "$master_pod:/${testdir_basename}/${jmxfile_basename}"
 ## Copy load test script to master pod
 kubectl cp "test/jmeter/scripts/load_test.sh" "$master_pod:/load_test.sh"
