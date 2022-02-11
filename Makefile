@@ -110,6 +110,13 @@ provision-sns-plan:
 provision-sns: # Provision environment - mandatory: PROFILE=[name]
 	make terraform-apply-auto-approve STACK=$(SNS_INFRASTRUCTURE_STACKS) PROFILE=$(PROFILE)
 
+delete-namespace: # Delete namespace - mandatory: PROFILE=[name]
+	make k8s-undeploy PROFILE=$(PROFILE)
+
+destroy-infrastructure:  # Destroy environment - mandatory: PROFILE=[name]
+	make terraform-destroy-auto-approve STACK=$(SNS_INFRASTRUCTURE_STACKS) PROFILE=$(PROFILE)
+	make terraform-destroy-auto-approve STACK=$(INFRASTRUCTURE_STACKS) PROFILE=$(PROFILE)
+
 clean: # Clean up project
 	make stop
 	docker network rm $(DOCKER_NETWORK) 2> /dev/null ||:
