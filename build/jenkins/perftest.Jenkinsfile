@@ -49,7 +49,7 @@ pipeline {
           sh "make run-jmeter-nominal-test PROFILE=${env.PROFILE}"
         }
         // Make jMeter test report files available as build artifacts
-          archiveArtifacts artifacts: 'performance-test-results/**'
+          archiveArtifacts artifacts: 'nominal-test-results/**'
       }
     }
 
@@ -59,7 +59,7 @@ pipeline {
           sh "make run-jmeter-peak-test PROFILE=${env.PROFILE}"
         }
         // Make jMeter test report files available as build artifacts
-          archiveArtifacts artifacts: 'load-test-results/**'
+          archiveArtifacts artifacts: 'peak-test-results/**'
       }
     }
 
@@ -69,7 +69,7 @@ pipeline {
           sh "make run-jmeter-double-peak-test PROFILE=${env.PROFILE}"
         }
         // Make jMeter test report files available as build artifacts
-          archiveArtifacts artifacts: 'stress-test-results/**'
+          archiveArtifacts artifacts: 'double-peak-test-results/**'
       }
     }
 
