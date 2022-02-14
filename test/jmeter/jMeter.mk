@@ -11,7 +11,7 @@ run-jmeter-peak-test:
 
 run-jmeter-double-peak-test:
 	eval "$$(make aws-assume-role-export-variables)"
-	make run-jmeter DURATION=60 THROUGHPUT=33.3 JMETER_TEST_FOLDER_PATH=test/jmeter/tests/double-peak JMETER_TEST_FILE_PATH=test/jmeter/tests/double-peak.jmx
+	make run-jmeter DURATION=60 THROUGHPUT=33.3 JMETER_TEST_FOLDER_PATH=test/jmeter/tests/double-peak JMETER_TEST_FILE_PATH=test/jmeter/tests/double-peak/double-peak.jmx
 
 run-jmeter-burst-nominal-test:
 	eval "$$(make aws-assume-role-export-variables)"
@@ -23,7 +23,7 @@ run-jmeter-burst-peak-test:
 
 run-jmeter-burst-double-peak-test:
 	eval "$$(make aws-assume-role-export-variables)"
-	make run-jmeter DURATION=60 THROUGHPUT=1080 JMETER_TEST_FOLDER_PATH=test/jmeter/tests/double-peak JMETER_TEST_FILE_PATH=test/jmeter/tests/burst_double_peak.jmx
+	make run-jmeter DURATION=60 THROUGHPUT=1080 JMETER_TEST_FOLDER_PATH=test/jmeter/tests/double-peak JMETER_TEST_FILE_PATH=test/jmeter/tests/double-peak/burst_double_peak.jmx
 
 deploy-jmeter-namespace:
 	eval "$$(make aws-assume-role-export-variables)"
