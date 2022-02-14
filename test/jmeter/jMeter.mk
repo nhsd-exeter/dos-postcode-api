@@ -7,23 +7,23 @@ run-jmeter-nominal-test:
 
 run-jmeter-peak-test:
 	eval "$$(make aws-assume-role-export-variables)"
-	make run-jmeter DURATION=60 THROUGHPUT=16.7 JMETER_TEST_FOLDER_PATH=test/jmeter/tests/peak JMETER_TEST_FILE_PATH=test/jmeter/tests/peak.jmx
+	make run-jmeter DURATION=60 THROUGHPUT=16.7 JMETER_TEST_FOLDER_PATH=test/jmeter/tests/peak JMETER_TEST_FILE_PATH=test/jmeter/tests/peak/peak.jmx
 
 run-jmeter-double-peak-test:
 	eval "$$(make aws-assume-role-export-variables)"
-	make run-jmeter DURATION=60 THROUGHPUT=33.3 JMETER_TEST_FOLDER_PATH=test/jmeter/tests/double_peak JMETER_TEST_FILE_PATH=test/jmeter/tests/double_peak.jmx
+	make run-jmeter DURATION=60 THROUGHPUT=33.3 JMETER_TEST_FOLDER_PATH=test/jmeter/tests/double-peak JMETER_TEST_FILE_PATH=test/jmeter/tests/double-peak.jmx
 
 run-jmeter-burst-nominal-test:
 	eval "$$(make aws-assume-role-export-variables)"
-	make run-jmeter DURATION=60 THROUGHPUT=180 JMETER_TEST_FOLDER_PATH=test/jmeter/tests/nominal JMETER_TEST_FILE_PATH=test/jmeter/tests/nominal/nominal.jmx
+	make run-jmeter DURATION=60 THROUGHPUT=180 JMETER_TEST_FOLDER_PATH=test/jmeter/tests/nominal JMETER_TEST_FILE_PATH=test/jmeter/tests/nominal/burst_nominal.jmx
 
 run-jmeter-burst-peak-test:
 	eval "$$(make aws-assume-role-export-variables)"
-	make run-jmeter DURATION=60 THROUGHPUT=540 JMETER_TEST_FOLDER_PATH=test/jmeter/tests/peak JMETER_TEST_FILE_PATH=test/jmeter/tests/peak.jmx
+	make run-jmeter DURATION=60 THROUGHPUT=540 JMETER_TEST_FOLDER_PATH=test/jmeter/tests/peak JMETER_TEST_FILE_PATH=test/jmeter/tests/peak/burst_peak.jmx
 
 run-jmeter-burst-double-peak-test:
 	eval "$$(make aws-assume-role-export-variables)"
-	make run-jmeter DURATION=60 THROUGHPUT=1080 JMETER_TEST_FOLDER_PATH=test/jmeter/tests/double_peak JMETER_TEST_FILE_PATH=test/jmeter/tests/double_peak.jmx
+	make run-jmeter DURATION=60 THROUGHPUT=1080 JMETER_TEST_FOLDER_PATH=test/jmeter/tests/double-peak JMETER_TEST_FILE_PATH=test/jmeter/tests/burst_double_peak.jmx
 
 deploy-jmeter-namespace:
 	eval "$$(make aws-assume-role-export-variables)"
