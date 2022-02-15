@@ -49,7 +49,7 @@ pipeline {
           sh "make run-jmeter-nominal-test PROFILE=${env.PROFILE}"
         }
         // Make jMeter test report files available as build artifacts
-          archiveArtifacts artifacts: 'nominal-test-results/**'
+          archiveArtifacts artifacts: 'tests-test-results/**'
       }
     }
 
