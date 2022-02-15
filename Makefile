@@ -205,8 +205,9 @@ monitor-r53-connection:
 	attempt_counter=0
 	max_attempts=5
 	http_status_code=0
-
+	sleep 20
 	until [[ $$http_status_code -eq 200 ]]; do
+	sleep 10
 		if [[ $$attempt_counter -eq $$max_attempts ]]; then
 			echo "Maximum attempts reached unable to connect to deployed instance"
 			exit 0
@@ -216,8 +217,10 @@ monitor-r53-connection:
 		attempt_counter=$$(($$attempt_counter+1))
 		http_status_code=$$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 $(POSTCODE_ENDPOINT)/api/home)
 		echo Status code is: $$http_status_code
-		sleep 10
+
 	done
+
+
 
 k8s-check-deployment-of-replica-sets:
 	eval "$$(make aws-assume-role-export-variables)"
@@ -269,22 +272,29 @@ run-contract:
 	make docker-run-postman \
 		DIR="$(APPLICATION_TEST_DIR)/contract" \
 		CMD=" \
-			run PostcodeAPIContractTests.postman_collection.json -e environment/postcode_contract.postman_environment.json --verbose --insecure \
+			run collections/PostcodeAPIContractTests.postman_collection.json -e \
+			environment/postcode_contract.postman_environment.json --verbose --insecure \
 		"
 	make project-stop
 
 run-smoke:
-## -- Will be used for demo and prod smoke tests
-	sed -i -e 's|AUTH_REPLACE|$(AUTHENTICATION_ENDPOINT)|g' $(APPLICATION_TEST_DIR)/contract/environment/postcode_smoke.postman_environment.json
-	sed -i -e 's|SECRET_TO_REPLACE|$(COGNITO_USER_PASS)|g' $(APPLICATION_TEST_DIR)/contract/environment/postcode_smoke.postman_environment.json
-## --
-	sed -i -e 's|HOST_TO_REPLACE|$(POSTCODE_ENDPOINT)|g' $(APPLICATION_TEST_DIR)/contract/environment/postcode_smoke.postman_environment.json
 	make restart
+	sleep 20
+	sed -i -e 's|HOST_TO_REPLACE|$(POSTCODE_ENDPOINT)|g' $(APPLICATION_TEST_DIR)/contract/environment/postcode_smoke.postman_environment.json
+
+	if [ $(PROFILE) == prod|test|demo|perf ]
+	then
+	echo "Profile: $(PROFILE). Executing real token test"
+	TOKEN=$$(curl -X POST -sb -H "Content-Type: application/json" $(AUTHENTICATION_ENDPOINT) -d "{\"emailAddress\":\"$(POSTCODE_USER)\", \"password\":\"$(COGNITO_USER_PASS)\"}" | jq .accessToken | tr -d '"')
+	sed -i -e 's|MOCK_POSTCODE_API_ACCESS_TOKEN|$$TOKEN|g' $(APPLICATION_TEST_DIR)/contract/environment/postcode_smoke.postman_environment.json
+	fi
+
 	make docker-run-postman \
 		DIR="$(APPLICATION_TEST_DIR)/contract" \
 		CMD=" \
-			run PostcodeAPISmokeTests.postman_collection.json -e environment/postcode_smoke.postman_environment.json --verbose --insecure \
+			run collections/PostcodeAPISmokeTests.postman_collection.json -e environment/postcode_smoke.postman_environment.json --verbose \
 		"
+
 	make project-stop
 
 run-integration-test:

@@ -71,7 +71,7 @@
           }
         ],
         "url": {
-          "raw": "{{HOST}}/{{POSTCODE_ENDPOINT}}?name=Nhs%20Halton%20CCG&postcodes=EX11SR",
+          "raw": "{{HOST}}/{{POSTCODE_ENDPOINT}}?postcodes=EX11SR",
           "host": [
             "{{HOST}}"
           ],
@@ -79,10 +79,6 @@
             "{{POSTCODE_ENDPOINT}}"
           ],
           "query": [
-            {
-              "key": "name",
-              "value": "Nhs%20Halton%20CCG"
-            },
             {
               "key": "postcodes",
               "value": "EX11SR"
