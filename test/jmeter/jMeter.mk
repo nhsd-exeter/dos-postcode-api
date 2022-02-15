@@ -3,27 +3,27 @@
 
 run-jmeter-nominal-test:
 	eval "$$(make aws-assume-role-export-variables)"
-	make run-jmeter DURATION=1500 THROUGHPUT=2.4 JMETER_TEST_FOLDER_PATH=test/jmeter/tests/nominal JMETER_TEST_FILE_PATH=test/jmeter/tests/nominal/nominal.jmx
+	make run-jmeter DURATION=1500 THROUGHPUT=2.4 JMETER_TEST_FOLDER_PATH=test/jmeter/tests JMETER_TEST_FILE_PATH=test/jmeter/tests/performance.jmx
 
 run-jmeter-peak-test:
 	eval "$$(make aws-assume-role-export-variables)"
-	make run-jmeter DURATION=1500 THROUGHPUT=16.7 JMETER_TEST_FOLDER_PATH=test/jmeter/tests/peak JMETER_TEST_FILE_PATH=test/jmeter/tests/peak/peak.jmx
+	make run-jmeter DURATION=1500 THROUGHPUT=16.7 JMETER_TEST_FOLDER_PATH=test/jmeter/tests JMETER_TEST_FILE_PATH=test/jmeter/tests/performance.jmx
 
 run-jmeter-double-peak-test:
 	eval "$$(make aws-assume-role-export-variables)"
-	make run-jmeter DURATION=1500 THROUGHPUT=33.3 JMETER_TEST_FOLDER_PATH=test/jmeter/tests/double-peak JMETER_TEST_FILE_PATH=test/jmeter/tests/double-peak/double-peak.jmx
+	make run-jmeter DURATION=1500 THROUGHPUT=33.3 JMETER_TEST_FOLDER_PATH=test/jmeter/tests JMETER_TEST_FILE_PATH=test/jmeter/tests/performance.jmx
 
 run-jmeter-burst-nominal-test:
 	eval "$$(make aws-assume-role-export-variables)"
-	make run-jmeter DURATION=60 THROUGHPUT=180 JMETER_TEST_FOLDER_PATH=test/jmeter/tests/nominal JMETER_TEST_FILE_PATH=test/jmeter/tests/nominal/burst_nominal.jmx
+	make run-jmeter DURATION=60 THROUGHPUT=180 JMETER_TEST_FOLDER_PATH=test/jmeter/tests JMETER_TEST_FILE_PATH=test/jmeter/tests/performance.jmx
 
 run-jmeter-burst-peak-test:
 	eval "$$(make aws-assume-role-export-variables)"
-	make run-jmeter DURATION=60 THROUGHPUT=540 JMETER_TEST_FOLDER_PATH=test/jmeter/tests/peak JMETER_TEST_FILE_PATH=test/jmeter/tests/peak/burst_peak.jmx
+	make run-jmeter DURATION=60 THROUGHPUT=540 JMETER_TEST_FOLDER_PATH=test/jmeter/tests JMETER_TEST_FILE_PATH=test/jmeter/tests/performance.jmx
 
 run-jmeter-burst-double-peak-test:
 	eval "$$(make aws-assume-role-export-variables)"
-	make run-jmeter DURATION=60 THROUGHPUT=1080 JMETER_TEST_FOLDER_PATH=test/jmeter/tests/double-peak JMETER_TEST_FILE_PATH=test/jmeter/tests/double-peak/burst_double_peak.jmx
+	make run-jmeter DURATION=60 THROUGHPUT=1080 JMETER_TEST_FOLDER_PATH=test/jmeter/tests JMETER_TEST_FILE_PATH=test/jmeter/tests/performance.jmx
 
 deploy-jmeter-namespace:
 	eval "$$(make aws-assume-role-export-variables)"

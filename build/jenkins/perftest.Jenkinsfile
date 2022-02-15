@@ -53,26 +53,6 @@ pipeline {
       }
     }
 
-    stage("Run Peak Tests"){
-      steps {
-        script {
-          sh "make run-jmeter-peak-test PROFILE=${env.PROFILE}"
-        }
-        // Make jMeter test report files available as build artifacts
-          archiveArtifacts artifacts: 'peak-test-results/**'
-      }
-    }
-
-    stage("Run Double Peak Tests"){
-      steps {
-        script {
-          sh "make run-jmeter-double-peak-test PROFILE=${env.PROFILE}"
-        }
-        // Make jMeter test report files available as build artifacts
-          archiveArtifacts artifacts: 'double-peak-test-results/**'
-      }
-    }
-
     stage("Destroy jMeter") {
       steps {
         script {
