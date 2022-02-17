@@ -54,22 +54,23 @@ echo ""
 kubectl cp "$testdir" "$master_pod:/$testdir_basename"
 echo "Copied performance test files to pod"
 
-# Assumes input data for test will be in Excel format as opposed to CSV
-if [ -f $testdir/*.xlsx ]
+# Assumes input data for test will be in CSV format
+if [ -f $testdir/*.csv ]
 then
-  echo "Found Excel file in $testdir, copying file to slave"
+  echo "Found CSV file in $testdir, copying file to slave"
   #Get slave pod details - assumes one slave for now
   slave_pod=$(kubectl get po | grep jmeter-slave | awk '{print $1}')
   echo "slave_pod set to $slave_pod"
   echo ""
-  kubectl cp $testdir/*.xlsx "$slave_pod:/"
+  kubectl cp $testdir/*.csv "$slave_pod:/"
 else
-  echo "Excel test data file(s) not found"
+  echo "CSV test data file(s) not found"
 fi
 
 # This has only been tested for user.properties which is already enabled in jmeter.properties, other .properties files may require changes to the jmeter-master image/deployment
 if [ $jmproperties ]
 then
+  echo "found custom properties copying to master..."
   kubectl cp "$jmproperties" "$master_pod:/jmeter/apache-jmeter-5.4.1/bin/$jmproperties_basename"
 else
   echo "custom properties not set"
