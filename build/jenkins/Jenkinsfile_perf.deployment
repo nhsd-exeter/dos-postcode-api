@@ -49,7 +49,7 @@ pipeline {
         }
       }
     }
-    stage("Deploy API") {
+    stage("Deploy APII") {
       steps {
         script {
           sh "make deploy PROFILE=${env.PROFILE} IMAGE_TAG=${IMAGE_TAG}"
