@@ -13,7 +13,7 @@ pipeline {
   }
 
   environment {
-    PROFILE = "dev"
+    PROFILE = "perf"
   }
 
   parameters {
@@ -29,6 +29,13 @@ pipeline {
       steps {
         script {
           sh 'make devops-print-variables'
+        }
+      }
+    }
+    stage('Start RDS Replica Instance') {
+      steps {
+        script {
+          sh 'make start-rds-instance'
         }
       }
     }
@@ -104,6 +111,9 @@ pipeline {
     }
   }
   post {
-    always { sh "make clean" }
+    always { script {
+      sh 'make clean'
+      sh 'make stop-rds-instance' }
+    }
   }
 }
