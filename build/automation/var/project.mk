@@ -23,5 +23,6 @@ SSL_DOMAINS_PROD =
 DEPLOYMENT_SECRETS = $(PROJECT_ID)-$(PROFILE)/deployment
 
 AUTHENTICATION_ENDPOINT = https://uec-dos-api-sfsa-$(PROFILE)-uec-dos-api-sfs-service.$(TEXAS_HOSTED_ZONE)/authentication/login
+POSTCODE_USER = fuzzy-search-api@nhs.net
 POSTCODE_DOMAIN = $(PROJECT_ID)-$(PROFILE)-uec-dos-api-pc-ingress.$(TEXAS_HOSTED_ZONE)
 POSTCODE_ENDPOINT = https://$(POSTCODE_DOMAIN)
