@@ -240,13 +240,13 @@ aws-rds-describe-instance: ### Describe RDS instance - mandatory: DB_INSTANCE
 
 aws-rds-start-instance: ### Start RDS instance - mandatory: DB_INSTANCE
 	make -s docker-run-tools ARGS="$$(echo $(AWSCLI) | grep awslocal > /dev/null 2>&1 && echo '--env LOCALSTACK_HOST=$(LOCALSTACK_HOST)' ||:)" CMD=" \
-		$(AWSCLI) rds start-db-instances \
+		$(AWSCLI) rds start-db-instance \
 			--region $(AWS_REGION) \
 			--db-instance-identifier=$(DB_INSTANCE)"
 
 aws-rds-stop-instance: ### Stop a Running RDS instance - mandatory: DB_INSTANCE
 	make -s docker-run-tools ARGS="$$(echo $(AWSCLI) | grep awslocal > /dev/null 2>&1 && echo '--env LOCALSTACK_HOST=$(LOCALSTACK_HOST)' ||:)" CMD=" \
-		$(AWSCLI) rds stop-db-instances \
+		$(AWSCLI) rds stop-db-instance \
 			--region $(AWS_REGION) \
 			--db-instance-identifier=$(DB_INSTANCE)"
 
