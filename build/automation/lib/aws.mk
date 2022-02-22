@@ -242,15 +242,13 @@ aws-rds-start-instance: ### Start RDS instance - mandatory: DB_INSTANCE
 	make -s docker-run-tools ARGS="$$(echo $(AWSCLI) | grep awslocal > /dev/null 2>&1 && echo '--env LOCALSTACK_HOST=$(LOCALSTACK_HOST)' ||:)" CMD=" \
 		$(AWSCLI) rds start-db-instances \
 			--region $(AWS_REGION) \
-			--db-instance-identifier=$(DB_INSTANCE) \
-	" | make -s docker-run-tools CMD="jq -r '.DBInstances[0]'"
+			--db-instance-identifier=$(DB_INSTANCE)
 
 aws-rds-stop-instance: ### Stop a Running RDS instance - mandatory: DB_INSTANCE
 	make -s docker-run-tools ARGS="$$(echo $(AWSCLI) | grep awslocal > /dev/null 2>&1 && echo '--env LOCALSTACK_HOST=$(LOCALSTACK_HOST)' ||:)" CMD=" \
 		$(AWSCLI) rds stop-db-instances \
 			--region $(AWS_REGION) \
-			--db-instance-identifier=$(DB_INSTANCE) \
-	" | make -s docker-run-tools CMD="jq -r '.DBInstances[0]'"
+			--db-instance-identifier=$(DB_INSTANCE)
 
 aws-rds-create-snapshot: ### Create RDS instance snapshot - mandatory: DB_INSTANCE,SNAPSHOT_NAME
 	make -s docker-run-tools ARGS="$$(echo $(AWSCLI) | grep awslocal > /dev/null 2>&1 && echo '--env LOCALSTACK_HOST=$(LOCALSTACK_HOST)' ||:)" CMD=" \
