@@ -32,9 +32,13 @@ pipeline {
         }
       }
     }
-    //
-    // TODO: Stage to Start up replica
-    //
+    stage('Start RDS Replica Instance') {
+      steps {
+        script {
+          sh 'make start-rds-instance'
+        }
+      }
+    }
     stage("Provision Infrastructure") {
       steps {
         script {
@@ -49,7 +53,7 @@ pipeline {
         }
       }
     }
-    stage("Deploy APII") {
+    stage("Deploy API") {
       steps {
         script {
           sh "make deploy PROFILE=${env.PROFILE} IMAGE_TAG=${IMAGE_TAG}"
@@ -102,9 +106,7 @@ pipeline {
     always { script {
                 sh "make delete-namespace PROFILE=${env.PROFILE}"
                 sh "make destroy-infrastructure PROFILE=${env.PROFILE}"
-                // TODO
-                // call make target to stop the replica RDS
-                //
+                sh 'make stop-rds-instance'
             } }
   }
 }

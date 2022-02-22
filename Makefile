@@ -313,7 +313,12 @@ run-security-test:
 	echo TODO: $(@)
 
 # --------------------------------------
+start-rds-instance:
+	make aws-rds-start-instance DB_INSTANCE=$(RDS_DB_INSTANCE)
 
+stop-rds-instance:
+	make aws-rds-stop-instance DB_INSTANCE=$(RDS_DB_INSTANCE)
+# ----------------------------------------
 remove-unused-environments:
 	echo TODO: $(@)
 
