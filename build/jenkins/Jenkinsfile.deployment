@@ -32,13 +32,13 @@ pipeline {
         }
       }
     }
-    stage('Start RDS Replica Instance') {
+    /*stage('Start RDS Replica Instance') {
       steps {
         script {
           sh 'make start-rds-instance'
         }
       }
-    }
+    }*/
     stage("Plan Infrastructure") {
       steps {
         script {
