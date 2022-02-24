@@ -110,6 +110,7 @@ pipeline {
         }
       }
       parallel {
+         stages {
         stage('Norminal Peak Test') {
           steps {
             sh "make run-jmeter-nominal-test PROFILE=${env.PROFILE}"
@@ -140,6 +141,7 @@ pipeline {
             }
           }
         }
+      }
       }
       stage('Destroy jMeter') {
         steps {
