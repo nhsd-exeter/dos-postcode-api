@@ -313,7 +313,14 @@ run-security-test:
 	echo TODO: $(@)
 
 # --------------------------------------
+start-rds-instance:
+	eval "$$(make aws-assume-role-export-variables)"
+	make aws-rds-start-instance DB_INSTANCE=$(RDS_DB_INSTANCE)
 
+stop-rds-instance:
+	eval "$$(make aws-assume-role-export-variables)"
+	make aws-rds-stop-instance DB_INSTANCE=$(RDS_DB_INSTANCE)
+# ----------------------------------------
 remove-unused-environments:
 	echo TODO: $(@)
 

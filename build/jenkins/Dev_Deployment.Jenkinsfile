@@ -20,7 +20,7 @@ pipeline {
         string(
             description: 'Enter image tag to deploy, e.g. 202103111417-e362c87',
             name: 'IMAGE_TAG',
-            defaultValue: 'latest'
+            defaultValue: ''
         )
   }
 
@@ -32,13 +32,31 @@ pipeline {
         }
       }
     }
-    //
-    // TODO: Stage to Start up replica
-    //
+    /*stage('Start RDS Replica Instance') {
+      steps {
+        script {
+          sh 'make start-rds-instance'
+        }
+      }
+    }*/
+    stage("Plan Infrastructure") {
+      steps {
+        script {
+          sh "make provision-plan PROFILE=${env.PROFILE}"
+        }
+      }
+    }
     stage("Provision Infrastructure") {
       steps {
         script {
           sh "make provision PROFILE=${env.PROFILE}"
+        }
+      }
+    }
+    stage("Plan SNS Infrastructure") {
+      steps {
+        script {
+          sh "make provision-sns-plan PROFILE=${env.PROFILE}"
         }
       }
     }
@@ -70,9 +88,6 @@ pipeline {
         }
       }
     }
-    // TODO
-    // Holding stage - Don't go past here until replica has started
-    //
     stage("Perform Extract Lambda function") {
       steps {
         script {
@@ -94,17 +109,11 @@ pipeline {
         }
       }
     }
-    // TODO
-    // run performance tests here
-    //
   }
   post {
     always { script {
-                sh "make delete-namespace PROFILE=${env.PROFILE}"
-                sh "make destroy-infrastructure PROFILE=${env.PROFILE}"
-                // TODO
-                // call make target to stop the replica RDS
-                //
-            } }
+      sh 'make clean'
+    //  sh 'make stop-rds-instance' }
+    }
   }
 }

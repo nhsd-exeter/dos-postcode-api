@@ -48,3 +48,5 @@ TF_VAR_dos_read_replica_key := DB_SF_READONLY_PASSWORD
 TF_VAR_postcode_etl_db_user := dos_sf_readonly
 TF_VAR_postcode_etl_source_db := pathwaysdos
 TF_VAR_core_dos_python_libs := core-dos-python-libs
+
+RDS_DB_INSTANCE := uec-core-dos-performance-db-12-replica-sf
