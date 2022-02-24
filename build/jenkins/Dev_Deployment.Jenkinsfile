@@ -13,7 +13,7 @@ pipeline {
   }
 
   environment {
-    PROFILE = "perf"
+    PROFILE = "dev"
   }
 
   parameters {
