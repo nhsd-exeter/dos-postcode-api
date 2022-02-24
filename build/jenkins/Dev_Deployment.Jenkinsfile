@@ -110,7 +110,6 @@ pipeline {
   post {
     always { script {
         sh 'make clean'
-    //  sh 'make stop-rds-instance'
     }
   }
 }
