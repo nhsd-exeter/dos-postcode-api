@@ -13,7 +13,7 @@ pipeline {
   }
 
   environment {
-    PROFILE = "perf"
+    PROFILE = 'perf'
   }
 
   parameters {
@@ -110,38 +110,38 @@ pipeline {
         }
       }
       parallel {
-         stages {
-        stage('Norminal Peak Test') {
-          steps {
-            sh "make run-jmeter-nominal-test PROFILE=${env.PROFILE}"
+        stages {
+          stage('Norminal Peak Test') {
+            steps {
+              sh "make run-jmeter-nominal-test PROFILE=${env.PROFILE}"
+            }
+            post {
+              always {
+                archiveArtifacts artifacts: 'tests-test-results/**'
+              }
+            }
           }
-          post {
-            always {
-              archiveArtifacts artifacts: 'tests-test-results/**'
+          stage('Peak Test') {
+            steps {
+              sh "make run-jmeter-peak-test PROFILE=${env.PROFILE}"
+            }
+            post {
+              always {
+                archiveArtifacts artifacts: 'tests-test-results/**'
+              }
+            }
+          }
+          stage('Double Peak Test') {
+            steps {
+              sh "make run-jmeter-double-peak-test  PROFILE=${env.PROFILE}"
+            }
+            post {
+              always {
+                archiveArtifacts artifacts: 'tests-test-results/**'
+              }
             }
           }
         }
-        stage('Peak Test') {
-          steps {
-            sh "make run-jmeter-peak-test PROFILE=${env.PROFILE}"
-          }
-          post {
-            always {
-              archiveArtifacts artifacts: 'tests-test-results/**'
-            }
-          }
-        }
-        stage('Double Peak Test') {
-          steps {
-            sh "make run-jmeter-double-peak-test  PROFILE=${env.PROFILE}"
-          }
-          post {
-            always {
-              archiveArtifacts artifacts: 'tests-test-results/**'
-            }
-          }
-        }
-      }
       }
       stage('Destroy jMeter') {
         steps {
