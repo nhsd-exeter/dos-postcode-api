@@ -27,6 +27,20 @@ build: project-config
 		$(PROJECT_DIR)/build/docker/dos-postcode-api/assets/application/dos-postcode-api.jar
 	make docker-build NAME=dos-postcode-api
 
+scan:
+	if [ ! -d $(PROJECT_DIR)/reports ]; then
+		mkdir $(PROJECT_DIR)/reports
+	fi
+
+	make docker-run-mvn \
+		DIR="application" \
+		CMD="dependency-check:check"
+
+	mv \
+		$(PROJECT_DIR)/application/target/dependency-check-report.html \
+		$(PROJECT_DIR)/reports/postcode-dependency-report.html
+
+
 start: project-start	# Start project
 	make local-dynamodb-scripts
 
