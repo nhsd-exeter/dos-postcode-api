@@ -32,41 +32,34 @@ pipeline {
         }
       }
     }
-    /*stage('Start RDS Replica Instance') {
-      steps {
-        script {
-          sh 'make start-rds-instance'
-        }
-      }
-    }*/
-    stage("Plan Infrastructure") {
-      steps {
-        script {
-          sh "make provision-plan PROFILE=${env.PROFILE}"
-        }
-      }
-    }
-    stage("Provision Infrastructure") {
-      steps {
-        script {
-          sh "make provision PROFILE=${env.PROFILE}"
-        }
-      }
-    }
-    stage("Plan SNS Infrastructure") {
-      steps {
-        script {
-          sh "make provision-sns-plan PROFILE=${env.PROFILE}"
-        }
-      }
-    }
-    stage("Provision SNS Infrastructure") {
-      steps {
-        script {
-          sh "make provision-sns PROFILE=${env.PROFILE}"
-        }
-      }
-    }
+    // stage("Plan Infrastructure") {
+    //   steps {
+    //     script {
+    //       sh "make provision-plan PROFILE=${env.PROFILE}"
+    //     }
+    //   }
+    // }
+    // stage("Provision Infrastructure") {
+    //   steps {
+    //     script {
+    //       sh "make provision PROFILE=${env.PROFILE}"
+    //     }
+    //   }
+    // }
+    // stage("Plan SNS Infrastructure") {
+    //   steps {
+    //     script {
+    //       sh "make provision-sns-plan PROFILE=${env.PROFILE}"
+    //     }
+    //   }
+    // }
+    // stage("Provision SNS Infrastructure") {
+    //   steps {
+    //     script {
+    //       sh "make provision-sns PROFILE=${env.PROFILE}"
+    //     }
+    //   }
+    // }
     stage("Deploy API") {
       steps {
         script {
