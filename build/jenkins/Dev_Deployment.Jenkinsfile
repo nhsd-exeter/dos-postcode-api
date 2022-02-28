@@ -32,20 +32,13 @@ pipeline {
         }
       }
     }
-    /*stage('Start RDS Replica Instance') {
-      steps {
-        script {
-          sh 'make start-rds-instance'
-        }
-      }
-    }*/
-    stage("Plan Infrastructure") {
-      steps {
-        script {
-          sh "make provision-plan PROFILE=${env.PROFILE}"
-        }
-      }
-    }
+    // stage("Plan Infrastructure") {
+    //   steps {
+    //     script {
+    //       sh "make provision-plan PROFILE=${env.PROFILE}"
+    //     }
+    //   }
+    // }
     stage("Provision Infrastructure") {
       steps {
         script {
@@ -111,9 +104,11 @@ pipeline {
     }
   }
   post {
-    always { script {
+    always {
+      script {
       sh 'make clean'
-    //  sh 'make stop-rds-instance' }
+      //  sh 'make stop-rds-instance' }
     }
   }
+}
 }

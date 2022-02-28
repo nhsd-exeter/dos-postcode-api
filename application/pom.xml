@@ -6,6 +6,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <properties>
+    <dependency-check-maven.version>6.5.3</dependency-check-maven.version>
     <mockito.version>3.7.7</mockito.version>
     <aws-java-sdk-dynamodb.version>1.12.130</aws-java-sdk-dynamodb.version>
     <aws-java-sdk-sts.version>1.12.130</aws-java-sdk-sts.version>
@@ -18,6 +19,14 @@
     <commons-collections4.version>4.4</commons-collections4.version>
     <springdoc-openapi-ui.version>1.5.2</springdoc-openapi-ui.version>
     <log4j2.version>2.16.0</log4j2.version>    <!-- Springboot does not use Log4J, this is here to force other dependencies to use the latest version -->
+    <spring-security-oauth2-autoconfigure.version>2.1.4.RELEASE</spring-security-oauth2-autoconfigure.version>
+    <spring-boot-starter-test.version>2.4.3</spring-boot-starter-test.version>
+    <java-jwt.version>3.18.1</java-jwt.version>
+    <commons-io.version>2.11.0</commons-io.version>
+    <springfox-boot-starter.version>3.0.0</springfox-boot-starter.version>
+    <springfox-swagger2.version>3.0.0</springfox-swagger2.version>
+    <springfox-swagger-ui.version>3.0.0</springfox-swagger-ui.version>
+    <jacoco-maven-plugin.version>0.8.6</jacoco-maven-plugin.version>
   </properties>
 
   <groupId>uec</groupId>
@@ -52,7 +61,7 @@
     <dependency>
       <groupId>org.springframework.security.oauth.boot</groupId>
       <artifactId>spring-security-oauth2-autoconfigure</artifactId>
-      <version>2.1.4.RELEASE</version>
+      <version>${spring-security-oauth2-autoconfigure.version}</version>
     </dependency>
 
     <dependency>
@@ -70,7 +79,7 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-test</artifactId>
       <scope>test</scope>
-      <version>2.4.3</version>
+      <version>${spring-boot-starter-test.version}</version>
     </dependency>
 
     <!-- https://mvnrepository.com/artifact/org.mockito/mockito-core -->
@@ -142,13 +151,13 @@
     <dependency>
       <groupId>com.auth0</groupId>
       <artifactId>java-jwt</artifactId>
-      <version>3.18.1</version>
+      <version>${java-jwt.version}</version>
     </dependency>
 
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
-      <version>2.11.0</version>
+      <version>${commons-io.version}</version>
     </dependency>
 
     <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-collections4 -->
@@ -166,25 +175,26 @@
     <dependency>
       <groupId>io.springfox</groupId>
       <artifactId>springfox-boot-starter</artifactId>
-      <version>3.0.0</version>
+      <version>${springfox-boot-starter.version}</version>
     </dependency>
 
     <dependency>
       <groupId>io.springfox</groupId>
       <artifactId>springfox-swagger2</artifactId>
-      <version>3.0.0</version>
+      <version>${springfox-swagger2.version}</version>
     </dependency>
 
     <dependency>
       <groupId>io.springfox</groupId>
       <artifactId>springfox-swagger-ui</artifactId>
-      <version>3.0.0</version>
+      <version>${springfox-swagger-ui.version}</version>
     </dependency>
 
   </dependencies>
 
   <build>
     <plugins>
+
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
@@ -197,10 +207,11 @@
           </excludes>
         </configuration>
       </plugin>
+
       <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
-        <version>0.8.6</version>
+        <version>${jacoco-maven-plugin.version}</version>
         <configuration>
           <excludes>
             <exclude>**/config/*.*</exclude>
@@ -226,9 +237,25 @@
           </execution>
         </executions>
       </plugin>
+
+      <plugin>
+        <groupId>org.owasp</groupId>
+        <artifactId>dependency-check-maven</artifactId>
+        <version>${dependency-check-maven.version}</version>
+        <executions>
+          <execution>
+            <id>dependency-check</id>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <failBuildOnCVSS>10</failBuildOnCVSS>
+          <cveStartYear>2019</cveStartYear>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
-
-
 
 </project>
