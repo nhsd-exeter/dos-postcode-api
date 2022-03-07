@@ -44,6 +44,9 @@
     - [Runbooks](#runbooks)
   - [Product](#product)
     - [Communications](#communications)
+    - [Documentation](#documentation)
+  - [TODO](#todo)
+    - [Engineering Quality Gateway Checks](#engineering-quality-gateway-checks)
 
 ## Overview
 
@@ -325,3 +328,27 @@ No runbooks present at this point in time.
 
 - Slack channels
   - ETL alerts: postcode-etl-alerts
+  - Development, e.g. `[service-name]-development`
+  - CI/CD and data pipelines, processes, e.g. `[service-name]-automation`
+  - Service status, e.g. `[service-name]-status`
+- Email addresses in use, e.g. `[service.name]@nhs.net`
+
+All of the above can be service, product, application or even team specific.
+
+### Documentation
+
+- Sprint board link
+- Backlog link
+- Roadmap link
+- Risks register link
+- Documentation workspace link
+
+## TODO
+
+### Engineering Quality Gateway Checks
+
+- Increase unit test coverage to 80%
+- Add Integration testing and fail builds
+- Fail builds if over 3% code duplication is detected
+- Fail builds if code smells are detected (see sonar gateway rules: )
+- Check git history for secrets
