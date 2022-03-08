@@ -102,7 +102,7 @@ pipeline {
           }
         }
     }
-    stage('Norminal Peak Test') {
+    stage('Nominal Peak Test') {
       agent {
         label 'jenkins-slave'
       }
@@ -113,7 +113,7 @@ pipeline {
       }
       post {
         always {
-          archiveArtifacts artifacts: 'norminal-test-results/**'
+          archiveArtifacts artifacts: 'nominal-test-results/**'
         }
       }
     }
@@ -153,12 +153,12 @@ pipeline {
       }
       steps {
         script {
-          sh "make run-jmeter-burst-norminal-test PROFILE=${env.PROFILE}"
+          sh "make run-jmeter-burst-nominal-test PROFILE=${env.PROFILE}"
         }
       }
       post {
         always {
-          archiveArtifacts artifacts: 'burstnorminal-test-results/**'
+          archiveArtifacts artifacts: 'burstnominal-test-results/**'
         }
       }
     }
