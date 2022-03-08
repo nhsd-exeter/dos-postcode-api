@@ -9,7 +9,7 @@ pipeline {
     buildDiscarder(logRotator(daysToKeepStr: '7', numToKeepStr: '13'))
     disableConcurrentBuilds()
     parallelsAlwaysFailFast()
-    timeout(time: 3, unit: 'HOURS')
+    timeout(time: 3.5, unit: 'HOURS')
   }
 
   environment {
@@ -81,6 +81,12 @@ pipeline {
         }
       }
     }
+    stage('Wait for Extract to complete') {
+      steps {
+        echo "Waiting 15 mins for the extract to complete"
+        sleep 900
+      }
+    }
     stage('Perform Insert Lambda function') {
       steps {
         script {
@@ -88,13 +94,11 @@ pipeline {
         }
       }
     }
-    /*stage('Smoke Tests') {
-      steps {
-        script {
-          sh 'make run-smoke-test'
-        }
+    stage('Wait for insert to complete') {
+        echo "Waiting 15 mins for the extract to complete"
+        sleep 900
       }
-    }*/
+    }
     stage('Deploy jMeter') {
         steps {
           script {
