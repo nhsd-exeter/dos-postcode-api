@@ -103,8 +103,6 @@ pipeline {
   post {
     always { script {
         sh 'make clean'
-        sh "make delete-namespace PROFILE=${env.PROFILE}"
-        sh "make destroy-infrastructure PROFILE=${env.PROFILE}"
     }
   }
 }
