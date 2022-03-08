@@ -82,8 +82,10 @@ pipeline {
       }
     }
     stage('Wait for Extract to complete') {
-      echo "Waiting 15 mins for the extract to complete"
-      sleep 900
+      steps {
+        println "Waiting 15 mins for the extract to complete"
+        sleep(time:15,unit:"MINUTES")
+      }
     }
     stage('Perform Insert Lambda function') {
       steps {
@@ -93,8 +95,10 @@ pipeline {
       }
     }
     stage('Wait for insert to complete') {
-        echo "Waiting 15 mins for the extract to complete"
-        sleep 900
+        steps{
+          println "Waiting 15 mins for the extract to complete"
+          sleep(time:15,unit:"MINUTES")
+        }
     }
     stage('Deploy jMeter') {
         steps {
