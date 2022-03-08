@@ -216,23 +216,22 @@ run-unit-test:
 	echo TODO: $(@)
 
 monitor-r53-connection:
-	attempt_counter=0
-	max_attempts=5
+	attempt_counter=1
+	max_attempts=10
+	sleep 30
 	http_status_code=0
-	sleep 20
 	until [[ $$http_status_code -eq 200 ]]; do
-	sleep 10
+		sleep 20
 		if [[ $$attempt_counter -eq $$max_attempts ]]; then
 			echo "Maximum attempts reached unable to connect to deployed instance"
 			exit 0
 		fi
-
-		echo 'Pinging deployed instance'
+		echo "Pinging deployed instance count - " $$attempt_counter
+		http_status_code=$$(curl -s -k -o /dev/null -w "%{http_code}" --max-time 30 $(POSTCODE_ENDPOINT)/api/home)
 		attempt_counter=$$(($$attempt_counter+1))
-		http_status_code=$$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 $(POSTCODE_ENDPOINT)/api/home)
 		echo Status code is: $$http_status_code
-
 	done
+
 
 
 

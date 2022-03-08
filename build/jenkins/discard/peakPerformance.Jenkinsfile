@@ -7,18 +7,17 @@ pipeline {
   agent any
 
   options {
-    buildDiscarder(logRotator(daysToKeepStr: "7", numToKeepStr: "13"))
+    buildDiscarder(logRotator(daysToKeepStr: '7', numToKeepStr: '13'))
     disableConcurrentBuilds()
     parallelsAlwaysFailFast()
-    timeout(time: 30, unit: "MINUTES")
+    timeout(time: 30, unit: 'MINUTES')
   }
 
   environment {
-    PROFILE = "dev"
+    PROFILE = 'dev'
   }
 
   stages {
-
     stage('Show Variables') {
       steps {
         script {
@@ -35,25 +34,25 @@ pipeline {
       }
     }
 
-    stage("Deploy jMeter"){
+    stage('Deploy jMeter') {
       steps {
         script {
           sh "make deploy-jmeter-namespace PROFILE=${env.PROFILE}"
-          }
         }
       }
+    }
 
-    stage("Run Nominal Tests"){
+    stage('Run Nominal Tests') {
       steps {
         script {
           sh "make run-jmeter-peak-test PROFILE=${env.PROFILE}"
         }
-        // Make jMeter test report files available as build artifacts
+          // Make jMeter test report files available as build artifacts
           archiveArtifacts artifacts: 'tests-test-results/**'
       }
     }
 
-    stage("Destroy jMeter") {
+    stage('Destroy jMeter') {
       steps {
         script {
           sh "make destroy-jmeter-namespace PROFILE=${env.PROFILE}"
@@ -63,12 +62,11 @@ pipeline {
   }
 
   post {
-    always { sh "make clean" }
-    success { sh "make pipeline-on-success" }
+    always { sh 'make clean' }
+    success { sh 'make pipeline-on-success' }
     failure {
       sh "make destroy-jmeter-namespace PROFILE=${env.PROFILE}"
-      sh "make pipeline-on-failure"
+      sh 'make pipeline-on-failure'
     }
   }
-
 }
