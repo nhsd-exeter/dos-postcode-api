@@ -107,7 +107,7 @@ pipeline {
           }
         }
     }
-    stage('Nominal Peak Test') {
+    stage('Nominal Test') {
       agent {
         label 'jenkins-slave'
       }
@@ -216,8 +216,6 @@ pipeline {
         } catch (error) {
               println "Error happened while tearing down profile infrastructure, continuing"
         }
-
-
       }
     }
     success { sh 'make pipeline-on-success' }
