@@ -81,12 +81,12 @@ pipeline {
         }
       }
     }
-    stage('Wait for Extract to complete') {
-      steps {
-        println "Waiting 15 mins for the extract to complete"
-        sleep(time:15,unit:"MINUTES")
-      }
-    }
+    // stage('Wait for Extract to complete') {
+    //   steps {
+    //     println "Waiting 15 mins for the extract to complete"
+    //     sleep(time:15,unit:"MINUTES")
+    //   }
+    // }
     stage('Perform Insert Lambda function') {
       steps {
         script {
@@ -94,12 +94,12 @@ pipeline {
         }
       }
     }
-    stage('Wait for insert to complete') {
-        steps{
-          println "Waiting 15 mins for the extract to complete"
-          sleep(time:15,unit:"MINUTES")
-        }
-    }
+    // stage('Wait for insert to complete') {
+    //     steps{
+    //       println "Waiting 15 mins for the extract to complete"
+    //       sleep(time:15,unit:"MINUTES")
+    //     }
+    // }
     stage('Deploy jMeter') {
         steps {
           script {
