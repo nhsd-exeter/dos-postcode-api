@@ -9,7 +9,7 @@ pipeline {
     buildDiscarder(logRotator(daysToKeepStr: '7', numToKeepStr: '13'))
     disableConcurrentBuilds()
     parallelsAlwaysFailFast()
-    timeout(time: 30, unit: 'MINUTES')
+    timeout(time: 3.5, unit: 'HOURS')
   }
 
   environment {
@@ -88,13 +88,6 @@ pipeline {
         }
       }
     }
-    /*stage('Smoke Tests') {
-      steps {
-        script {
-          sh 'make run-smoke-test'
-        }
-      }
-    }*/
     stage('Deploy jMeter') {
         steps {
           script {
@@ -102,7 +95,7 @@ pipeline {
           }
         }
     }
-    stage('Norminal Peak Test') {
+    stage('Nominal Test') {
       agent {
         label 'jenkins-slave'
       }
@@ -113,7 +106,7 @@ pipeline {
       }
       post {
         always {
-          archiveArtifacts artifacts: 'norminal-test-results/**'
+          archiveArtifacts artifacts: 'nominal-test-results/**'
         }
       }
     }
@@ -153,12 +146,12 @@ pipeline {
       }
       steps {
         script {
-          sh "make run-jmeter-burst-norminal-test PROFILE=${env.PROFILE}"
+          sh "make run-jmeter-burst-nominal-test PROFILE=${env.PROFILE}"
         }
       }
       post {
         always {
-          archiveArtifacts artifacts: 'burstnorminal-test-results/**'
+          archiveArtifacts artifacts: 'burstnominal-test-results/**'
         }
       }
     }
@@ -192,21 +185,25 @@ pipeline {
         }
       }
     }
-
-    stage('Destroy jMeter') {
-          steps {
-            script {
-              sh "make destroy-jmeter-namespace PROFILE=${env.PROFILE}"
-            }
-          }
-    }
   }
   post {
     always {
       script {
-        sh "make delete-namespace PROFILE=${env.PROFILE}"
-        sh "make destroy-jmeter-namespace PROFILE=${env.PROFILE}"
-        sh "make destroy-infrastructure PROFILE=${env.PROFILE}"
+        try {
+            sh "make destroy-jmeter-namespace PROFILE=${env.PROFILE}"
+        } catch (error) {
+              println "Error happened while trying to destroy jmeter namespace, continuing"
+        }
+        try {
+            sh "make delete-namespace PROFILE=${env.PROFILE}"
+        } catch (error) {
+              println "Error happened while trying to destroy profile namespace, continuing"
+        }
+        try {
+            sh "make destroy-infrastructure PROFILE=${env.PROFILE}"
+        } catch (error) {
+              println "Error happened while tearing down profile infrastructure, continuing"
+        }
       }
     }
     success { sh 'make pipeline-on-success' }
