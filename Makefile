@@ -217,7 +217,7 @@ run-unit-test:
 
 monitor-r53-connection:
 	attempt_counter=1
-	max_attempts=100
+	max_attempts=20
 	sleep 30
 	http_status_code=0
 	until [[ $$http_status_code -eq 200 ]]; do
@@ -227,7 +227,7 @@ monitor-r53-connection:
 			exit 0
 		fi
 		echo "Pinging deployed instance count - " $$attempt_counter
-		http_status_code=$$(curl -s -k -o /dev/null -w "%{http_code}" --max-time 30 $(POSTCODE_ENDPOINT)/api/home)
+		http_status_code=$$(curl -s -k -o /dev/null -w "%{http_code}" --max-time 30 $(POSTCODE_ENDPOINT)/api/home || true)
 		attempt_counter=$$(($$attempt_counter+1))
 		echo Status code is: $$http_status_code
 	done
