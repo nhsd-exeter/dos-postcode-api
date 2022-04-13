@@ -23,7 +23,6 @@
   - [Architecture](#architecture)
     - [Diagrams](#diagrams)
       - [System Context Diagram](#system-context-diagram)
-      - [Container Diagram](#container-diagram)
       - [Component Diagram](#component-diagram)
       - [Infrastructure / Networking](#infrastructure--networking)
     - [Integration](#integration)
@@ -184,10 +183,6 @@ MFA to the right AWS account using the following command
 
 <img src="./documentation/diagrams/C4model-SystemContext.png" width="1024" /><br /><br />
 
-#### Container Diagram
-
-<img src="./documentation/diagrams/C4model-Container.png" width="1024" /><br /><br />
-
 #### Component Diagram
 
 <img src="./documentation/diagrams/C4model-Component.png" width="1024" /><br /><br />
@@ -241,8 +236,8 @@ Key AWS Components:
 
 Decision records are here: /documentation/adr
 
-- ADR-001_API_datastore
-- ADR-002_ETL_process
+- [ADR-001_API_datastore](documentation/adr/ADR-001_API_datastore)
+- [ADR-002_ETL_process](documentation/adr/ADR-002_ETLs)
 
 ### System Quality Attributes
 
