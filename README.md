@@ -9,6 +9,7 @@
     - [Development Requirements](#development-requirements)
     - [Local Environment Configuration](#local-environment-configuration)
     - [Local Project Setup](#local-project-setup)
+    - [Set up IDE](#set-up-ide)
   - [Contributing](#contributing)
   - [Development](#development)
   - [Testing](#testing)
@@ -87,6 +88,14 @@ Generate and trust a self-signed certificate that will be used locally to enable
   In the local environment, a mock authentication token is required to be provided in all requests to the API endpoints. Please provide the token of 'MOCK_POSTCODE_API_ACCESS_TOKEN' in the request in order to pass authentication in the local environment.
 
   Once started, full Swagger API documentation can be found at this endpoint: https://localhost/swagger-ui.html
+
+### Set up IDE
+
+To open application use the command line command as the following
+
+  code project.code-workspace
+
+This is to ensure that the project settings are uniform for all developers.
 
 ## Contributing
 
