@@ -12,7 +12,7 @@ pipeline {
   }
 
   environment {
-    PROFILE = 'staging'
+    PROFILE = 'sg'
   }
   parameters {
         string(

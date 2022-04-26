@@ -232,9 +232,6 @@ monitor-r53-connection:
 		echo Status code is: $$http_status_code
 	done
 
-
-
-
 k8s-check-deployment-of-replica-sets:
 	eval "$$(make aws-assume-role-export-variables)"
 	make k8s-kubeconfig-get
