@@ -190,19 +190,19 @@ pipeline {
     always {
       script {
         try {
-            sh "make destroy-jmeter-namespace PROFILE=${env.PROFILE}"
+          sh "make destroy-jmeter-namespace PROFILE=${env.PROFILE}"
         } catch (error) {
-              println "Error happened while trying to destroy jmeter namespace, continuing"
+          println 'Error happened while trying to destroy jmeter namespace, continuing'
         }
         try {
-            sh "make delete-namespace PROFILE=${env.PROFILE}"
+          sh "make delete-namespace PROFILE=${env.PROFILE}"
         } catch (error) {
-              println "Error happened while trying to destroy profile namespace, continuing"
+          println 'Error happened while trying to destroy profile namespace, continuing'
         }
         try {
-            sh "make destroy-infrastructure PROFILE=${env.PROFILE}"
+          sh "make destroy-infrastructure PROFILE=${env.PROFILE}"
         } catch (error) {
-              println "Error happened while tearing down profile infrastructure, continuing"
+          println 'Error happened while tearing down profile infrastructure, continuing'
         }
       }
     }
