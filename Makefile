@@ -112,6 +112,17 @@ tag-release: # Create the release tag - mandatory DEV_TAG RELEASE_TAG
 deploy: # Deploy artefacts - mandatory: PROFILE=[name]
 	make project-deploy STACK=application PROFILE=$(PROFILE)
 
+plan-etl: # Plan environment - mandatory: PROFILE=[name]
+	make prepare-lambda-deployment-postcode-extract
+	make prepare-lambda-deployment-postcode-insert
+	make terraform-plan STACK=$(INFRASTRUCTURE_STACKS) PROFILE=$(PROFILE)
+	sleep $(SLEEP_AFTER_PLAN)
+
+provision-etl: # Provision environment - mandatory: PROFILE=[name]
+	make prepare-lambda-deployment-postcode-extract
+	make prepare-lambda-deployment-postcode-insert
+	make terraform-apply-auto-approve STACK=$(INFRASTRUCTURE_STACKS) PROFILE=$(PROFILE)
+
 provision-plan:
 	make terraform-plan STACK=$(INFRASTRUCTURE_STACKS) PROFILE=$(PROFILE)
 
@@ -188,6 +199,69 @@ postcode-insert-etl:
 	fi
 	echo $$http_result
 	rm -r out.json
+
+prepare-lambda-deployment-postcode-insert: # Downloads the required libraries for the Lambda functions
+	cd $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-postcode-insert
+	if [ $(BUILD_ID) -eq 0 ]; then
+		pip install \
+			-r requirements.txt \
+			-t $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-postcode-insert/deploy \
+			--upgrade \
+			--no-deps
+	else
+		pip install \
+			-r requirements.txt \
+			-t $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-postcode-insert/deploy \
+			--upgrade \
+			--no-deps \
+			--system
+	fi
+	cd $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-postcode-insert/deploy
+	rm -rf ./bin
+	rm -rf ./*.dist-info
+	rm -f LICENSE
+	cp $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-postcode-insert/postcode_insert.py  \
+		$(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-postcode-insert/deploy
+	cp -R $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-postcode-insert/psycopg2 \
+		$(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-postcode-insert/deploy
+
+prepare-lambda-deployment-postcode-extract: # Downloads the required libraries for the Lambda functions
+	cd $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-postcode-extract
+	if [ $(BUILD_ID) -eq 0 ]; then
+		pip install \
+			-r requirements.txt \
+			-t $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-postcode-extract/deploy \
+			--upgrade \
+			--no-deps
+	else
+		pip install \
+			-r requirements.txt \
+			-t $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-postcode-extract/deploy \
+			--upgrade \
+			--no-deps \
+			--system
+	fi
+	cd $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-postcode-extract/deploy
+	rm -rf ./bin
+	rm -rf ./*.dist-info
+	rm -f LICENSE
+	cp $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-postcode-extract/postcode_extract.py  \
+		$(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-postcode-extract/deploy
+	cp -R $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-postcode-extract/psycopg2 \
+		$(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-postcode-extract/deploy
+
+create-lambda-deploy-dir:
+	if [ ! -d $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-postcode-extract/deploy ]
+	then
+		mkdir $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-postcode-extract/deploy
+		touch $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-postcode-extract/deploy/test.txt
+	fi
+
+	if [ ! -d $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-postcode-insert/deploy ]
+	then
+		mkdir $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-postcode-insert/deploy
+		touch $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-postcode-insert/deploy/test.txt
+	fi
 
 build-artefact:
 	echo TODO: $(@)
@@ -292,10 +366,10 @@ run-smoke:
 	sleep 20
 	sed -i -e 's|HOST_TO_REPLACE|$(POSTCODE_ENDPOINT)|g' $(APPLICATION_TEST_DIR)/contract/environment/postcode_smoke.postman_environment.json
 
-	if [ $(PROFILE) == prod|demo|sg ]
+	if [ $(PROFILE) == prod ] || [ $(PROFILE) == demo ] || [ $(PROFILE) == sg ]
 	then
 	echo "Profile: $(PROFILE). Executing real token test"
-	TOKEN=$$(curl -X POST -sb -H "Content-Type: application/json" $(AUTHENTICATION_ENDPOINT) -d "{\"emailAddress\":\"$(POSTCODE_USER)\", \"password\":\"$(COGNITO_USER_PASS)\"}" | jq .accessToken | tr -d '"')
+	TOKEN=$$(curl -X POST -H "Content-Type: application/json" $(AUTHENTICATION_ENDPOINT) -d "{\"emailAddress\":\"$(POSTCODE_USER)\", \"password\":\"$(COGNITO_USER_PASS)\"}" | jq .accessToken | tr -d '"')
 	sed -i -e 's|MOCK_POSTCODE_API_ACCESS_TOKEN|$$TOKEN|g' $(APPLICATION_TEST_DIR)/contract/environment/postcode_smoke.postman_environment.json
 	fi
 
