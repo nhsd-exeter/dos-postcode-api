@@ -24,9 +24,9 @@ data "aws_security_group" "sf_read_replica_db_sg" {
   name = var.sf_read_replica_db_sg
 }
 
-data "aws_lambda_layer_version" "dos_python_libs" {
-  layer_name = var.core_dos_python_libs
-}
+# data "aws_lambda_layer_version" "dos_python_libs" {
+#   layer_name = var.core_dos_python_libs
+# }
 
 data "aws_secretsmanager_secret" "dos_read_replica_secret_name" {
   name = var.dos_read_replica_secret_name

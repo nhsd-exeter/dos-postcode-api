@@ -10,7 +10,7 @@ resource "aws_lambda_function" "postcode_extract_lambda" {
   memory_size      = local.postcode_extract_memory_size
   publish          = false
   tags             = local.standard_tags
-  layers           = [local.postcode_extract_core_dos_python_libs_arn]
+  # layers           = [local.postcode_extract_core_dos_python_libs_arn]
   environment {
     variables = {
       SOURCE_BUCKET      = local.postcode_etl_s3_bucket
