@@ -34,8 +34,8 @@ TF_VAR_postcode_etl_sns_email := postcode-etl-alerts-p-aaaae5ldnncapl2nsysfdnhbi
 TF_VAR_postcode_etl_extract_alarm_period := 86400
 TF_VAR_postcode_etl_insert_alarm_period := 86400
 
-TF_VAR_dos_replica_db := uec-core-dos-db-replica-sf.dos-db
-TF_VAR_dos_security_group := uec-core-dos-db-12-replica-sf-sg
+TF_VAR_dos_replica_db := uec-core-dos-live-db-12-replica-sf.dos-db-rds
+TF_VAR_dos_security_group := uec-core-dos-live-db-12-replica-sf-sg
 TF_VAR_dos_read_replica_secret_name := core-dos/deployment
 TF_VAR_dos_read_replica_key := DB_SF_READONLY_PASSWORD
 TF_VAR_postcode_etl_db_user := dos_sf_readonly
