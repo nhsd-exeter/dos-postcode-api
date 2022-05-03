@@ -24,6 +24,7 @@ DYNAMODB_POSTCODE_LOC_MAP_TABLE := $(PROJECT_GROUP_NAME_SHORT)-$(PROFILE)-postco
 
 REPLICAS := 3
 PROJECT_GROUP_NAME_SHORT := $(PROJECT_GROUP_SHORT)-$(PROJECT_NAME_SHORT)
+TTL := 1d
 
 TF_VAR_service_prefix := $(PROJECT_GROUP_NAME_SHORT)-$(PROFILE)
 TF_VAR_postcode_mapping_dynamo_name := $(TF_VAR_service_prefix)-postcode-location-mapping
@@ -36,7 +37,8 @@ TF_VAR_postcode_etl_insert_alarm_period := 86400
 
 TF_VAR_sf_read_replica_db := uec-core-dos-put-db-replica-sf.dos-db-put
 TF_VAR_sf_read_replica_db_sg := uec-core-dos-put-db-12-replica-sf-sg
-TF_VAR_dos_read_replica_secret_name := core-dos-uet-database-upgrade/deployment
+# TF_VAR_dos_read_replica_secret_name := core-dos-uet-database-upgrade/deployment
+TF_VAR_dos_read_replica_secret_name := core-dos/deployment
 TF_VAR_dos_read_replica_key := DB_SF_READONLY_PASSWORD
 TF_VAR_postcode_etl_db_user := dos_sf_readonly
 TF_VAR_postcode_etl_source_db := pathwaysdos_ut
