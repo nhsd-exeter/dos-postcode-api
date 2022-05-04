@@ -28,6 +28,8 @@ pipeline {
     stage('Show Variables') {
       steps {
         script {
+          sh "make delete-namespace PROFILE=${env.PROFILE}"
+          sh "make destroy-infrastructure PROFILE=${env.PROFILE}"
           sh 'make devops-print-variables'
         }
       }
@@ -46,6 +48,13 @@ pipeline {
         }
       }
     }
+    stage('Provision Infrastructure') {
+      steps {
+        script {
+          sh "make provision PROFILE=${env.PROFILE}"
+        }
+      }
+    }
         stage('Plan ETL Infrastructure') {
       steps {
         script {
@@ -57,13 +66,6 @@ pipeline {
       steps {
         script {
           sh "make provision-etl PROFILE=${env.PROFILE}"
-        }
-      }
-    }
-    stage('Provision Infrastructure') {
-      steps {
-        script {
-          sh "make provision PROFILE=${env.PROFILE}"
         }
       }
     }
