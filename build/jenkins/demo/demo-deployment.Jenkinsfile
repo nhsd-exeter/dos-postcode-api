@@ -29,6 +29,8 @@ pipeline {
       steps {
         script {
           sh 'make devops-print-variables'
+          sh "make delete-namespace PROFILE=${env.PROFILE}"
+          sh "make destroy-infrastructure PROFILE=${env.PROFILE}"
         }
       }
     }
