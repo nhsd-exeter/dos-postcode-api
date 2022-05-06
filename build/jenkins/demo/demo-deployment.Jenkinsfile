@@ -13,7 +13,7 @@ pipeline {
   }
 
   environment {
-    PROFILE = 'dmo'
+    PROFILE = 'dm'
   }
 
   parameters {
