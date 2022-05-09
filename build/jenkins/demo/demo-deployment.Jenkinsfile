@@ -13,7 +13,7 @@ pipeline {
   }
 
   environment {
-    PROFILE = 'dm'
+    PROFILE = 'dmo'
   }
 
   parameters {
@@ -127,16 +127,6 @@ pipeline {
   post {
     always {
       script {
-        try {
-          sh "make delete-namespace PROFILE=${env.PROFILE}"
-        } catch (error) {
-          println 'Error happened while trying to destroy profile namespace, continuing'
-        }
-        try {
-          sh "make destroy-infrastructure PROFILE=${env.PROFILE}"
-        } catch (error) {
-          println 'Error happened while tearing down profile infrastructure, continuing'
-        }
         try {
           sh 'make clean'
         } catch (error) {
