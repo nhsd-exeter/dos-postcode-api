@@ -204,6 +204,11 @@ pipeline {
         } catch (error) {
           println 'Error happened while tearing down profile infrastructure, continuing'
         }
+        try {
+          sh 'make clean'
+        } catch (error) {
+          println 'Error happened while tearing down profile infrastructure, continuing'
+        }
       }
     }
     success { sh 'make pipeline-on-success' }
