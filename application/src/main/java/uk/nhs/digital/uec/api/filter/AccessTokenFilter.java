@@ -41,13 +41,14 @@ public class AccessTokenFilter extends OncePerRequestFilter {
       HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
       throws ServletException, IOException {
     String token = jwtUtil.getTokenFromHeader(request);
+    log.info("TOKEN: {}", token);
     try {
       jwtUtil.isTokenValid(token);
     } catch (AccessTokenExpiredException
         | IllegalStateException
         | IllegalArgumentException
         | RestClientException e) {
-      log.error("Error occurred while validating access token", e.getMessage());
+      log.error("Error occurred while validating access token: {}", e.getMessage());
       token = null;
     }
 
