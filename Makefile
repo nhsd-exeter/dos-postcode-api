@@ -370,7 +370,8 @@ run-smoke:
 	then
 	echo "Profile: $(PROFILE). Executing real token test"
 	TOKEN=$$(curl -X POST -H "Content-Type: application/json" $(AUTHENTICATION_ENDPOINT) -d "{\"emailAddress\":\"$(POSTCODE_USER)\", \"password\":\"$(COGNITO_USER_PASS)\"}" | jq .accessToken | tr -d '"')
-	sed -i -e 's|MOCK_POSTCODE_API_ACCESS_TOKEN|$$TOKEN|g' $(APPLICATION_TEST_DIR)/contract/environment/postcode_smoke.postman_environment.json
+	echo $$TOKEN
+	sed -i -e "s/MOCK_POSTCODE_API_ACCESS_TOKEN/$$TOKEN/g" $(APPLICATION_TEST_DIR)/contract/environment/postcode_smoke.postman_environment.json
 	fi
 
 	make docker-run-postman \
