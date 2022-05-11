@@ -42,7 +42,7 @@ TF_VAR_sf_read_replica_db_sg := uec-core-dos-put-db-12-replica-sf-sg
 TF_VAR_dos_read_replica_secret_name := core-dos-dev/deployment
 TF_VAR_dos_read_replica_key := DB_SF_READONLY_PASSWORD
 TF_VAR_postcode_etl_db_user := dos_sf_readonly
-TF_VAR_postcode_etl_source_db := pathwaysdos
+TF_VAR_postcode_etl_source_db := pathwaysdos_ut
 TF_VAR_core_dos_python_libs := core-dos-python-libs
 
 CERTIFICATE_DOMAIN := certificate
