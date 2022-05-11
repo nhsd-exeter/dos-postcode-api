@@ -19,12 +19,12 @@ INFRASTRUCTURE_STACKS := $(INFRASTRUCTURE_STACK_STORE),$(INFRASTRUCTURE_STACKS_E
 
 
 SERVER_PORT := 443
+PROJECT_GROUP_NAME_SHORT := $(PROJECT_GROUP_SHORT)-$(PROJECT_NAME_SHORT)
 
 POSTCODE_LOCATION_DYNAMO_URL := https://dynamodb.$(AWS_REGION).amazonaws.com
 DYNAMODB_POSTCODE_LOC_MAP_TABLE := $(PROJECT_GROUP_NAME_SHORT)-$(PROFILE)-postcode-location-mapping
 
 REPLICAS := 3
-PROJECT_GROUP_NAME_SHORT := $(PROJECT_GROUP_SHORT)-$(PROJECT_NAME_SHORT)
 TTL := 1d
 
 TF_VAR_service_prefix := $(PROJECT_GROUP_NAME_SHORT)-$(PROFILE)
@@ -36,10 +36,10 @@ TF_VAR_postcode_etl_sns_email := postcode-etl-alerts-d-aaaafmi4x7xvayo2zzqr5sojp
 TF_VAR_postcode_etl_extract_alarm_period := 86400
 TF_VAR_postcode_etl_insert_alarm_period := 86400
 
-TF_VAR_sf_read_replica_db := uec-core-dos-put-db-replica-sf.dos-db-sync-rds
+TF_VAR_sf_read_replica_db := uec-core-dos-put-db-12-replica-sf.dos-db-rds
 TF_VAR_sf_read_replica_db_sg := uec-core-dos-put-db-12-replica-sf-sg
 # TF_VAR_dos_read_replica_secret_name := core-dos-uet-database-upgrade/deployment
-TF_VAR_dos_read_replica_secret_name := core-dos/deployment
+TF_VAR_dos_read_replica_secret_name := core-dos-dev/deployment
 TF_VAR_dos_read_replica_key := DB_SF_READONLY_PASSWORD
 TF_VAR_postcode_etl_db_user := dos_sf_readonly
 TF_VAR_postcode_etl_source_db := pathwaysdos
