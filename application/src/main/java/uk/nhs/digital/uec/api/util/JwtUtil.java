@@ -29,11 +29,11 @@ public class JwtUtil {
     try {
       jwt = JWT.decode(accessToken);
     } catch (JWTDecodeException e) {
-      log.info("Failed to decode access token, {}", e.getMessage());
+      log.error("Failed to decode access token, {}", e.getMessage());
       throw new IllegalStateException();
     }
     if (jwt.getExpiresAt().before(new Date())) {
-      log.info("Access Token has expired");
+      log.error("Access Token has expired");
       throw new AccessTokenExpiredException();
     }
   }

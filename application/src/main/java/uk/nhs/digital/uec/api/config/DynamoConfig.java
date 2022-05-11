@@ -5,6 +5,7 @@ import com.amazonaws.client.builder.AwsClientBuilder.EndpointConfiguration;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.socialsignin.spring.data.dynamodb.repository.config.EnableDynamoDBRepositories;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,6 +18,7 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 @EnableDynamoDBRepositories(basePackages = {"uk.nhs.digital.uec.api.repository"})
+@Slf4j
 public class DynamoConfig {
 
   @Value("${dynamo.config.region}")
@@ -39,11 +41,13 @@ public class DynamoConfig {
                   new EndpointConfiguration(amazonDynamoDBEndpoint, awsRegion))
               .build();
     }
+    log.info("Config for dynamodb complete");
     return amazonDynamoDB;
   }
 
   @Bean
   public DynamoDBMapperConfig dynamoDBMapperConfig() {
+    log.info("Config for dynamodb config mapper complete");
     return new DynamoDBMapperConfig.Builder()
         .withTableNameOverride(
             DynamoDBMapperConfig.TableNameOverride.withTableNameReplacement(dynamoDbTableName))
