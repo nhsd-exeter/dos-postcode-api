@@ -28,7 +28,6 @@ REPLICAS := 3
 TTL := 1d
 CERTIFICATE_DOMAIN := certificate
 ALLOWED_ORIGINS := *
-
 SPLUNK_INDEX := eks_logs_service_finder_prod
 
 TF_VAR_service_prefix := $(PROJECT_GROUP_NAME_SHORT)-$(PROFILE)
