@@ -32,11 +32,7 @@ public class DynamoConfig {
   @Value("${dynamo.table.name}")
   private String dynamoDbTableName;
 
-  @Value("${aws.accessKeyId}")
-  private String aqk;
-
-  @Autowired
-  Environment environment;
+  @Autowired Environment environment;
 
   @Bean
   public AmazonDynamoDB amazonDynamoDB() {
@@ -50,7 +46,7 @@ public class DynamoConfig {
               .build();
     }
 
-    log.info("Config for dynamodb complete {} in {} env", aqk,environment.getActiveProfiles());
+    log.info("Config for dynamodb complete {} env", environment.getActiveProfiles());
     return amazonDynamoDB;
   }
 
