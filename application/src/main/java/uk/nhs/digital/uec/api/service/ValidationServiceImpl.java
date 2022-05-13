@@ -26,6 +26,7 @@ public class ValidationServiceImpl implements ValidationService {
   @Override
   public List<String> validatePostCodes(List<String> postCodes)
       throws InvalidPostcodeException, NotFoundException {
+    log.info("Validating postcode entries");
     List<String> validPostcodes =
         CollectionUtils.isNotEmpty(postCodes)
             ? postCodes.stream()
