@@ -50,8 +50,7 @@ TF_VAR_postcode_etl_insert_alarm_period := 86400
 
 
 # Connection to DoS Read Replica for extraction Lambdas. For the Demo env we point to the live read replica
-TF_VAR_sf_read_replica_db  := uec-core-dos-put-db-12-replica-sf
-# TF_VAR_sf_read_replica_db  := uec-core-dos-put-db-12-replica-sf.dos-db-rds
+TF_VAR_sf_read_replica_db  := uec-core-dos-put-db-12-replica-sf.crvqtzolulpo.eu-west-2.rds.amazonaws.com
 TF_VAR_sf_read_replica_db_sg := uec-core-dos-put-db-12-replica-sf-sg
 TF_VAR_dos_read_replica_secret_name := core-dos-uet-database-upgrade/deployment
 # TF_VAR_dos_read_replica_secret_name := core-dos/deployment
