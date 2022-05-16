@@ -48,6 +48,7 @@ TF_VAR_postcode_etl_insert_alarm_period := 86400
 #TF_VAR_postcode_etl_source_db := pathwaysdos
 #TF_VAR_core_dos_python_libs := core-dos-python-libs
 
+
 # Connection to DoS Read Replica for extraction Lambdas. For the Demo env we point to the live read replica
 TF_VAR_sf_read_replica_db  := uec-core-dos-put-db-12-replica-sf
 # TF_VAR_sf_read_replica_db  := uec-core-dos-put-db-12-replica-sf.dos-db-rds
