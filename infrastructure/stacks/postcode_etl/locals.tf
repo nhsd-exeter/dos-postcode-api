@@ -1,5 +1,5 @@
 locals {
-
+  service_account_role_name     = "${var.service_prefix}-role"
   postcode_insert_function_name = "${var.service_prefix}-postcode-insert"
   postcode_insert_description   = "Service Finder function to insert postcode and postcode mappings into DynamoDB"
   postcode_insert_runtime       = "python3.8"
