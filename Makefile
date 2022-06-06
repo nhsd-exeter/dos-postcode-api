@@ -369,12 +369,13 @@ run-contract:
 		"
 	make project-stop
 
+
 run-smoke:
 	make restart
 	sleep 20
 	sed -i -e 's|HOST_TO_REPLACE|$(POSTCODE_ENDPOINT)|g' $(APPLICATION_TEST_DIR)/contract/environment/postcode_smoke.postman_environment.json
 
-	if [ $(PROFILE) == pd ] || [ $(PROFILE) == dmo ] || [ $(PROFILE) == sg ]
+	if [ $(PROFILE) == pd ] || [ $(PROFILE) == dmo ] || [ $(PROFILE) == sgg ]
 	then
 	echo "Profile: $(PROFILE). Executing real token test"
 	echo "Auth_EndPoint: $(AUTHENTICATION_ENDPOINT)"
