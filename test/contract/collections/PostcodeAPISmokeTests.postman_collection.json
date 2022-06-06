@@ -71,7 +71,7 @@
           }
         ],
         "url": {
-          "raw": "{{HOST}}/{{POSTCODE_ENDPOINT}}?postcodes=EX11SR",
+          "raw": "{{HOST}}/{{POSTCODE_ENDPOINT}}?postcodes=EX12EX",
           "host": [
             "{{HOST}}"
           ],
@@ -81,7 +81,7 @@
           "query": [
             {
               "key": "postcodes",
-              "value": "EX11SR"
+              "value": "EX12EX"
             }
           ]
         }
