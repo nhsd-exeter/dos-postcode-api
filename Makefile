@@ -369,6 +369,7 @@ run-contract:
 		"
 	make project-stop
 
+
 run-smoke:
 	make restart
 	sleep 20
