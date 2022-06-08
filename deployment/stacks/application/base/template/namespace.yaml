@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: K8S_APP_NAMESPACE_TO_REPLACE
+  name: uec-dos-api-pc
   labels:
     ttl: TTL_TO_REPLACE
     project-group: PROJECT_GROUP_NAME_SHORT_TO_REPLACE

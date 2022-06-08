@@ -71,7 +71,7 @@
           }
         ],
         "url": {
-          "raw": "{{HOST}}/{{POSTCODE_ENDPOINT}}?postcodes=EX12EX",
+          "raw": "{{HOST}}/{{POSTCODE_ENDPOINT}}?postcodes=BS57BQ",
           "host": [
             "{{HOST}}"
           ],
@@ -81,7 +81,7 @@
           "query": [
             {
               "key": "postcodes",
-              "value": "EX12EX"
+              "value": "BS57BQ"
             }
           ]
         }

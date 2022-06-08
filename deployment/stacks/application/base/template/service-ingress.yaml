@@ -2,7 +2,7 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: uec-dos-api-pc-ingress
-  namespace: uec-dos-api-pc
+  namespace: K8S_APP_NAMESPACE_TO_REPLACE
   annotations:
     kubernetes.io/ingress.class: alb
     alb.ingress.kubernetes.io/scheme: internet-facing

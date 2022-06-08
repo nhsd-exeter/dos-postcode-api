@@ -32,7 +32,9 @@ DYNAMODB_POSTCODE_LOC_MAP_TABLE := $(PROJECT_GROUP_NAME_SHORT)-$(PROFILE)-postco
 REPLICAS := 3
 TTL := 1d
 
-TF_VAR_service_prefix := $(PROJECT_GROUP_NAME_SHORT)-$(PROFILE)
+
+SERVICE_PREFIX := $(PROJECT_GROUP_SHORT)-$(PROJECT_NAME_SHORT)-$(ENVIRONMENT)
+TF_VAR_service_prefix := $(SERVICE_PREFIX)
 TF_VAR_postcode_mapping_dynamo_name := $(TF_VAR_service_prefix)-postcode-location-mapping
 TF_VAR_sf_resources_bucket := $(TF_VAR_service_prefix)-application-resources
 TF_VAR_postcode_etl_logging_level := INFO
