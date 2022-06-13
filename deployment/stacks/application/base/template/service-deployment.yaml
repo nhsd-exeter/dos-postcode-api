@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  namespace: uec-dos-api-pc-deployment
+  namespace: K8S_APP_NAMESPACE_TO_REPLACE
   name: uec-dos-api-pc
 spec:
   replicas: REPLICAS_TO_REPLACE

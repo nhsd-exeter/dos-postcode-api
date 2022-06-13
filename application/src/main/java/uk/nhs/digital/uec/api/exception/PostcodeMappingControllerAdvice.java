@@ -1,10 +1,9 @@
 package uk.nhs.digital.uec.api.exception;
 
-import java.util.Map;
-import java.util.Optional;
-
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.services.dynamodbv2.model.AmazonDynamoDBException;
+import java.util.Map;
+import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.http.HttpStatus;
@@ -22,6 +21,7 @@ public class PostcodeMappingControllerAdvice {
 
   @ExceptionHandler({InvalidPostcodeException.class, InvalidParameterException.class})
   public ResponseEntity<ErrorResponse> handleInvalidPostCodeException(Exception exception) {
+    log.info("Handling invalid PostCode Exception");
     log.error(ExceptionUtils.getStackTrace(exception));
 
     ErrorResponse errorResponse = new ErrorResponse();
@@ -41,26 +41,28 @@ public class PostcodeMappingControllerAdvice {
   }
 
   @ExceptionHandler({AmazonDynamoDBException.class, AmazonServiceException.class})
-  public ResponseEntity<ErrorMessage> handleAmazonExceptionMessage(Exception exception){
-    log.error("Amazon service exception: {}",ExceptionUtils.getStackTrace(exception));
+  public ResponseEntity<ErrorMessage> handleAmazonExceptionMessage(Exception exception) {
+    log.info("Handling exception comming from Amazon");
+    log.error("Amazon service exception: {}", ExceptionUtils.getStackTrace(exception));
 
     ErrorResponse errorResponse = new ErrorResponse();
     Optional<ValidationCodes> validationCodesOptional =
-      ErrorMappingEnum.getValidationEnum().entrySet().stream()
-        .filter(entry -> exception.getMessage().equals(entry.getValue()))
-        .map(Map.Entry::getKey)
-        .findFirst();
+        ErrorMappingEnum.getValidationEnum().entrySet().stream()
+            .filter(entry -> exception.getMessage().equals(entry.getValue()))
+            .map(Map.Entry::getKey)
+            .findFirst();
 
     errorResponse.setValidationCode(
-      validationCodesOptional.isPresent()
-        ? validationCodesOptional.get().getValidationCode()
-        : null);
+        validationCodesOptional.isPresent()
+            ? validationCodesOptional.get().getValidationCode()
+            : null);
     errorResponse.setMessage(exception.getMessage());
     return new ResponseEntity(errorResponse, HttpStatus.valueOf(HttpStatus.BAD_REQUEST.value()));
   }
 
   @ExceptionHandler(NotFoundException.class)
   public ResponseEntity<ErrorResponse> handleNotFoundException(Exception exception) {
+    log.info("Handling not found exception in controller advice");
     log.error(ExceptionUtils.getStackTrace(exception));
 
     ErrorResponse errorResponse = new ErrorResponse();
@@ -86,6 +88,4 @@ public class PostcodeMappingControllerAdvice {
         .contentType(MediaType.APPLICATION_JSON)
         .body(new ErrorMessage(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage()));
   }
-
-
 }

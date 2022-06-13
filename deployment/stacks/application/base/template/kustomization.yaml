@@ -8,10 +8,10 @@ commonAnnotations:
 
 resources:
   - namespace.yaml
+  - service-account.yaml
   - service-deployment.yaml
   - service-alb.yaml
   - service-ingress.yaml
-  - service-account-role.yaml
   - network-policy/default-deny-ingress.yaml
   - network-policy/allow-external-ingress.yaml
 

@@ -29,7 +29,7 @@ public class PostcodeMappingServiceImpl implements PostcodeMappingService {
       throws InvalidPostcodeException, NotFoundException {
     log.info("Validating postcode input");
     List<String> validPostcodes = validationService.validatePostCodes(postCodes);
-    log.info("Attempting to get postcode mapping from database");
+    log.info("Attempting to get postcode mapping from database - getByPostCodes");
     List<PostcodeMapping> location =
         validPostcodes.stream()
             .map(this::getByPostcode)
@@ -42,7 +42,7 @@ public class PostcodeMappingServiceImpl implements PostcodeMappingService {
   @Override
   public List<PostcodeMapping> getByName(String name)
       throws InvalidParameterException, NotFoundException {
-    log.info("Attempting to get postcode mapping from database");
+    log.info("Attempting to get postcode mapping from database - getByName");
     List<PostcodeMapping> location =
         postcodeMappingRepository.findByName(name).stream()
             .filter(Optional::isPresent)
@@ -58,7 +58,7 @@ public class PostcodeMappingServiceImpl implements PostcodeMappingService {
       throws InvalidPostcodeException, NotFoundException {
     log.info("Validating postcode input");
     List<String> validPostcodes = validationService.validatePostCodes(postCodes);
-    log.info("Attempting to get postcode mapping from database");
+    log.info("Attempting to get postcode mapping from database - getByPostcodeAndName");
     List<PostcodeMapping> location =
         validPostcodes.stream()
             .map(t -> getByPostcodeAndName(t, name))

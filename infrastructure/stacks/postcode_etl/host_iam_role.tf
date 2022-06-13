@@ -19,14 +19,20 @@ resource "aws_iam_role" "iam_host_role" {
       "Principal": {
         "Federated" : "arn:aws:iam::${var.aws_account_id}:oidc-provider/${trimprefix(data.terraform_remote_state.eks.outputs.eks_oidc_issuer_url, "https://")}"
         },
-        "Action": "sts:AssumeRoleWithWebIdentity",
+        "Action": ["sts:AssumeRole","sts:AssumeRoleWithWebIdentity"],
         "Condition": {
           "StringLike": {
-            "${trimprefix(data.terraform_remote_state.eks.outputs.eks_oidc_issuer_url, "https://")}:sub": "system:serviceaccount:${var.project_id}*:${var.application_service_account_name}"
+            "${trimprefix(data.terraform_remote_state.eks.outputs.eks_oidc_issuer_url, "https://")}:sub": "system:serviceaccount:${var.project_id}*:uec-dos-api-pc-service-account"
         }
       }
     }
   ]
 }
 EOF
+}
+
+resource "aws_iam_role_policy_attachment" "aws_iam_role_policy_attachment" {
+  role = aws_iam_role.iam_host_role.name
+  # policy_arn = aws_iam_policy.service_account_policy.arn
+  policy_arn = "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess"
 }
