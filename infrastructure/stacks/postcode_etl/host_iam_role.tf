@@ -51,7 +51,8 @@ resource "aws_iam_policy" "service_account_policy" {
           "lambda:*",
           "es:*",
           "rds:*",
-          "iam:*"
+          "iam:*",
+          "ecr:BatchGetImage"
 
         ]
         Effect   = "Allow"
