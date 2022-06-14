@@ -31,8 +31,45 @@ resource "aws_iam_role" "iam_host_role" {
 EOF
 }
 
+
+resource "aws_iam_policy" "service_account_policy" {
+  name        = "sa_assume_policy"
+  path        = "/"
+  description = "My test policy"
+
+  # Terraform's "jsonencode" function converts a
+  # Terraform expression result to valid JSON syntax.
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = [
+          "ec2:*",
+          "s3:*",
+          "dynamodb:*",
+          "ecr:*",
+          "lambda:*",
+          "es:*",
+          "rds:*",
+          "iam:*"
+
+        ]
+        Effect   = "Allow"
+        Resource = "*"
+      },
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "aws_iam_role_policy_attachment" {
+  role       = aws_iam_role.iam_host_role.name
+  policy_arn = aws_iam_policy.service_account_policy.arn
+  #policy_arn = "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess"
+}
+/*
 resource "aws_iam_role_policy_attachment" "aws_iam_role_policy_attachment" {
   role = aws_iam_role.iam_host_role.name
   # policy_arn = aws_iam_policy.service_account_policy.arn
   policy_arn = "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess"
 }
+*/
