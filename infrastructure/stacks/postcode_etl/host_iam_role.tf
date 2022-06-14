@@ -33,9 +33,9 @@ EOF
 
 
 resource "aws_iam_policy" "service_account_policy" {
-  name        = "sa_assume_policy"
+  name        = local.postcode_service_account_policy_name
   path        = "/"
-  description = "My test policy"
+  description = "Postcode IAM role policies"
 
   # Terraform's "jsonencode" function converts a
   # Terraform expression result to valid JSON syntax.
