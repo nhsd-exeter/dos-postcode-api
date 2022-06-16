@@ -26,7 +26,7 @@ public class ValidationServiceImpl implements ValidationService {
   @Override
   public List<String> validatePostCodes(List<String> postCodes)
       throws InvalidPostcodeException, NotFoundException {
-    log.info("Validating postcode entries");
+    log.info("Validating postcode entries: {}", postCodes);
     List<String> validPostcodes =
         CollectionUtils.isNotEmpty(postCodes)
             ? postCodes.stream()
@@ -45,6 +45,7 @@ public class ValidationServiceImpl implements ValidationService {
 
   @Override
   public boolean validatePostCode(String postCode) {
+    log.info("Validate Postcode: {}", postCode);
     postCode = formatPostCodeWithSpace(postCode);
     Pattern pattern = Pattern.compile(POSTCODE_REGEX);
     return pattern.matcher(postCode).matches();
@@ -60,6 +61,7 @@ public class ValidationServiceImpl implements ValidationService {
   }
 
   public String formatPostCodeWithoutSpace(String postCode) {
+    log.info("Formatting Postcode without space: {}", postCode);
     postCode =
         postCode.length() <= 5 || !postCode.contains(StringUtils.SPACE)
             ? postCode.toUpperCase()
@@ -68,6 +70,7 @@ public class ValidationServiceImpl implements ValidationService {
   }
 
   public static String formatPostCodeWithSpace(String postCode) {
+    log.info("Formatting Postcode with space: {}", postCode);
     postCode =
         postCode.length() <= 5 || postCode.contains(StringUtils.SPACE)
             ? postCode.toUpperCase()
