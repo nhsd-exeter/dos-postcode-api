@@ -8,7 +8,7 @@ import lombok.Setter;
 
 // service-finder-local-postcode-location-mapping
 /* Domain object for postcode mapping */
-@DynamoDBTable(tableName = "uec-dos-api-pc-sgg-postcode-location-mapping")
+@DynamoDBTable(tableName = "uec-dos-api-pc-stg-postcode-location-mapping")
 @Getter
 @Setter
 public class PostcodeMapping {
