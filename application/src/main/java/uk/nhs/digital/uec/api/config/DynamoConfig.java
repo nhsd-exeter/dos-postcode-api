@@ -47,16 +47,7 @@ public class DynamoConfig {
       return AmazonDynamoDBClientBuilder.standard().withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(amazonDynamoDBEndpoint, awsRegion)).build();
     }
     amazonDynamoDB = AmazonDynamoDBClientBuilder.standard().withRegion(Regions.EU_WEST_2).build();
-    // AmazonDynamoDBClientBuilder.standard()
-    //     .withEndpointConfiguration(
-    //        new EndpointConfiguration(amazonDynamoDBEndpoint, Regions.EU_WEST_2.toString()))
-    //  .withCredentials(new InstanceProfileCredentialsProvider(false))
-    //      .build();
-    // .withRegion(Regions.EU_WEST_2)
-    // .withEndpointConfiguration(
-    //      new AwsClientBuilder.EndpointConfiguration(
-    //          amazonDynamoDBEndpoint, Regions.EU_WEST_2.toString()))
-    //
+
     return amazonDynamoDB;
   }
 

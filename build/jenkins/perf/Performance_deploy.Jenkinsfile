@@ -88,6 +88,20 @@ pipeline {
         }
       }
     }
+        stage('Perform File Generator Lambda function') {
+      steps {
+        script {
+          sh "make file-generator-etl PROFILE=${env.PROFILE}"
+        }
+      }
+    }
+    stage('Perform Region Lambda function') {
+      steps {
+        script {
+          sh "make postcode-region-etl PROFILE=${env.PROFILE}"
+        }
+      }
+    }
     stage('Deploy jMeter') {
         steps {
           script {

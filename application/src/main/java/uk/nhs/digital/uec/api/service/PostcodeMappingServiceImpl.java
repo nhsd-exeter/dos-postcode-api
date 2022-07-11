@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.nhs.digital.uec.api.domain.PostcodeMapping;
+import uk.nhs.digital.uec.api.domain.RegionRecord;
 import uk.nhs.digital.uec.api.exception.InvalidParameterException;
 import uk.nhs.digital.uec.api.exception.InvalidPostcodeException;
 import uk.nhs.digital.uec.api.exception.NotFoundException;
@@ -23,6 +24,7 @@ public class PostcodeMappingServiceImpl implements PostcodeMappingService {
 
   @Autowired private PostcodeMappingRepository postcodeMappingRepository;
   @Autowired private ValidationService validationService;
+  @Autowired private RegionMapper regionMapper;
 
   @Override
   public List<PostcodeMapping> getByPostCodes(List<String> postCodes)
@@ -34,6 +36,7 @@ public class PostcodeMappingServiceImpl implements PostcodeMappingService {
         validPostcodes.stream()
             .map(this::getByPostcode)
             .filter(Objects::nonNull)
+            .map(this::mapPostCodeToRegion)
             .collect(Collectors.toList());
     log.info("Validating response, returning locations");
     return validationService.validateAndReturn(location);
@@ -48,6 +51,7 @@ public class PostcodeMappingServiceImpl implements PostcodeMappingService {
             .filter(Optional::isPresent)
             .map(Optional::get)
             .filter(Objects::nonNull)
+            .map(this::mapPostCodeToRegion)
             .collect(Collectors.toList());
     log.info("Validating response, returning locations");
     return validationService.validateAndReturn(location);
@@ -63,6 +67,7 @@ public class PostcodeMappingServiceImpl implements PostcodeMappingService {
         validPostcodes.stream()
             .map(t -> getByPostcodeAndName(t, name))
             .filter(Objects::nonNull)
+            .map(this::mapPostCodeToRegion)
             .collect(Collectors.toList());
     log.info("Validating response, returning locations");
     return validationService.validateAndReturn(location);
@@ -80,5 +85,15 @@ public class PostcodeMappingServiceImpl implements PostcodeMappingService {
         postcodeMappingRepository.findByPostCodeAndName(postcode, name);
     log.info("Finding mapping by postcode and name");
     return findByPostCodeAndNameOptional.isPresent() ? findByPostCodeAndNameOptional.get() : null;
+  }
+
+  private PostcodeMapping mapPostCodeToRegion(PostcodeMapping postcodeMapping){
+      RegionRecord regionRecord = regionMapper.getRegionRecord(postcodeMapping.getPostCode());
+      if(Objects.isNull(regionRecord)){
+        return postcodeMapping;
+      }
+      postcodeMapping.setRegion(regionRecord.getRegion());
+      postcodeMapping.setSubregion(regionRecord.getSubRegion());
+      return postcodeMapping;
   }
 }
