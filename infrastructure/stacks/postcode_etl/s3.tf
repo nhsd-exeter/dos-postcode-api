@@ -18,21 +18,6 @@ resource "aws_s3_bucket" "postcode_etl_s3" {
   tags = local.standard_tags
 }
 
-resource "aws_s3_bucket_object" "postcode_region_file" {
-
-  bucket = var.sf_resources_bucket
-
-  key = "postcode_regions.csv"
-
-  acl = "private"
-
-  source = "${path.module}/functions/uec-sf-region-update/postcode_regions.csv"
-
-  etag = filemd5("${path.module}/functions/uec-sf-region-update/postcode_regions.csv")
-
-  force_destroy = true
-
-}
 
 resource "aws_s3_bucket_object" "eccg_file" {
 
