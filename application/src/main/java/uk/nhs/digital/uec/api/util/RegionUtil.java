@@ -19,7 +19,7 @@ import java.util.concurrent.Callable;
 
 @Slf4j
 @Component
-public class RegionUtil implements Callable {
+public class RegionUtil implements Callable<List<RegionRecord>> {
 
   @Autowired
   private ResourceLoader resourceLoader;

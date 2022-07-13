@@ -1,5 +1,6 @@
 package uk.nhs.digital.uec.api.service;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -27,21 +28,27 @@ import static org.mockito.Mockito.when;
 @ExtendWith(SpringExtension.class)
 public class RegionMapperTest {
 
-  final static String postcode = "EX8 8XE";
+
   @InjectMocks
   RegionMapper classUnderTest;
   @Mock
   private ResourceLoader resourceLoader;
   @Mock
   private ExecutorService executorService;
+  final static String postcode = "EX8 8XE";
+  List<RegionRecord> regionRecords;
+
+  @BeforeEach
+  public void setup(){
+    regionRecords = new ArrayList<>();
+    regionRecords.add(new RegionRecord("EX8", "subregion", new String[]{"EX8"}, "region"));
+  }
 
   @Test
   public void getRegionRecordByPostCodeTest() throws IOException, ExecutionException, InterruptedException {
     //Given
     Future<List<RegionRecord>> fut = mock(Future.class);
     when(executorService.submit(any(Callable.class))).thenReturn(fut);
-    List<RegionRecord> regionRecords = new ArrayList<>();
-    regionRecords.add(new RegionRecord("EX8", "subregion", new String[]{"EX8"}, "region"));
     when(fut.get()).thenReturn(regionRecords);
     classUnderTest.init();
 
@@ -58,8 +65,6 @@ public class RegionMapperTest {
     //Given
     Future<List<RegionRecord>> fut = mock(Future.class);
     when(executorService.submit(any(Callable.class))).thenReturn(fut);
-    List<RegionRecord> regionRecords = new ArrayList<>();
-    regionRecords.add(new RegionRecord("EX8", "subregion", new String[]{"EX8"}, "region"));
     when(fut.get()).thenThrow(ExecutionException.class);
 
     //when
@@ -75,8 +80,6 @@ public class RegionMapperTest {
     //Given
     Future<List<RegionRecord>> fut = mock(Future.class);
     when(executorService.submit(any(Callable.class))).thenReturn(fut);
-    List<RegionRecord> regionRecords = new ArrayList<>();
-    regionRecords.add(new RegionRecord("EX8", "subregion", new String[]{"EX8"}, "region"));
     when(fut.get()).thenThrow(InterruptedException.class);
 
     //when

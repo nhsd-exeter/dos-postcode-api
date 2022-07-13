@@ -19,7 +19,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -29,8 +28,6 @@ import static org.mockito.Mockito.when;
 @ExtendWith(SpringExtension.class)
 public class RegionUtilTest {
 
-  final String mockCSV = "Postcode,Region,Nearby districts,UK region\n" +
-    "EX8,Exeter,\"EX9, EX7, EX3, EX5, TQ14, EX2, EX1, EX10, EX4, EX11\",South West";
 
   @InjectMocks
   RegionUtil classUnderTest;
@@ -38,6 +35,9 @@ public class RegionUtilTest {
   ResourceLoader resourceLoader;
   InputStream inputStream;
   Resource resource;
+  final static String path = "classpath:postcode_regions.csv";
+  final static String mockCSV = "Postcode,Region,Nearby districts,UK region\n" +
+    "EX8,Exeter,\"EX9, EX7, EX3, EX5, TQ14, EX2, EX1, EX10, EX4, EX11\",South West";
 
   @BeforeEach
   public void setup() {
@@ -46,9 +46,9 @@ public class RegionUtilTest {
   }
 
   @Test
-  public void GetCSVToModelListSuccess() throws IOException {
+  public void getCSVToModelListSuccess() throws IOException {
     //given
-    when(resourceLoader.getResource("classpath:postcode_regions.csv")).thenReturn(resource);
+    when(resourceLoader.getResource(path)).thenReturn(resource);
     when(resource.getInputStream()).thenReturn(inputStream);
 
     //when
@@ -62,7 +62,7 @@ public class RegionUtilTest {
   @Test
   public void throwIOExceptionDuringCSVRead() throws IOException {
     //Given
-    when(resourceLoader.getResource("classpath:postcode_regions.csv")).thenReturn(resource);
+    when(resourceLoader.getResource(path)).thenReturn(resource);
     when(resource.getInputStream()).thenThrow(IOException.class);
 
     //when
