@@ -23,6 +23,21 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uk.nhs.digital.uec.api.domain.RegionRecord;
 import uk.nhs.digital.uec.api.util.RegionUtil;
 
+<<<<<<< HEAD
+=======
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+>>>>>>> d3aefc9 (SFD-4377 Clean up code smells)
 @ExtendWith(MockitoExtension.class)
 @ExtendWith(SpringExtension.class)
 public class RegionUtilTest {
