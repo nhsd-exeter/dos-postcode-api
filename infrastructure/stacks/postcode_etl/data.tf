@@ -11,6 +11,18 @@ data "archive_file" "postcode_extract_function" {
   output_path = "${path.module}/functions_zip/${local.postcode_extract_function_name}.zip"
 }
 
+data "archive_file" "region_update_function" {
+  type        = "zip"
+  source_dir  = "${path.module}/functions/uec-sf-region-update"
+  output_path = "${path.module}/functions_zip/${local.region_update_function_name}.zip"
+}
+
+data "archive_file" "file_generator_function" {
+  type        = "zip"
+  source_dir  = "${path.module}/functions/uec-sf-ccg-file-generator"
+  output_path = "${path.module}/functions_zip/${var.service_prefix}-ccg-file-generator.zip"
+}
+
 data "terraform_remote_state" "vpc" {
   backend = "s3"
   config = {

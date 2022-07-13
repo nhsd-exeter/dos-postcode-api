@@ -35,6 +35,7 @@ TTL := 2d
 SERVICE_PREFIX := $(PROJECT_GROUP_NAME_SHORT)-$(PROFILE)
 TF_VAR_service_prefix := $(PROJECT_GROUP_NAME_SHORT)-$(PROFILE)
 TF_VAR_postcode_mapping_dynamo_name := $(TF_VAR_service_prefix)-postcode-location-mapping
+TF_VAR_region_mapping_dynamo_name := $(TF_VAR_service_prefix)-region-location-mapping
 TF_VAR_sf_resources_bucket := $(TF_VAR_service_prefix)-application-resources
 TF_VAR_postcode_etl_logging_level := INFO
 TF_VAR_postcode_etl_sns_logging_level := INFO

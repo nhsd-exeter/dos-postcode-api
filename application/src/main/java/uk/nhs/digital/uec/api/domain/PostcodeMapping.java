@@ -24,4 +24,20 @@ public class PostcodeMapping {
 
   @DynamoDBAttribute(attributeName = "northing")
   private Integer northing;
+
+  @DynamoDBAttribute(attributeName = "ccgName")
+  private String ccg;
+
+  @DynamoDBAttribute(attributeName = "geographyCode")
+  private String geographyCode;
+
+  @DynamoDBAttribute(attributeName = "nationalGroupingCode")
+  private String nationalGroupingCode;
+
+  @DynamoDBAttribute(attributeName = "organisationCode")
+  private String organisationCode;
+
+  private String region;
+
+  private String subregion;
 }

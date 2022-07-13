@@ -115,12 +115,16 @@ deploy: # Deploy artefacts - mandatory: PROFILE=[name]
 plan-etl: # Plan environment - mandatory: PROFILE=[name]
 	make prepare-lambda-deployment-postcode-extract
 	make prepare-lambda-deployment-postcode-insert
+	make prepare-lambda-deployment-region-update
+	make prepare-lambda-deployment-ccg-file-generator
 	make terraform-plan STACK=$(INFRASTRUCTURE_STACKS) PROFILE=$(PROFILE)
 	sleep $(SLEEP_AFTER_PLAN)
 
 provision-etl: # Provision environment - mandatory: PROFILE=[name]
 	make prepare-lambda-deployment-postcode-extract
 	make prepare-lambda-deployment-postcode-insert
+	make prepare-lambda-deployment-region-update
+	make prepare-lambda-deployment-ccg-file-generator
 	make terraform-apply-auto-approve STACK=$(INFRASTRUCTURE_STACKS) PROFILE=$(PROFILE)
 
 provision-plan:
@@ -177,6 +181,11 @@ k8s-get-pod-status:
 # ==============================================================================
 # Pipeline targets
 
+file-generator-etl:
+	eval "$$(make aws-assume-role-export-variables)"
+	process=$$($(AWSCLI) lambda invoke --function-name $(PROJECT_ID)-$(PROFILE)-ccg-file-generator out.json --log-type Tail)
+	cat out.json
+	rm -r out.json
 
 postcode-extract-etl:
 	eval "$$(make aws-assume-role-export-variables)"
@@ -195,11 +204,11 @@ postcode-extract-etl:
 
 postcode-insert-etl:
 	eval "$$(make aws-assume-role-export-variables)"
-	process=$$(aws lambda invoke --function-name $(PROJECT_ID)-$(PROFILE)-postcode-insert out.json --log-type Tail)
+	process=$$($(AWSCLI) lambda invoke --function-name $(PROJECT_ID)-$(PROFILE)-postcode-insert out.json --log-type Tail)
 	cat out.json
 	rm -r out.json
 
-	# http_result=$$(aws lambda invoke --function-name $(PROJECT_ID)-$(PROFILE)-postcode-insert out.json --log-type Tail | jq .StatusCode)
+	# http_result=$$($(AWSCLI) lambda invoke --function-name $(PROJECT_ID)-$(PROFILE)-postcode-insert out.json --log-type Tail | jq .StatusCode)
 	# if [[ ! $$http_result -eq 200 ]]; then
 	# 	cat out.json
 	# 	rm -r out.json
@@ -207,6 +216,12 @@ postcode-insert-etl:
 	# fi
 	# echo $$http_result
 	# rm -r out.json
+
+postcode-region-etl:
+	eval "$$(make aws-assume-role-export-variables)"
+	process=$$($(AWSCLI) lambda invoke --invocation-type Event --function-name $(PROJECT_ID)-$(PROFILE)-region-update  out.json --log-type Tail)
+	cat out.json
+	rm -r out.json
 
 prepare-lambda-deployment-postcode-insert: # Downloads the required libraries for the Lambda functions
 	cd $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-postcode-insert
@@ -232,6 +247,58 @@ prepare-lambda-deployment-postcode-insert: # Downloads the required libraries fo
 		$(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-postcode-insert/deploy
 	cp -R $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-postcode-insert/psycopg2 \
 		$(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-postcode-insert/deploy
+
+prepare-lambda-deployment-region-update: # Downloads the required libraries for the Lambda functions
+	cd $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-region-update
+	if [ $(BUILD_ID) -eq 0 ]; then
+		pip install \
+			-r requirements.txt \
+			-t $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-region-update/deploy \
+			--upgrade \
+			--no-deps
+	else
+		pip install \
+			-r requirements.txt \
+			-t $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-region-update/deploy \
+			--upgrade \
+			--no-deps \
+			--system
+	fi
+	cd $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-region-update/deploy
+	rm -rf ./bin
+	rm -rf ./*.dist-info
+	rm -f LICENSE
+	cp $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-region-update/region_update.py  \
+		$(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-region-update/deploy
+	cp -R $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-region-update/psycopg2 \
+		$(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-region-update/deploy
+
+
+prepare-lambda-deployment-ccg-file-generator: # Downloads the required libraries for the Lambda functions
+	cd $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-ccg-file-generator
+	if [ $(BUILD_ID) -eq 0 ]; then
+		pip install \
+			-r requirements.txt \
+			-t $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-ccg-file-generator/deploy \
+			--upgrade \
+			--no-deps
+	else
+		pip install \
+			-r requirements.txt \
+			-t $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-ccg-file-generator/deploy \
+			--upgrade \
+			--no-deps \
+			--system
+	fi
+	cd $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-ccg-file-generator/deploy
+	rm -rf ./bin
+	rm -rf ./*.dist-info
+	rm -f LICENSE
+	cp $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-ccg-file-generator/file_generator.py  \
+		$(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-ccg-file-generator/deploy
+	cp -R $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-ccg-file-generator/psycopg2 \
+		$(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-ccg-file-generator/deploy
+
 
 prepare-lambda-deployment-postcode-extract: # Downloads the required libraries for the Lambda functions
 	cd $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-postcode-extract
@@ -269,6 +336,18 @@ create-lambda-deploy-dir:
 	then
 		mkdir $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-postcode-insert/deploy
 		touch $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-postcode-insert/deploy/test.txt
+	fi
+
+	if [ ! -d $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-region-update/deploy ]
+	then
+		mkdir $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-region-update/deploy
+		touch $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-region-update/deploy/test.txt
+	fi
+
+	if [ ! -d $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-ccg-file-generator/deploy ]
+	then
+		mkdir $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-ccg-file-generator/deploy
+		touch $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-ccg-file-generator/deploy/test.txt
 	fi
 
 build-artefact:
