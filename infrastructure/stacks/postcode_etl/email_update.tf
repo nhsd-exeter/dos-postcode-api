@@ -88,22 +88,22 @@ resource "aws_iam_role_policy" "uec-sf-email-update" {
 EOF
 }
 
-resource "aws_iam_role_policy_attachment" "AWSLambdaVPCAccessExecutionRoleUpdate" {
+resource "aws_iam_role_policy_attachment" "AWSLambdaVPCAccessExecutionRoleEmailUpdate" {
   role       = aws_iam_role.email_update_lambda_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
 }
 
-resource "aws_iam_role_policy_attachment" "s3FullAccessUpdate" {
+resource "aws_iam_role_policy_attachment" "s3FullAccessEmailUpdate" {
   role       = aws_iam_role.email_update_lambda_role.name
   policy_arn = local.s3_full_access_policy_arn
 }
 
-resource "aws_iam_role_policy_attachment" "dynamoDbFullAccessUpdate" {
+resource "aws_iam_role_policy_attachment" "dynamoDbFullAccessEmailUpdate" {
   role       = aws_iam_role.email_update_lambda_role.name
   policy_arn = local.dynamoDb_full_access_policy_arn
 }
 
-resource "aws_iam_role_policy_attachment" "lambdaFullAcessUpdate" {
+resource "aws_iam_role_policy_attachment" "lambdaFullAcessEmailUpdate" {
   role       = aws_iam_role.email_update_lambda_role.name
   policy_arn = "arn:aws:iam::aws:policy/AWSLambda_FullAccess"
 
