@@ -33,6 +33,10 @@ resource "aws_s3_bucket_object" "eccg_file" {
 
   force_destroy = true
 
+  depends_on = [
+    aws_s3_bucket.postcode_etl_s3
+  ]
+
 }
 
 resource "aws_s3_bucket_object" "pcodey56" {
@@ -48,6 +52,9 @@ resource "aws_s3_bucket_object" "pcodey56" {
   etag = filemd5("${path.module}/functions/pcodey56.csv")
 
   force_destroy = true
+  depends_on = [
+    aws_s3_bucket.postcode_etl_s3
+  ]
 
 }
 
@@ -64,6 +71,9 @@ resource "aws_s3_bucket_object" "pcodey58" {
   etag = filemd5("${path.module}/functions/pcodey58.csv")
 
   force_destroy = true
+  depends_on = [
+    aws_s3_bucket.postcode_etl_s3
+  ]
 
 }
 
@@ -81,6 +91,10 @@ resource "aws_s3_bucket_object" "pcodey59" {
 
   force_destroy = true
 
+  depends_on = [
+    aws_s3_bucket.postcode_etl_s3
+  ]
+
 }
 
 resource "aws_s3_bucket_object" "pcodey60" {
@@ -96,6 +110,10 @@ resource "aws_s3_bucket_object" "pcodey60" {
   etag = filemd5("${path.module}/functions/pcodey60.csv")
 
   force_destroy = true
+
+  depends_on = [
+    aws_s3_bucket.postcode_etl_s3
+  ]
 
 }
 
@@ -129,6 +147,10 @@ resource "aws_s3_bucket_object" "pcodey62" {
 
   force_destroy = true
 
+  depends_on = [
+    aws_s3_bucket.postcode_etl_s3
+  ]
+
 }
 
 resource "aws_s3_bucket_object" "pcodey63" {
@@ -144,5 +166,9 @@ resource "aws_s3_bucket_object" "pcodey63" {
   etag = filemd5("${path.module}/functions/pcodey63.csv")
 
   force_destroy = true
+
+  depends_on = [
+    aws_s3_bucket.postcode_etl_s3
+  ]
 
 }
