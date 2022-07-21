@@ -117,6 +117,7 @@ plan-etl: # Plan environment - mandatory: PROFILE=[name]
 	make prepare-lambda-deployment-postcode-insert
 	make prepare-lambda-deployment-region-update
 	make prepare-lambda-deployment-ccg-file-generator
+	make prepare-lambda-deployment-email-update
 	make terraform-plan STACK=$(INFRASTRUCTURE_STACKS) PROFILE=$(PROFILE)
 	sleep $(SLEEP_AFTER_PLAN)
 
@@ -125,6 +126,7 @@ provision-etl: # Provision environment - mandatory: PROFILE=[name]
 	make prepare-lambda-deployment-postcode-insert
 	make prepare-lambda-deployment-region-update
 	make prepare-lambda-deployment-ccg-file-generator
+	make prepare-lambda-deployment-email-update
 	make terraform-apply-auto-approve STACK=$(INFRASTRUCTURE_STACKS) PROFILE=$(PROFILE)
 
 provision-plan:
@@ -220,6 +222,12 @@ postcode-insert-etl:
 postcode-region-etl:
 	eval "$$(make aws-assume-role-export-variables)"
 	process=$$($(AWSCLI) lambda invoke --invocation-type Event --function-name $(PROJECT_ID)-$(PROFILE)-region-update  out.json --log-type Tail)
+	cat out.json
+	rm -r out.json
+
+postcode-email-update-etl:
+	eval "$$(make aws-assume-role-export-variables)"
+	process=$$($(AWSCLI) lambda invoke --invocation-type Event --function-name $(PROJECT_ID)-$(PROFILE)-email-update  out.json --log-type Tail)
 	cat out.json
 	rm -r out.json
 
