@@ -18,7 +18,7 @@ dynamodb = boto3.resource("dynamodb")
 SOURCE_BUCKET = os.environ.get("SOURCE_BUCKET")
 DYNAMODB_DESTINATION_TABLE = os.environ.get("DYNAMODB_DESTINATION_TABLE")
 LOGGING_LEVEL = os.environ.get("LOGGING_LEVEL")
-CCG_CSV_LOCATION = os.environ.get("CCG_CSV_KEY")
+EMAIL_CCG_CSV_LOCATION = os.environ.get("EMAIL_CCG_CSV_KEY")
 
 
 logging.basicConfig(level=LOGGING_LEVEL)
@@ -45,9 +45,9 @@ def index(array, target):
     end = len(array) - 1
     while start <= end:
         middle_index = (start + end) // 2
-        if array[middle_index][0] == target:
+        if array[middle_index][3] == target:
             return middle_index
-        elif array[middle_index][0] < target:
+        elif array[middle_index][3] < target:
             start = middle_index + 1
         else:
             end = middle_index - 1
@@ -58,41 +58,40 @@ def write_to_destination(scan_result):
     logger.info("Writing to destination")
     ccg = get_file_to_csv(CCG_CSV_LOCATION)
     dynamo_table = dynamodb.Table(DYNAMODB_DESTINATION_TABLE)
+    response = "Working..."
     try:
         for scan in scan_result:
-            if not scan.get("ccgName"):
+            if not scan.get("email"):
                 postcode = scan["postcode"]
+                nationalGroupingCode = scan["nationalGroupingCode"]
                 # match against postcode
-                ccg_index = index(ccg, postcode)
+                ccg_index = index(ccg, nationalGroupingCode)
                 if ccg_index >= 0:
                     item = ccg[ccg_index]
-                    high_level_health_geo_id = item[1]
-                    organisation_code = item[2]
-                    ccg_name = item[3]
-                    national_grouping_id = item[4]
+                    region = item[0]
+                    icb = item[1]
+                    email = item[4]
                     response = dynamo_table.update_item(
                         Key={"postcode": postcode},
-                        ConditionExpression=Attr("postcode").eq(postcode),
-                        UpdateExpression="set #geographyCode=:h, #organisationCode=:o, #ccgName=:c, #nationalGroupingCode=:n",
+                        ConditionExpression=Attr("nationalGroupingCode").eq(nationalGroupingCode),
+                        UpdateExpression="set #nhs_region=:r, #icb=:i, #email=:e",
                         ExpressionAttributeNames={
-                            "#geographyCode": "geographyCode",
-                            "#organisationCode": "organisationCode",
-                            "#ccgName": "ccgName",
-                            "#nationalGroupingCode": "nationalGroupingCode",
+                            "#nhs_region": "nhs_region",
+                            "#icb": "icb",
+                            "#email": "email",
                         },
                         ExpressionAttributeValues={
-                            ":h": high_level_health_geo_id,
-                            ":o": organisation_code,
-                            ":c": ccg_name,
-                            ":n": national_grouping_id,
+                            ":r": region,
+                            ":i": icb,
+                            ":e": email,
                         },
                         ReturnValues="UPDATED_NEW",
                     )
 
                     logger.info("Response for {} :{}".format(response, postcode))
-                return "Response for {} :{}".format(response, postcode)
+        return "Response for {} :{}".format(response, postcode)
     except Exception as e:
-        logger.error("An error has occured during an update of {}: {}".format(postcode, e))
+        logger.error("An error has occurred during an update of {}: {}".format(postcode, e))
         return "{}".format(e)
 
 
@@ -162,7 +161,7 @@ def slice_array(lst, slices):
 
 
 def lambda_handler(event, context):
-    logger.info("Starting region update uec-sf-postcode-location-region-etl")
+    logger.info("Starting email update uec-sf-ccg-email-etl")
     logger.info("Reading csv files from: " + SOURCE_BUCKET)
     logger.info("Inserting postcode data to: " + DYNAMODB_DESTINATION_TABLE)
 
