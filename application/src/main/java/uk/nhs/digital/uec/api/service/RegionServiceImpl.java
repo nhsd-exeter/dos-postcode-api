@@ -15,7 +15,6 @@ import java.util.*;
 
 
 @Service
-@Slf4j
 public class RegionServiceImpl implements RegionService {
 
   @Autowired
