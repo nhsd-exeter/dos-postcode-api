@@ -70,7 +70,7 @@ pipeline {
     stage("Monitor Deployment") {
       steps {
         script {
-          echo "to do"
+          sh "make monitor-deployment"
         }
       }
     }
