@@ -54,7 +54,10 @@ TF_VAR_sf_read_replica_db_sg := uec-core-dos-live-db-12-replica-sf-sg
 TF_VAR_dos_read_replica_secret_name := core-dos/deployment
 TF_VAR_dos_read_replica_key := DB_SF_READONLY_PASSWORD
 TF_VAR_postcode_etl_db_user := dos_sf_readonly
-TF_VAR_postcode_etl_source_db := pathwaysdo
+TF_VAR_postcode_etl_source_db := pathwaysdos
+
+
+
 
 CERTIFICATE_DOMAIN := certificate
 CHECK_DEPLOYMENT_TIME_LIMIT := 600
