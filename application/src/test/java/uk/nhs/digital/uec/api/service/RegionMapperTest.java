@@ -22,6 +22,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uk.nhs.digital.uec.api.domain.RegionRecord;
+import java.util.Map;
 
 @ExtendWith(MockitoExtension.class)
 @ExtendWith(SpringExtension.class)
@@ -84,4 +85,23 @@ public class RegionMapperTest {
     // Then
     assertThrows(NullPointerException.class, () -> classUnderTest.getRegionRecord(postcode));
   }
+
+
+  @Test
+  public void getAllRegionsTest() throws IOException, ExecutionException, InterruptedException {
+    //Given
+    Future<List<RegionRecord>> fut = mock(Future.class);
+    when(executorService.submit(any(Callable.class))).thenReturn(fut);
+    when(fut.get()).thenReturn(regionRecords);
+    classUnderTest.init();
+
+    //when
+    Map<String,List<String>> regions = classUnderTest.getAllRegions();
+
+    //Then
+    assertNotNull(regions);
+
+  }
+
+
 }

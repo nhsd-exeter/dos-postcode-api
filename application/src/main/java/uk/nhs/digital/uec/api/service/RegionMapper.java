@@ -7,16 +7,19 @@ import uk.nhs.digital.uec.api.domain.RegionRecord;
 import uk.nhs.digital.uec.api.util.RegionUtil;
 
 import javax.annotation.PostConstruct;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 
 @Slf4j
 @Component
 public class RegionMapper {
-
 
   private List<RegionRecord> recordsList;
   @Autowired
@@ -46,5 +49,22 @@ public class RegionMapper {
       .filter(regionRecord -> postcode.startsWith(regionRecord.getPartPostcode()))
       .findFirst()
       .orElse(null);
+  }
+
+  public Map<String, List<String>> getAllRegions() {
+    Map<String, List<String>> regions = new HashMap<>();
+    List<String> distinctRegionNames = recordsList.stream().map(RegionRecord::getRegion).distinct().sorted().collect(Collectors.toList());
+    for (String strRegion : distinctRegionNames) {
+      Predicate<RegionRecord> regionFilter = regionRecord -> regionRecord.getRegion().matches(strRegion);
+      List<String> list = recordsList.stream()
+        .filter(regionFilter)
+        .map(RegionRecord::getSubRegion)
+        .map(String::trim)
+        .distinct()
+        .sorted()
+        .collect(Collectors.toList());
+      regions.put(strRegion, list);
+    }
+    return regions;
   }
 }
