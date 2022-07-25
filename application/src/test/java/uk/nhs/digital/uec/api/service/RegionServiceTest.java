@@ -88,7 +88,7 @@ public class RegionServiceTest {
 
     //Then
     assertEquals(1,postcodeMapList.size());
-    assertEquals(postcodeMapList.get(0).getPostCode(),postcodeMapList.get(0).getPostCode());
+    assertEquals(postcodeMappingsList.get(0).getPostCode(),postcodeMapList.get(0).getPostCode());
 
   }
 
