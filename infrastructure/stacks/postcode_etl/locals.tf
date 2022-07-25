@@ -84,7 +84,7 @@ locals {
 
   region_update_cloudwatch_event_name            = "${var.service_prefix}-region-update-rule"
   region_update_cloudwatch_event_description     = "Daily timer to update the postcode with region and subregion every 4 hours"
-  region_update_cloudwatch_event_cron_expression = "cron(10 */4 * * ? *)"
+  region_update_cloudwatch_event_cron_expression = "cron(0 1/3 ? * * *)"
   region_update_cloudwatch_event_target          = "lambda"
   region_update_cloudwatch_event_statement       = "AllowExecutionFromCloudWatch"
   region_update_cloudwatch_event_action          = "lambda:InvokeFunction"
@@ -92,7 +92,7 @@ locals {
 
   email_update_cloudwatch_event_name            = "${var.service_prefix}-email-update-rule"
   email_update_cloudwatch_event_description     = "Daily timer to update the postcode with email and icb every 4 hours"
-  email_update_cloudwatch_event_cron_expression = "cron(10 */4 * * ? *)"
+  email_update_cloudwatch_event_cron_expression = "cron(0 20/3 ? * * *)"
   email_update_cloudwatch_event_target          = "lambda"
   email_update_cloudwatch_event_statement       = "AllowExecutionFromCloudWatch"
   email_update_cloudwatch_event_action          = "lambda:InvokeFunction"
