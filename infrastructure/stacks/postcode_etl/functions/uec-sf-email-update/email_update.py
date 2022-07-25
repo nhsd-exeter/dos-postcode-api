@@ -88,7 +88,7 @@ def write_to_destination(scan_result):
                         ReturnValues="UPDATED_NEW",
                     )
 
-                    logger.info("Response for {} :{}".format(response, postcode))
+        logger.info("Response for {} :{}".format(response, postcode))
         return "Response for {} :{}".format(response, postcode)
     except Exception as e:
         logger.error("An error has occurred during an update of {}: {}".format(postcode, e))
