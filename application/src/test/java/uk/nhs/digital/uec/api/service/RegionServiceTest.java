@@ -1,5 +1,6 @@
 package uk.nhs.digital.uec.api.service;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -61,11 +62,37 @@ public class RegionServiceTest {
     when(postcodeMappingService.getByPostCodes(Arrays.asList(postcode))).thenReturn(postcodeMappingsList);
 
     //When
-    List<PostcodeMapping> postcodeMappings = regionService.getRegionByPostCode(postcode);
+    PostcodeMapping postcodeMap = regionService.getRegionByPostCode(postcode);
 
     //Then
-    assertEquals(Arrays.asList(postcodeMapping), postcodeMappings);
+    assertEquals(postcodeMapping.getPostCode(), postcodeMap.getPostCode());
 
 
   }
+
+  @Test
+  void testGetRegionByPostCodes() throws InvalidParameterException, NotFoundException, InvalidPostcodeException {
+    // Given
+    List<String> postcodes = Arrays.asList("XX11XX");
+    List<PostcodeMapping> postcodeMappingsList = new ArrayList<>();
+    PostcodeMapping postcodeMapping = new PostcodeMapping();
+    postcodeMapping.setPostCode("XX11XX");
+    postcodeMapping.setName("NAME");
+    postcodeMapping.setSubregion("Sub Region");
+    postcodeMapping.setRegion("Region");
+    postcodeMappingsList.add(postcodeMapping);
+    when(postcodeMappingService.getByPostCodes(postcodes)).thenReturn(postcodeMappingsList);
+
+    //When
+    List<PostcodeMapping> postcodeMapList = regionService.getRegionByPostCodes(postcodes);
+
+    //Then
+    assertEquals(1,postcodeMapList.size());
+    assertEquals(postcodeMapList.get(0).getPostCode(),postcodeMapList.get(0).getPostCode());
+
+  }
+
+
+
+
 }

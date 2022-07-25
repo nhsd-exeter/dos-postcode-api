@@ -31,8 +31,14 @@ public class RegionServiceImpl implements RegionService {
 
 
   @Override
-  public List<PostcodeMapping> getRegionByPostCode(String postcode) throws InvalidParameterException, NotFoundException, InvalidPostcodeException {
-    return postcodeMappingService.getByPostCodes(Arrays.asList(postcode));
+  public PostcodeMapping getRegionByPostCode(String postcode) throws InvalidParameterException, NotFoundException, InvalidPostcodeException {
+    return postcodeMappingService.getByPostCodes(Arrays.asList(postcode)).get(0);
+
+  }
+
+  @Override
+  public List<PostcodeMapping> getRegionByPostCodes(List<String> postcodes) throws InvalidParameterException, NotFoundException, InvalidPostcodeException {
+    return postcodeMappingService.getByPostCodes(postcodes);
 
   }
 
