@@ -84,7 +84,7 @@ locals {
 
   region_update_cloudwatch_event_name            = "${var.service_prefix}-region-update-rule"
   region_update_cloudwatch_event_description     = "Daily timer to update the postcode with region and subregion every 4 hours"
-  region_update_cloudwatch_event_cron_expression = "cron(0 */4 * * * *)"
+  region_update_cloudwatch_event_cron_expression = "cron(10 */4 * * * *)"
   region_update_cloudwatch_event_target          = "lambda"
   region_update_cloudwatch_event_statement       = "AllowExecutionFromCloudWatch"
   region_update_cloudwatch_event_action          = "lambda:InvokeFunction"
