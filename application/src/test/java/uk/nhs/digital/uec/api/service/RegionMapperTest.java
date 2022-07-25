@@ -1,7 +1,6 @@
 package uk.nhs.digital.uec.api.service;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -37,7 +36,9 @@ public class RegionMapperTest {
   @BeforeEach
   public void setup() {
     regionRecords = new ArrayList<>();
-    regionRecords.add(new RegionRecord("EX8", "subregion", new String[] {"EX8"}, "region"));
+    regionRecords.add(new RegionRecord("EX8", "subregion", new String[] {"EX88","EX89"}, "region8"));
+    regionRecords.add(new RegionRecord("EX7", "subregion7", new String[] {"EX77","EX78"}, "region7"));
+    regionRecords.add(new RegionRecord("EX6", "subregion7", new String[] {"EX66","EX67"}, "region6"));
   }
 
   @Test
@@ -100,6 +101,7 @@ public class RegionMapperTest {
 
     //Then
     assertNotNull(regions);
+    assertEquals(3,regions.size());
 
   }
 
