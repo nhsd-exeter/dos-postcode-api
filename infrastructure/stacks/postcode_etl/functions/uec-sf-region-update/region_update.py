@@ -58,6 +58,7 @@ def write_to_destination(scan_result):
     logger.info("Writing to destination")
     ccg = get_file_to_csv(CCG_CSV_LOCATION)
     dynamo_table = dynamodb.Table(DYNAMODB_DESTINATION_TABLE)
+    response = "Working..."
     try:
         for scan in scan_result:
             if not scan.get("ccgName"):
