@@ -92,7 +92,7 @@ locals {
 
   email_update_cloudwatch_event_name            = "${var.service_prefix}-email-update-rule"
   email_update_cloudwatch_event_description     = "Daily timer to update the postcode with email and icb every 4 hours"
-  email_update_cloudwatch_event_cron_expression = "cron(10 */4 * * ? *)"
+  email_update_cloudwatch_event_cron_expression = "cron(0 20/3 ? * * *)"
   email_update_cloudwatch_event_target          = "lambda"
   email_update_cloudwatch_event_statement       = "AllowExecutionFromCloudWatch"
   email_update_cloudwatch_event_action          = "lambda:InvokeFunction"
