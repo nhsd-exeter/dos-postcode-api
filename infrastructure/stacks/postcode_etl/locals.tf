@@ -18,13 +18,13 @@ locals {
   region_update_description   = "Service finder function to update postcode mappings with region and subregions"
   region_update_runtime       = "python3.8"
   region_update_timeout       = 900
-  region_update_memory_size   = 2048
+  region_update_memory_size   = 10240
 
   email_update_function_name = "${var.service_prefix}-email-update"
   email_update_description   = "Service finder function to update postcode mappings with email and ICBs"
   email_update_runtime       = "python3.8"
   email_update_timeout       = 900
-  email_update_memory_size   = 2048
+  email_update_memory_size   = 10240
 
   file_generator_function_name = "${var.service_prefix}-ccg-file-generator"
   file_generator_description   = "Service finder function to generate ccg csv from pcodey files"
