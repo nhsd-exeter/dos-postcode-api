@@ -58,14 +58,16 @@ def write_to_destination(scan_result):
     logger.info("Writing to destination")
     ccg = get_file_to_csv(EMAIL_CCG_CSV_LOCATION)
     dynamo_table = dynamodb.Table(DYNAMODB_DESTINATION_TABLE)
-    response = "Working..."
+    response = " "
+    postcode = " "
     try:
         for scan in scan_result:
-            if not scan.get("email"):
+            if not scan.get("email") and scan.get("organisationCode"):
                 postcode = scan["postcode"]
-                nationalGroupingCode = scan["nationalGroupingCode"]
-                # match against postcode
-                ccg_index = index(ccg, nationalGroupingCode)
+                organisationCode = scan["organisationCode"]
+                # match against organisation code
+                logger.info("Postcode: {} and organisation Code: {}".format(postcode, organisationCode))
+                ccg_index = index(ccg, organisationCode)
                 if ccg_index >= 0:
                     item = ccg[ccg_index]
                     region = item[0]
@@ -73,7 +75,7 @@ def write_to_destination(scan_result):
                     email = item[4]
                     response = dynamo_table.update_item(
                         Key={"postcode": postcode},
-                        ConditionExpression=Attr("nationalGroupingCode").eq(nationalGroupingCode),
+                        ConditionExpression=Attr("organisationCode").eq(organisationCode),
                         UpdateExpression="set #nhs_region=:r, #icb=:i, #email=:e",
                         ExpressionAttributeNames={
                             "#nhs_region": "nhs_region",
@@ -87,9 +89,8 @@ def write_to_destination(scan_result):
                         },
                         ReturnValues="UPDATED_NEW",
                     )
-
-        logger.info("Response for {} :{}".format(response, postcode))
-        return "Response for {} :{}".format(response, postcode)
+                    logger.info("Response for {} :{}".format(response, postcode))
+            return "Response for {} :{}".format(response, postcode)
     except Exception as e:
         logger.error("An error has occurred during an update of {}: {}".format(postcode, e))
         return "{}".format(e)
