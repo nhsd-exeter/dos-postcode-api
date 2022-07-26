@@ -37,6 +37,15 @@ public class PostcodeMapping {
   @DynamoDBAttribute(attributeName = "organisationCode")
   private String organisationCode;
 
+  @DynamoDBAttribute(attributeName = "nhs_region")
+  private String nhs_region;
+
+  @DynamoDBAttribute(attributeName = "icb")
+  private String icb;
+
+  @DynamoDBAttribute(attributeName = "email")
+  private String email;
+
   private String region;
 
   private String subregion;

@@ -117,6 +117,7 @@ plan-etl: # Plan environment - mandatory: PROFILE=[name]
 	make prepare-lambda-deployment-postcode-insert
 	make prepare-lambda-deployment-region-update
 	make prepare-lambda-deployment-ccg-file-generator
+	make prepare-lambda-deployment-email-update
 	make terraform-plan STACK=$(INFRASTRUCTURE_STACKS) PROFILE=$(PROFILE)
 	sleep $(SLEEP_AFTER_PLAN)
 
@@ -125,6 +126,7 @@ provision-etl: # Provision environment - mandatory: PROFILE=[name]
 	make prepare-lambda-deployment-postcode-insert
 	make prepare-lambda-deployment-region-update
 	make prepare-lambda-deployment-ccg-file-generator
+	make prepare-lambda-deployment-email-update
 	make terraform-apply-auto-approve STACK=$(INFRASTRUCTURE_STACKS) PROFILE=$(PROFILE)
 
 provision-plan:
@@ -223,6 +225,12 @@ postcode-region-etl:
 	cat out.json
 	rm -r out.json
 
+postcode-email-update-etl:
+	eval "$$(make aws-assume-role-export-variables)"
+	process=$$($(AWSCLI) lambda invoke --invocation-type Event --function-name $(PROJECT_ID)-$(PROFILE)-email-update  out.json --log-type Tail)
+	cat out.json
+	rm -r out.json
+
 prepare-lambda-deployment-postcode-insert: # Downloads the required libraries for the Lambda functions
 	cd $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-postcode-insert
 	if [ $(BUILD_ID) -eq 0 ]; then
@@ -248,6 +256,32 @@ prepare-lambda-deployment-postcode-insert: # Downloads the required libraries fo
 	cp -R $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-postcode-insert/psycopg2 \
 		$(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-postcode-insert/deploy
 
+prepare-lambda-deployment-email-update: # Downloads the required libraries for the Lambda functions
+	cd $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-email-update
+	if [ $(BUILD_ID) -eq 0 ]; then
+		pip install \
+			-r requirements.txt \
+			-t $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-email-update/deploy \
+			--upgrade \
+			--no-deps
+	else
+		pip install \
+			-r requirements.txt \
+			-t $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-email-update/deploy \
+			--upgrade \
+			--no-deps \
+			--system
+	fi
+	cd $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-email-update/deploy
+	rm -rf ./bin
+	rm -rf ./*.dist-info
+	rm -f LICENSE
+	cp $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-email-update/email_update.py  \
+		$(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-email-update/deploy
+	cp -R $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-email-update/psycopg2 \
+		$(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-email-update/deploy
+
+
 prepare-lambda-deployment-region-update: # Downloads the required libraries for the Lambda functions
 	cd $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-region-update
 	if [ $(BUILD_ID) -eq 0 ]; then
@@ -272,6 +306,7 @@ prepare-lambda-deployment-region-update: # Downloads the required libraries for 
 		$(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-region-update/deploy
 	cp -R $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-region-update/psycopg2 \
 		$(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-region-update/deploy
+
 
 
 prepare-lambda-deployment-ccg-file-generator: # Downloads the required libraries for the Lambda functions
@@ -348,6 +383,12 @@ create-lambda-deploy-dir:
 	then
 		mkdir $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-ccg-file-generator/deploy
 		touch $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-ccg-file-generator/deploy/test.txt
+	fi
+
+	if [ ! -d $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-email-update/deploy ]
+	then
+		mkdir $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-email-update/deploy
+		touch $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-email-update/deploy/test.txt
 	fi
 
 build-artefact:

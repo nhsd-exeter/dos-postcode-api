@@ -17,6 +17,11 @@ data "archive_file" "region_update_function" {
   output_path = "${path.module}/functions_zip/${local.region_update_function_name}.zip"
 }
 
+data "archive_file" "email_update_function" {
+  type        = "zip"
+  source_dir  = "${path.module}/functions/uec-sf-email-update"
+  output_path = "${path.module}/functions_zip/${local.email_update_function_name}.zip"
+}
 data "archive_file" "file_generator_function" {
   type        = "zip"
   source_dir  = "${path.module}/functions/uec-sf-ccg-file-generator"

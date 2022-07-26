@@ -18,7 +18,13 @@ locals {
   region_update_description   = "Service finder function to update postcode mappings with region and subregions"
   region_update_runtime       = "python3.8"
   region_update_timeout       = 900
-  region_update_memory_size   = 2048
+  region_update_memory_size   = 10240
+
+  email_update_function_name = "${var.service_prefix}-email-update"
+  email_update_description   = "Service finder function to update postcode mappings with email and ICBs"
+  email_update_runtime       = "python3.8"
+  email_update_timeout       = 900
+  email_update_memory_size   = 10240
 
   file_generator_function_name = "${var.service_prefix}-ccg-file-generator"
   file_generator_description   = "Service finder function to generate ccg csv from pcodey files"
@@ -46,12 +52,14 @@ locals {
 
   postcode_insert_iam_name  = "${var.service_prefix}-postcode-insert-lambda"
   region_update_iam_name    = "${var.service_prefix}-region-update-lambda"
+  email_update_iam_name     = "${var.service_prefix}-email-update-lambda"
   file_generator_iam_name   = "${var.service_prefix}-file_generator-lambda"
   postcode_extract_iam_name = "${var.service_prefix}-postcode-extract-lambda"
 
   postcode_extract_policy_name = "${var.service_prefix}-postcode-dos-extract"
   postcode_insert_policy_name  = "${var.service_prefix}-postcode-insert-create-cloudwatch-logs"
   region_update_policy_name    = "${var.service_prefix}-region-update-create-cloudwatch-logs"
+  email_update_policy_name     = "${var.service_prefix}-email-update-create-cloudwatch-logs"
   file_generator_policy_name   = "${var.service_prefix}-ccg-file-generator-logs"
 
   s3_full_access_policy_arn            = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
@@ -75,12 +83,20 @@ locals {
   postcode_extract_cloudwatch_event_princinple      = "events.amazonaws.com"
 
   region_update_cloudwatch_event_name            = "${var.service_prefix}-region-update-rule"
-  region_update_cloudwatch_event_description     = "Daily timer to update the postcode with region and subregion at 3:00am"
-  region_update_cloudwatch_event_cron_expression = "cron(0 3 ? * * *)"
+  region_update_cloudwatch_event_description     = "Daily timer to update the postcode with region and subregion every 4 hours"
+  region_update_cloudwatch_event_cron_expression = "cron(0 */4 * * ? *)"
   region_update_cloudwatch_event_target          = "lambda"
   region_update_cloudwatch_event_statement       = "AllowExecutionFromCloudWatch"
   region_update_cloudwatch_event_action          = "lambda:InvokeFunction"
   region_update_cloudwatch_event_princinple      = "events.amazonaws.com"
+
+  email_update_cloudwatch_event_name            = "${var.service_prefix}-email-update-rule"
+  email_update_cloudwatch_event_description     = "Daily timer to update the postcode with email and icb every 4 hours"
+  email_update_cloudwatch_event_cron_expression = "cron(10 */4 * * ? *)"
+  email_update_cloudwatch_event_target          = "lambda"
+  email_update_cloudwatch_event_statement       = "AllowExecutionFromCloudWatch"
+  email_update_cloudwatch_event_action          = "lambda:InvokeFunction"
+  email_update_cloudwatch_event_princinple      = "events.amazonaws.com"
 
   standard_tags = {
     "Programme"   = "uec"

@@ -2,7 +2,6 @@ package uk.nhs.digital.uec.api.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 import uk.nhs.digital.uec.api.domain.RegionRecord;
 import uk.nhs.digital.uec.api.util.RegionUtil;
@@ -18,8 +17,7 @@ import java.util.concurrent.Future;
 @Component
 public class RegionMapper {
 
-  @Autowired
-  private ResourceLoader resourceLoader;
+
   private List<RegionRecord> recordsList;
   @Autowired
   private ExecutorService executor;

@@ -39,6 +39,22 @@ resource "aws_s3_bucket_object" "eccg_file" {
 
 }
 
+resource "aws_s3_bucket_object" "email_file" {
+
+  bucket = var.sf_resources_bucket
+
+  key = "DOS_Email_and_ICB.csv"
+
+  acl = "private"
+
+  source = "${path.module}/functions/DOS_Email_and_ICB.csv"
+
+  etag = filemd5("${path.module}/functions/DOS_Email_and_ICB.csv")
+
+  force_destroy = true
+
+}
+
 resource "aws_s3_bucket_object" "pcodey56" {
 
   bucket = var.sf_resources_bucket
