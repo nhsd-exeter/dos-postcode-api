@@ -131,6 +131,13 @@ pipeline {
         }
       }
     }
+    stage('Perform email Lambda function') {
+      steps {
+        script {
+          sh "make postcode-email-update-etl PROFILE=${env.PROFILE}"
+        }
+      }
+    }
     stage('Smoke Tests') {
       steps {
         script {
