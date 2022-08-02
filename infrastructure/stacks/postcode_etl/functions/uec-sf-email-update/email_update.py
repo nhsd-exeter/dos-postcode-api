@@ -162,14 +162,15 @@ def slice_array(lst, slices):
 
 
 def lambda_handler(event, context):
-    print("Starting email update uec-sf-ccg-email-etl")
+    print("Starting region update uec-sf-postcode-location-region-etl")
     print("Reading csv files from: " + SOURCE_BUCKET)
     print("Inserting postcode data to: " + DYNAMODB_DESTINATION_TABLE)
 
     scans = parallel_scan_table(dynamodb.meta.client, TableName=DYNAMODB_DESTINATION_TABLE)
     chuncks = slice_array(list(scans), 10000)
-
-    with ThreadPoolExecutor(max_workers=8) as executor:
-        results = executor.map(write_to_destination, *chuncks)
+    results = []
+    with ThreadPoolExecutor() as executor:
+        for chunk in chuncks:
+            results.append(executor.map(write_to_destination, chunk))
 
     return {"statusCode": 200, "body": [*results]}
