@@ -36,7 +36,7 @@ def get_file_to_csv(location):
         ccg.append(row)
 
     ccg.sort(key=lambda row: row[0])
-    logger.info("Completed read of CCGs")
+    print("Completed read of CCGs")
     return ccg
 
 
@@ -55,10 +55,11 @@ def index(array, target):
 
 
 def write_to_destination(scan_result):
-    logger.info("Writing to destination")
+    print("Writing to destination")
     ccg = get_file_to_csv(CCG_CSV_LOCATION)
     dynamo_table = dynamodb.Table(DYNAMODB_DESTINATION_TABLE)
-    response = "Working..."
+    response = " "
+    postcode = " "
     try:
         for scan in scan_result:
             if not scan.get("ccgName"):
@@ -89,8 +90,7 @@ def write_to_destination(scan_result):
                         },
                         ReturnValues="UPDATED_NEW",
                     )
-
-            logger.info("Response for {} :{}".format(response, postcode))
+                    print("Response for {} :{}".format(response, postcode))
             return "Response for {} :{}".format(response, postcode)
     except Exception as e:
         logger.error("An error has occurred during an update of {}: {}".format(postcode, e))
@@ -163,14 +163,14 @@ def slice_array(lst, slices):
 
 
 def lambda_handler(event, context):
-    logger.info("Starting region update uec-sf-postcode-location-region-etl")
-    logger.info("Reading csv files from: " + SOURCE_BUCKET)
-    logger.info("Inserting postcode data to: " + DYNAMODB_DESTINATION_TABLE)
+    print("Starting region update uec-sf-postcode-location-region-etl")
+    print("Reading csv files from: " + SOURCE_BUCKET)
+    print("Inserting postcode data to: " + DYNAMODB_DESTINATION_TABLE)
 
     scans = parallel_scan_table(dynamodb.meta.client, TableName=DYNAMODB_DESTINATION_TABLE)
     chuncks = slice_array(list(scans), 10000)
 
-    with ThreadPoolExecutor() as executor:
-        results = executor.map(write_to_destination, chuncks)
+    with ThreadPoolExecutor(max_workers=8) as executor:
+        results = executor.map(write_to_destination, *chuncks)
 
     return {"statusCode": 200, "body": [*results]}
