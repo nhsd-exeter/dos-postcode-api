@@ -62,6 +62,7 @@ def write_to_destination(scan_result):
     postcode = " "
     try:
         for scan in scan_result:
+            print(scan)
             if not scan.get("ccgName"):
                 postcode = scan["postcode"]
                 # match against postcode
@@ -101,7 +102,7 @@ def parallel_scan_table(dynamo_client, *, TableName, **kwargs):
     # How many segments to divide the table into?  As long as this is >= to the
     # number of threads used by the ThreadPoolExecutor, the exact number doesn't
     # seem to matter.
-    total_segments = 100
+    total_segments = 1000
 
     # How many scans to run in parallel?  If you set this really high you could
     # overwhelm the table read capacity, but otherwise I don't change this much.
@@ -168,10 +169,9 @@ def lambda_handler(event, context):
     print("Inserting postcode data to: " + DYNAMODB_DESTINATION_TABLE)
 
     scans = parallel_scan_table(dynamodb.meta.client, TableName=DYNAMODB_DESTINATION_TABLE)
-    chuncks = slice_array(list(scans), 10000)
-    results = []
+    chunks = slice_array(list(scans), 1000)
+
     with ThreadPoolExecutor() as executor:
-        for chunk in chuncks:
-            results.append(executor.map(write_to_destination, chunk))
+        results = executor.map(write_to_destination, chunks)
 
     return {"statusCode": 200, "body": [*results]}

@@ -62,6 +62,7 @@ def write_to_destination(scan_result):
     postcode = " "
     try:
         for scan in scan_result:
+            print(scan)
             if not scan.get("email") and scan.get("organisationCode"):
                 postcode = scan["postcode"]
                 organisationCode = scan["organisationCode"]
@@ -162,15 +163,15 @@ def slice_array(lst, slices):
 
 
 def lambda_handler(event, context):
+    # def lambda_handler(event, context):
     print("Starting region update uec-sf-postcode-location-region-etl")
     print("Reading csv files from: " + SOURCE_BUCKET)
     print("Inserting postcode data to: " + DYNAMODB_DESTINATION_TABLE)
 
     scans = parallel_scan_table(dynamodb.meta.client, TableName=DYNAMODB_DESTINATION_TABLE)
     chuncks = slice_array(list(scans), 10000)
-    results = []
+
     with ThreadPoolExecutor() as executor:
-        for chunk in chuncks:
-            results.append(executor.map(write_to_destination, chunk))
+        results = executor.map(write_to_destination, chuncks)
 
     return {"statusCode": 200, "body": [*results]}
