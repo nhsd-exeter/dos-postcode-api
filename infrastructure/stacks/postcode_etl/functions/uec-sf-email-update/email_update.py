@@ -36,7 +36,7 @@ def get_file_to_csv(location):
         ccg.append(row)
 
     ccg.sort(key=lambda row: row[0])
-    logger.info("Completed read of CCGs")
+    print("Completed read of CCGs")
     return ccg
 
 
@@ -55,18 +55,19 @@ def index(array, target):
 
 
 def write_to_destination(scan_result):
-    logger.info("Writing to destination")
+    print("Writing to destination")
     ccg = get_file_to_csv(EMAIL_CCG_CSV_LOCATION)
     dynamo_table = dynamodb.Table(DYNAMODB_DESTINATION_TABLE)
     response = " "
     postcode = " "
     try:
         for scan in scan_result:
+            print(scan)
             if not scan.get("email") and scan.get("organisationCode"):
                 postcode = scan["postcode"]
                 organisationCode = scan["organisationCode"]
                 # match against organisation code
-                logger.info("Postcode: {} and organisation Code: {}".format(postcode, organisationCode))
+                print("Postcode: {} and organisation Code: {}".format(postcode, organisationCode))
                 ccg_index = index(ccg, organisationCode)
                 if ccg_index >= 0:
                     item = ccg[ccg_index]
@@ -89,7 +90,7 @@ def write_to_destination(scan_result):
                         },
                         ReturnValues="UPDATED_NEW",
                     )
-                    logger.info("Response for {} :{}".format(response, postcode))
+                    print("Response for {} :{}".format(response, postcode))
             return "Response for {} :{}".format(response, postcode)
     except Exception as e:
         logger.error("An error has occurred during an update of {}: {}".format(postcode, e))
@@ -100,7 +101,7 @@ def parallel_scan_table(dynamo_client, *, TableName, **kwargs):
     # How many segments to divide the table into?  As long as this is >= to the
     # number of threads used by the ThreadPoolExecutor, the exact number doesn't
     # seem to matter.
-    total_segments = 100
+    total_segments = 10000
 
     # How many scans to run in parallel?  If you set this really high you could
     # overwhelm the table read capacity, but otherwise I don't change this much.
@@ -162,9 +163,10 @@ def slice_array(lst, slices):
 
 
 def lambda_handler(event, context):
-    logger.info("Starting email update uec-sf-ccg-email-etl")
-    logger.info("Reading csv files from: " + SOURCE_BUCKET)
-    logger.info("Inserting postcode data to: " + DYNAMODB_DESTINATION_TABLE)
+    # def lambda_handler(event, context):
+    print("Starting region update uec-sf-postcode-location-region-etl")
+    print("Reading csv files from: " + SOURCE_BUCKET)
+    print("Inserting postcode data to: " + DYNAMODB_DESTINATION_TABLE)
 
     scans = parallel_scan_table(dynamodb.meta.client, TableName=DYNAMODB_DESTINATION_TABLE)
     chuncks = slice_array(list(scans), 10000)
