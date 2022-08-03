@@ -38,7 +38,7 @@ public class ValidationServiceImpl implements ValidationService {
     if (CollectionUtils.isNotEmpty(postCodes) && CollectionUtils.isEmpty(validPostcodes)) {
       log.error(
           "Invalid postcode/s entered : " + postCodes.stream().collect(Collectors.joining(",")));
-      throw new InvalidPostcodeException(ErrorMessageEnum.INVALID_POSTCODE.getMessage());
+      throw new InvalidPostcodeException(String.format("%s: %s",ErrorMessageEnum.INVALID_POSTCODE.getMessage(),String.join(",",postCodes)));
     }
     return validPostcodes;
   }
