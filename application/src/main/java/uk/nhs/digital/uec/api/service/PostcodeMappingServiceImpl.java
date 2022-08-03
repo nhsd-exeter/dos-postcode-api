@@ -93,7 +93,7 @@ public class PostcodeMappingServiceImpl implements PostcodeMappingService {
         return postcodeMapping;
       }
       postcodeMapping.setRegion(regionRecord.getRegion());
-      postcodeMapping.setSubregion(regionRecord.getSubRegion());
+      postcodeMapping.setSubRegion(regionRecord.getSubRegion());
       return postcodeMapping;
   }
 }

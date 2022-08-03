@@ -10,7 +10,7 @@ import org.springframework.boot.test.system.OutputCaptureExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import uk.nhs.digital.uec.api.domain.PostcodeMapping;
+import uk.nhs.digital.uec.api.dto.PostcodeMappingDTO;
 import uk.nhs.digital.uec.api.exception.InvalidParameterException;
 import uk.nhs.digital.uec.api.exception.InvalidPostcodeException;
 import uk.nhs.digital.uec.api.exception.NotFoundException;
@@ -58,15 +58,14 @@ public class RegionControllerTest {
   void testGetRegionsWithPostcode(CapturedOutput log) throws InvalidParameterException, NotFoundException, InvalidPostcodeException {
     // Given
     String postcode = "XX1 1AX";
-    PostcodeMapping postcodeMapping = new PostcodeMapping();
-    postcodeMapping.setPostCode("XX1 1AX");
-    postcodeMapping.setName("NAME");
-    postcodeMapping.setSubregion("Sub Region");
+    PostcodeMappingDTO postcodeMapping = new PostcodeMappingDTO();
+    postcodeMapping.setPostcode("XX1 1AX");
+    postcodeMapping.setRegion("Sub Region");
     postcodeMapping.setRegion("Region");
     when(regionService.getRegionByPostCode(postcode)).thenReturn(postcodeMapping);
 
     // When
-    ResponseEntity<PostcodeMapping> response = regionController.getRegionDetailsByPostCode(postcode);
+    ResponseEntity<PostcodeMappingDTO> response = regionController.getRegionDetailsByPostCode(postcode);
 
     //Then
     assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -81,18 +80,16 @@ public class RegionControllerTest {
   void testGetRegionsDetailsByPostCodes(CapturedOutput log) throws InvalidParameterException, NotFoundException, InvalidPostcodeException {
     // Given
     List<String> postcodes = Arrays.asList("XX11XX","YY11YY");
-    List<PostcodeMapping> postcodeMappingsList = new ArrayList<>();
-    PostcodeMapping postcodeMapping = new PostcodeMapping();
-    postcodeMapping.setPostCode("XX11XX");
-    postcodeMapping.setName("NAME1");
-    postcodeMapping.setSubregion("Sub Region1");
+    List<PostcodeMappingDTO> postcodeMappingsList = new ArrayList<>();
+    PostcodeMappingDTO postcodeMapping = new PostcodeMappingDTO();
+    postcodeMapping.setPostcode("XX11XX");
+    postcodeMapping.setRegion("Sub Region1");
     postcodeMapping.setRegion("Region1");
     postcodeMappingsList.add(postcodeMapping);
 
-    postcodeMapping = new PostcodeMapping();
-    postcodeMapping.setPostCode("YY11YY");
-    postcodeMapping.setName("NAME2");
-    postcodeMapping.setSubregion("Sub Region2");
+    postcodeMapping = new PostcodeMappingDTO();
+    postcodeMapping.setPostcode("YY11YY");
+    postcodeMapping.setRegion("Sub Region2");
     postcodeMapping.setRegion("Region2");
     postcodeMappingsList.add(postcodeMapping);
 

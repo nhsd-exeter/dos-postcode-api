@@ -5,9 +5,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.modelmapper.ModelMapper;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uk.nhs.digital.uec.api.domain.PostcodeMapping;
+import uk.nhs.digital.uec.api.dto.PostcodeMappingDTO;
 import uk.nhs.digital.uec.api.exception.InvalidParameterException;
 import uk.nhs.digital.uec.api.exception.InvalidPostcodeException;
 import uk.nhs.digital.uec.api.exception.NotFoundException;
@@ -30,6 +33,8 @@ public class RegionServiceTest {
   @Mock
   private PostcodeMappingService postcodeMappingService;
 
+  @Spy
+  ModelMapper modelMapper=new ModelMapper();
 
   @Test
   void testGetAllRegions() {
@@ -52,20 +57,30 @@ public class RegionServiceTest {
   void testGetRegionByPostCode() throws InvalidParameterException, NotFoundException, InvalidPostcodeException {
     // Given
     String postcode = "XX1 1AX";
+    String name = "NAME";
+    String region="Region";
+    String subRegion = "Sub Region";
     List<PostcodeMapping> postcodeMappingsList = new ArrayList<>();
     PostcodeMapping postcodeMapping = new PostcodeMapping();
-    postcodeMapping.setPostCode("XX1 1AX");
-    postcodeMapping.setName("NAME");
-    postcodeMapping.setSubregion("Sub Region");
-    postcodeMapping.setRegion("Region");
+    postcodeMapping.setPostCode(postcode);
+    postcodeMapping.setName(name);
+    postcodeMapping.setSubRegion(subRegion);
+    postcodeMapping.setRegion(region);
     postcodeMappingsList.add(postcodeMapping);
+
+    PostcodeMappingDTO postcodeMappingDto =   new PostcodeMappingDTO();
+    postcodeMappingDto.setPostcode(postcode);
+    postcodeMappingDto.setRegion(region);
+    postcodeMappingDto.setAuthority(subRegion);
+
     when(postcodeMappingService.getByPostCodes(Arrays.asList(postcode))).thenReturn(postcodeMappingsList);
+    when(regionService.ConvertToDTO(postcodeMapping)).thenReturn(postcodeMappingDto);
 
     //When
-    PostcodeMapping postcodeMap = regionService.getRegionByPostCode(postcode);
+    PostcodeMappingDTO postcodeMappingDTO = regionService.getRegionByPostCode(postcode);
 
     //Then
-    assertEquals(postcodeMapping.getPostCode(), postcodeMap.getPostCode());
+    assertEquals(postcodeMapping.getPostCode(), postcodeMappingDTO.getPostcode());
 
 
   }
@@ -78,17 +93,17 @@ public class RegionServiceTest {
     PostcodeMapping postcodeMapping = new PostcodeMapping();
     postcodeMapping.setPostCode("XX11XX");
     postcodeMapping.setName("NAME");
-    postcodeMapping.setSubregion("Sub Region");
+    postcodeMapping.setSubRegion("Sub Region");
     postcodeMapping.setRegion("Region");
     postcodeMappingsList.add(postcodeMapping);
     when(postcodeMappingService.getByPostCodes(postcodes)).thenReturn(postcodeMappingsList);
 
     //When
-    List<PostcodeMapping> postcodeMapList = regionService.getRegionByPostCodes(postcodes);
+    List<PostcodeMappingDTO> postcodeMappingDTOList = regionService.getRegionByPostCodes(postcodes);
 
     //Then
-    assertEquals(1,postcodeMapList.size());
-    assertEquals(postcodeMappingsList.get(0).getPostCode(),postcodeMapList.get(0).getPostCode());
+    assertEquals(1,postcodeMappingDTOList.size());
+    assertEquals(postcodeMappingsList.get(0).getPostCode(),postcodeMappingDTOList.get(0).getPostcode());
 
   }
 

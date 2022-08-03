@@ -5,12 +5,14 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 // service-finder-local-postcode-location-mapping
 /* Domain object for postcode mapping */
 @DynamoDBTable(tableName = "uec-dos-api-pc-stg-postcode-location-mapping")
 @Getter
 @Setter
+@ToString
 public class PostcodeMapping {
   @DynamoDBHashKey
   @DynamoDBAttribute(attributeName = "postcode")
@@ -31,6 +33,7 @@ public class PostcodeMapping {
   @DynamoDBAttribute(attributeName = "geographyCode")
   private String geographyCode;
 
+
   @DynamoDBAttribute(attributeName = "nationalGroupingCode")
   private String nationalGroupingCode;
 
@@ -48,5 +51,7 @@ public class PostcodeMapping {
 
   private String region;
 
-  private String subregion;
+
+  private String subRegion;
+
 }
