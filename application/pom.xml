@@ -264,6 +264,7 @@
           <excludes>
             <exclude>**/config/*.*</exclude>
             <exclude>**/domain/*.*</exclude>
+            <exclude>**/dto/*.*</exclude>
             <exclude>**/exception/*.class</exclude>
             <exclude>**/filter/*.class</exclude>
             <exclude>**/PostcodeMappingApplication.class</exclude>
