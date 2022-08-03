@@ -30,13 +30,14 @@ public class RegionMapperTest {
   @InjectMocks RegionMapper classUnderTest;
   @Mock private ResourceLoader resourceLoader;
   @Mock private ExecutorService executorService;
-  static final String postcode = "EX8 8XE";
+  static final String postcode = "EX88XE";
   List<RegionRecord> regionRecords;
 
   @BeforeEach
   public void setup() {
     regionRecords = new ArrayList<>();
-    regionRecords.add(new RegionRecord("EX8", "subregion", new String[] {"EX88","EX89"}, "region8"));
+    regionRecords.add(new RegionRecord("EX8", "subregion", new String[] {"EX8","EX9"}, "region8"));
+    regionRecords.add(new RegionRecord("EX88", "subregion88", new String[] {"EX88","EX89"}, "region88"));
     regionRecords.add(new RegionRecord("EX7", "subregion7", new String[] {"EX77","EX78"}, "region7"));
     regionRecords.add(new RegionRecord("EX6", "subregion7", new String[] {"EX66","EX67"}, "region6"));
   }
@@ -101,7 +102,7 @@ public class RegionMapperTest {
 
     //Then
     assertNotNull(regions);
-    assertEquals(3,regions.size());
+    assertEquals(4,regions.size());
 
   }
 
