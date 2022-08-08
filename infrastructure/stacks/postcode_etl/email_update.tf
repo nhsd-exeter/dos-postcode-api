@@ -1,16 +1,17 @@
 
 resource "aws_lambda_function" "email_update_lambda" {
-  filename         = data.archive_file.email_update_function.output_path
-  function_name    = local.email_update_function_name
-  description      = local.email_update_description
-  role             = aws_iam_role.email_update_lambda_role.arn
-  handler          = "email_update.lambda_handler"
-  source_code_hash = data.archive_file.email_update_function.output_base64sha256
-  runtime          = local.email_update_runtime
-  timeout          = local.email_update_timeout
-  memory_size      = local.email_update_memory_size
-  publish          = false
-  tags             = local.standard_tags
+  filename                       = data.archive_file.email_update_function.output_path
+  function_name                  = local.email_update_function_name
+  description                    = local.email_update_description
+  role                           = aws_iam_role.email_update_lambda_role.arn
+  handler                        = "email_update.lambda_handler"
+  source_code_hash               = data.archive_file.email_update_function.output_base64sha256
+  runtime                        = local.email_update_runtime
+  timeout                        = local.email_update_timeout
+  memory_size                    = local.email_update_memory_size
+  publish                        = false
+  tags                           = local.standard_tags
+  reserved_concurrent_executions = 10
   environment {
     variables = {
       SOURCE_BUCKET              = local.postcode_etl_s3_bucket
@@ -133,8 +134,8 @@ resource "aws_cloudwatch_log_group" "email_update_log_group" {
   name = "/aws/lambda/${aws_lambda_function.email_update_lambda.function_name}"
 }
 
-resource "aws_lambda_provisioned_concurrency_config" "email_update_concurrency" {
-  function_name                     = aws_lambda_function.email_update_lambda.function_name
-  provisioned_concurrent_executions = 10
-  qualifier                         = aws_lambda_function.email_update_lambda.version
-}
+# resource "aws_lambda_provisioned_concurrency_config" "email_update_concurrency" {
+#   function_name                     = aws_lambda_function.email_update_lambda.function_name
+#   provisioned_concurrent_executions = 10
+#   qualifier                         = aws_lambda_function.email_update_lambda.version
+# }
