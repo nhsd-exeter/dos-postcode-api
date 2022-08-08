@@ -101,6 +101,7 @@ public class RegionControllerTest {
 
     //Then
     assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertEquals(postcodeMappingsList,response.getBody());
     verify(regionService, times(1)).getRegionByPostCodes(postcodes);
     assertTrue(log.getOut().contains("Processing Get Region Details By Given PostCodes"));
 

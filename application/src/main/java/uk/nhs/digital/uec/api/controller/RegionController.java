@@ -51,7 +51,7 @@ public class RegionController {
         List<PostcodeMappingDTO> postcodeMappingList = regionService.getRegionByPostCodes(postcodes);
         log.info("Processing Get Region Details By Given PostCodes:{}", postcodes);
         log.info("Preparing response {}ms", System.currentTimeMillis() - start);
-        return new ResponseEntity(postcodes, HttpStatus.OK);
+        return new ResponseEntity(postcodeMappingList, HttpStatus.OK);
   }
 
   @GetMapping(params = {"postcode"})
