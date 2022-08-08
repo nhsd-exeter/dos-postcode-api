@@ -132,3 +132,9 @@ resource "aws_lambda_permission" "allow_cloudwatch_to_call_region_postcode" {
 resource "aws_cloudwatch_log_group" "region_update_log_group" {
   name = "/aws/lambda/${aws_lambda_function.region_update_lambda.function_name}"
 }
+
+resource "aws_lambda_provisioned_concurrency_config" "region_update_concurrency" {
+  function_name                     = aws_lambda_function.region_update_lambda.function_name
+  provisioned_concurrent_executions = 10
+  qualifier                         = aws_lambda_function.region_update_lambda.version
+}
