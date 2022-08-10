@@ -60,27 +60,6 @@ public class RegionController {
     }
     return new ResponseEntity(new PostcodeMappingDTO(), HttpStatus.BAD_REQUEST);
   }
-  /* @GetMapping(params = {"postcodes"})
-  public ResponseEntity getRegionDetailsByPostCodes(
-      @ApiParam(POSTCODES_DESC) @RequestParam(name = "postcodes", required = false)
-          List<String> postcodes)
-      throws InvalidParameterException, NotFoundException, InvalidPostcodeException {
-    long start = System.currentTimeMillis();
-    List<PostcodeMappingDTO> postcodeMappingList = regionService.getRegionByPostCodes(postcodes);
-    log.info("Processing Get Region Details By Given PostCodes:{}", postcodes);
-    log.info("Preparing response {}ms", System.currentTimeMillis() - start);
-    return new ResponseEntity(postcodeMappingList, HttpStatus.OK);
-  }
-
-  @GetMapping(params = {"postcode"})
-  public ResponseEntity getRegionDetailsByPostCode(@ApiParam(POSTCODE_DESC) @RequestParam(name = "postcode", required = false) String postcode)
-    throws InvalidParameterException, NotFoundException, InvalidPostcodeException {
-    long start = System.currentTimeMillis();
-      PostcodeMappingDTO postcodeMapping = regionService.getRegionByPostCode(postcode);
-      log.info("Preparing response {}ms", System.currentTimeMillis() - start);
-      log.info("Processing Get Region Details By Given PostCode:{}", postcode);
-    return new ResponseEntity(postcodeMapping, HttpStatus.OK);
-  }*/
 
   @GetMapping(params = {"postcode"})
   public ResponseEntity getRegionDetailsByPostCode(
