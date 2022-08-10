@@ -139,24 +139,6 @@ public class RegionControllerTest {
 
   @Test
   @DisplayName("Get Region Details For A Given PostCode")
-  void testThrowsExpectionPostCodeExcep(CapturedOutput log)
-      throws InvalidParameterException, NotFoundException, InvalidPostcodeException {
-    // Given
-    String postcodes = "XX11XX";
-
-    when(regionService.getRegionByPostCode(postcodes)).thenThrow(Exception.class);
-    // When
-    ResponseEntity<?> response = regionController.getRegionDetailsByPostCode(postcodes);
-
-    // Then
-    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-    // assertEquals(postcodeMappingsList, response.getBody());
-    // verify(regionService, times(1)).getRegionByPostCodes(postcodes);
-    //  assertTrue(log.getOut().contains("Processing Get Region Details By Given PostCodes"));
-  }
-
-  @Test
-  @DisplayName("Get Region Details For A Given PostCode")
   void testThrowsNotFoundPostCodeExcep(CapturedOutput log)
       throws InvalidParameterException, NotFoundException, InvalidPostcodeException {
     // Given
@@ -165,23 +147,6 @@ public class RegionControllerTest {
     when(regionService.getRegionByPostCode(postcodes)).thenThrow(NotFoundException.class);
     // When
     ResponseEntity<?> response = regionController.getRegionDetailsByPostCode(postcodes);
-    // Then
-    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-    // assertEquals(postcodeMappingsList, response.getBody());
-    // verify(regionService, times(1)).getRegionByPostCodes(postcodes);
-    //  assertTrue(log.getOut().contains("Processing Get Region Details By Given PostCodes"));
-  }
-
-  @Test
-  @DisplayName("Get Region Details For A Given PostCode")
-  void testThrowsExpectionPostCodesExcep(CapturedOutput log)
-      throws InvalidParameterException, NotFoundException, InvalidPostcodeException {
-    // Given
-    List<String> postcodes = Arrays.asList("XX11XX", "YY11YY");
-    when(regionService.getRegionByPostCodes(postcodes)).thenThrow(Exception.class);
-    // When
-    ResponseEntity<?> response = regionController.getRegionDetailsByPostCodes(postcodes);
-
     // Then
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     // assertEquals(postcodeMappingsList, response.getBody());
