@@ -98,6 +98,10 @@ locals {
   email_update_cloudwatch_event_action          = "lambda:InvokeFunction"
   email_update_cloudwatch_event_princinple      = "events.amazonaws.com"
 
+  step_function_cloudwatch_event_name            = "${var.service_prefix}-step-function-event-rule"
+  step_function_cloudwatch_event_description     = "Daily timer to run step function for parallel execution of update lambdas"
+  step_function_cloudwatch_event_target          = "states"
+  step_function_cloudwatch_event_cron_expression = "cron(0 */1 * * ? *)"
   standard_tags = {
     "Programme"   = "uec"
     "Service"     = "service-finder"
