@@ -19,9 +19,28 @@ build: project-config
 	cp \
 		$(PROJECT_DIR)/build/automation/etc/certificate/* \
 		$(PROJECT_DIR)/application/src/main/resources/certificate
-	make docker-run-mvn \
+
+	if [ $(PROFILE) == 'local' ]
+	then
+		make docker-run-mvn \
 		DIR="application" \
 		CMD="-Dmaven.test.skip=true clean install"
+	else
+	make docker-run-mvn \
+		DIR="application" \
+		CMD="clean verify install \
+		-Dsonar.verbose=true \
+		-Dsonar.host.url='https://sonarcloud.io' \
+		-Dsonar.organization='nhsd-exeter' \
+		-Dsonar.projectKey='uec-dos-api-pca' \
+		-Dsonar.projectName='DoS Postcode API' \
+		-Dsonar.login='$$(make secret-fetch NAME=service-finder-sonar-pass | jq .SONAR_HOST_TOKEN | tr -d '"' || exit 1)' \
+		-Dsonar.sourceEncoding='UTF-8' \
+		-Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco \
+		-Dsonar.exclusions='src/main/java/**/config/*.*,src/main/java/**/domain/*.*,src/main/java/**/exception/*.*,src/test/**/*.*,src/main/java/**/filter/*.*,src/main/java/**/PostcodeMappingApplication.*' \
+		sonar:sonar"
+	fi
+
 	mv \
 		$(PROJECT_DIR)/application/target/dos-postcode-api-*.jar \
 		$(PROJECT_DIR)/build/docker/dos-postcode-api/assets/application/dos-postcode-api.jar
@@ -67,7 +86,7 @@ debug:
 			' \
 		" \
 		ARGS=" \
-		--env SPRING_PROFILES_ACTIVE='local' \
+		--env SPRING_PROFILES_ACTIVE='local, mock-auth' \
 		--env DYNAMODB_POSTCODE_LOC_MAP_TABLE='$(DYNAMODB_POSTCODE_LOC_MAP_TABLE)' \
 		--env CERTIFICATE_DOMAIN='$(CERTIFICATE_DOMAIN)' \
 		--env POSTCODE_LOCATION_DYNAMO_URL='$(POSTCODE_LOCATION_DYNAMO_URL)' \
@@ -230,6 +249,11 @@ postcode-email-update-etl:
 	process=$$($(AWSCLI) lambda invoke --invocation-type Event --function-name $(PROJECT_ID)-$(PROFILE)-email-update  out.json --log-type Tail)
 	cat out.json
 	rm -r out.json
+
+step-function-etl: #Executes lambda update functions with step machine
+	eval "$$(make aws-assume-role-export-variables)"
+	process=$$($(AWSCLI) stepfunctions start-execution --state-machine-arn arn:aws:states:$(AWS_DEFAULT_REGION):$(AWS_ACCOUNT_ID):stateMachine:$(SERVICE_PREFIX)-region-email-update-state-machine)
+	echo $$process
 
 prepare-lambda-deployment-postcode-insert: # Downloads the required libraries for the Lambda functions
 	cd $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-postcode-insert
@@ -489,7 +513,7 @@ run-contract:
 		"
 	make project-stop
 
-
+# REMOVE PASSWORD LOGS BEFORE GO LIVE
 run-smoke:
 	make restart
 	sleep 20

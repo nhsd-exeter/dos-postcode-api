@@ -124,17 +124,10 @@ pipeline {
         }
       }
     }
-    stage('Perform Region Lambda function') {
+    stage('Perform Step Machine excution') {
       steps {
         script {
-          sh "make postcode-region-etl PROFILE=${env.PROFILE}"
-        }
-      }
-    }
-    stage('Perform email Lambda function') {
-      steps {
-        script {
-          sh "make postcode-email-update-etl PROFILE=${env.PROFILE}"
+          sh "make step-function-etl PROFILE=${env.PROFILE}"
         }
       }
     }
