@@ -1,10 +1,7 @@
 package uk.nhs.digital.uec.api.controller;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
-import java.util.*;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -19,18 +16,32 @@ import uk.nhs.digital.uec.api.exception.InvalidPostcodeException;
 import uk.nhs.digital.uec.api.exception.NotFoundException;
 import uk.nhs.digital.uec.api.service.RegionService;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 @ExtendWith(SpringExtension.class)
 @ExtendWith(OutputCaptureExtension.class)
 public class RegionControllerTest {
 
-  @InjectMocks private RegionController regionController;
+  @InjectMocks
+  private RegionController regionController;
 
-  @Mock private RegionService regionService;
+  @Mock
+  private RegionService regionService;
 
-  // @Test
+  @Test
   @DisplayName("Get All Regions When No PostCode Given")
   void testGetAllRegions(CapturedOutput log)
-      throws InvalidParameterException, NotFoundException, InvalidPostcodeException {
+    throws InvalidParameterException, NotFoundException, InvalidPostcodeException {
     // Given
     Map<String, List<String>> regionsList = new HashMap<>();
     regionsList.put("region1", Arrays.asList("subregion1", "subregion11", "subregion111"));
@@ -48,10 +59,10 @@ public class RegionControllerTest {
     assertTrue(log.getOut().contains("Processing Get All Regions"));
   }
 
-  // @Test
+  @Test
   @DisplayName("Get Region Details For A Given PostCode")
   void testGetRegionsWithPostcode(CapturedOutput log)
-      throws InvalidParameterException, NotFoundException, InvalidPostcodeException {
+    throws InvalidParameterException, NotFoundException, InvalidPostcodeException {
     // Given
     String postcode = "XX1 1AX";
     PostcodeMappingDTO postcodeMapping = new PostcodeMappingDTO();
@@ -62,7 +73,7 @@ public class RegionControllerTest {
 
     // When
     ResponseEntity<PostcodeMappingDTO> response =
-        regionController.getRegionDetailsByPostCode(postcode);
+      regionController.getRegionDetailsByPostCode(postcode);
 
     // Then
     assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -70,10 +81,10 @@ public class RegionControllerTest {
     assertTrue(log.getOut().contains("Processing Get Region Details By Given PostCode"));
   }
 
-  // @Test
+  @Test
   @DisplayName("Get Region Details For A Given PostCode")
   void testGetRegionsDetailsByPostCodes(CapturedOutput log)
-      throws InvalidParameterException, NotFoundException, InvalidPostcodeException {
+    throws InvalidParameterException, NotFoundException, InvalidPostcodeException {
     // Given
     List<String> postcodes = Arrays.asList("XX11XX", "YY11YY");
     List<PostcodeMappingDTO> postcodeMappingsList = new ArrayList<>();
@@ -101,10 +112,10 @@ public class RegionControllerTest {
     assertTrue(log.getOut().contains("Processing Get Region Details By Given PostCodes"));
   }
 
-  // @Test
+  @Test
   @DisplayName("Get Region Details For A Given PostCode")
   void testThrowsInvalidPostCodeExcep(CapturedOutput log)
-      throws InvalidParameterException, NotFoundException, InvalidPostcodeException {
+    throws InvalidParameterException, NotFoundException, InvalidPostcodeException {
     // Given
     String postcodes = "XX11XX";
 
@@ -118,10 +129,10 @@ public class RegionControllerTest {
     //  assertTrue(log.getOut().contains("Processing Get Region Details By Given PostCodes"));
   }
 
-  // @Test
+  @Test
   @DisplayName("Get Region Details For A Given PostCode")
   void testThrowsInvalidParamPostCodeExcep(CapturedOutput log)
-      throws InvalidParameterException, NotFoundException, InvalidPostcodeException {
+    throws InvalidParameterException, NotFoundException, InvalidPostcodeException {
     // Given
     String postcodes = "XX11XX";
 
@@ -136,10 +147,10 @@ public class RegionControllerTest {
     //  assertTrue(log.getOut().contains("Processing Get Region Details By Given PostCodes"));
   }
 
-  // @Test
+  @Test
   @DisplayName("Get Region Details For A Given PostCode")
   void testThrowsNotFoundPostCodeExcep(CapturedOutput log)
-      throws InvalidParameterException, NotFoundException, InvalidPostcodeException {
+    throws InvalidParameterException, NotFoundException, InvalidPostcodeException {
     // Given
     String postcodes = "XX11XX";
 
@@ -153,10 +164,10 @@ public class RegionControllerTest {
     //  assertTrue(log.getOut().contains("Processing Get Region Details By Given PostCodes"));
   }
 
-  // @Test
+  @Test
   @DisplayName("Get Region Details For A Given PostCode")
   void testThrowsInvalidParamPostCodesExcep(CapturedOutput log)
-      throws InvalidParameterException, NotFoundException, InvalidPostcodeException {
+    throws InvalidParameterException, NotFoundException, InvalidPostcodeException {
     // Given
     List<String> postcodes = Arrays.asList("XX11XX", "YY11YY");
 
@@ -174,7 +185,7 @@ public class RegionControllerTest {
   // @Test
   @DisplayName("Get Region Details For A Given PostCode")
   void testThrowsNotFoundPostCodesExcep(CapturedOutput log)
-      throws InvalidParameterException, NotFoundException, InvalidPostcodeException {
+    throws InvalidParameterException, NotFoundException, InvalidPostcodeException {
     // Given
     List<String> postcodes = Arrays.asList("XX11XX", "YY11YY");
     when(regionService.getRegionByPostCodes(postcodes)).thenThrow(NotFoundException.class);
@@ -190,7 +201,7 @@ public class RegionControllerTest {
   // @Test
   @DisplayName("Get Region Details For A Given PostCode")
   void testThrowsInvalidPostCodesExcep(CapturedOutput log)
-      throws InvalidParameterException, NotFoundException, InvalidPostcodeException {
+    throws InvalidParameterException, NotFoundException, InvalidPostcodeException {
     // Given
     List<String> postcodes = Arrays.asList("XX11XX", "YY11YY");
 
