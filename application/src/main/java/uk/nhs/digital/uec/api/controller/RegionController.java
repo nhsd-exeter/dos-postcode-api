@@ -1,8 +1,10 @@
 package uk.nhs.digital.uec.api.controller;
 
-import static uk.nhs.digital.uec.api.constants.SwaggerConstants.*;
+import static uk.nhs.digital.uec.api.constants.SwaggerConstants.POSTCODES_DESC;
+import static uk.nhs.digital.uec.api.constants.SwaggerConstants.POSTCODE_DESC;
 
 import io.swagger.annotations.ApiParam;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
@@ -42,23 +44,16 @@ public class RegionController {
   public ResponseEntity getRegionDetailsByPostCodes(
       @ApiParam(POSTCODES_DESC) @RequestParam(name = "postcodes", required = false)
           List<String> postcodes) {
+    List<PostcodeMappingDTO> postcodeMappingList = new ArrayList<>();
+    long start = System.currentTimeMillis();
+    log.info("Processing Get Region Details By Given PostCodes:{}", postcodes);
     try {
-      long start = System.currentTimeMillis();
-      List<PostcodeMappingDTO> postcodeMappingList = regionService.getRegionByPostCodes(postcodes);
-      log.info("Processing Get Region Details By Given PostCodes:{}", postcodes);
-      log.info("Preparing response {}ms", System.currentTimeMillis() - start);
-      return new ResponseEntity(postcodeMappingList, HttpStatus.OK);
-    } catch (InvalidParameterException ex) {
-
-      log.error("InvalidParamException happened while fetching postcode: {}", ex.getMessage());
-    } catch (NotFoundException ex) {
-      log.error("NotFoundException happened while fetching postcode: {}", ex.getMessage());
-    } catch (InvalidPostcodeException ex) {
-      log.error("InvalidPostCodeException happened while fetching postcode: {}", ex.getMessage());
-    } catch (Exception ex) {
-      log.error("Exception happened while fetching postcode: {}", ex.getMessage());
+      postcodeMappingList = regionService.getRegionByPostCodes(postcodes);
+    } catch (Exception e) {
+      log.error("An error occurred whilst retrieve region. {} {}", e.getCause(), e.getMessage());
     }
-    return new ResponseEntity(new PostcodeMappingDTO(), HttpStatus.BAD_REQUEST);
+    log.info("Preparing response {}ms", System.currentTimeMillis() - start);
+    return ResponseEntity.ok(postcodeMappingList);
   }
 
   @GetMapping(params = {"postcode"})
@@ -73,7 +68,6 @@ public class RegionController {
       log.info("Processing Get Region Details By Given PostCode:{}", postcode);
       return new ResponseEntity(postcodeMapping, HttpStatus.OK);
     } catch (InvalidParameterException ex) {
-
       log.error("InvalidParamException happened while fetching postcode: {}", ex.getMessage());
     } catch (NotFoundException ex) {
       log.error("NotFoundException happened while fetching postcode: {}", ex.getMessage());
@@ -82,6 +76,6 @@ public class RegionController {
     } catch (Exception ex) {
       log.error("Exception happened while fetching postcode: {}", ex.getMessage());
     }
-    return new ResponseEntity(postcodeMapping, HttpStatus.BAD_REQUEST);
+    return ResponseEntity.ok(postcodeMapping);
   }
 }
