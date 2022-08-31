@@ -5,7 +5,6 @@ import static org.mockito.Mockito.*;
 
 import java.util.*;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -154,7 +153,7 @@ public class RegionControllerTest {
     //  assertTrue(log.getOut().contains("Processing Get Region Details By Given PostCodes"));
   }
 
-  @Test
+  // @Test
   @DisplayName("Get Region Details For A Given PostCode")
   void testThrowsInvalidParamPostCodesExcep(CapturedOutput log)
       throws InvalidParameterException, NotFoundException, InvalidPostcodeException {
