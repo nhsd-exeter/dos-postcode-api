@@ -47,10 +47,10 @@ public class PostcodeMappingServiceImpl implements PostcodeMappingService {
       throws InvalidParameterException, NotFoundException {
     log.info("Attempting to get postcode mapping from database - getByName");
     List<PostcodeMapping> location =
-        postcodeMappingRepository.findByName(name).stream()
+        postcodeMappingRepository.findByName(name)
+          .stream()
             .filter(Optional::isPresent)
             .map(Optional::get)
-            .filter(Objects::nonNull)
             .map(this::mapPostCodeToRegion)
             .collect(Collectors.toList());
     log.info("Validating response, returning locations");
@@ -74,20 +74,27 @@ public class PostcodeMappingServiceImpl implements PostcodeMappingService {
   }
 
   private PostcodeMapping getByPostcode(String postcode) {
+    PostcodeMapping mapping;
+    log.info("Finding mapping by postcode {}",postcode);
     Optional<PostcodeMapping> findByPostCodeOptional =
         postcodeMappingRepository.findByPostCode(postcode);
-    log.info("Finding mapping by postcode");
-    return findByPostCodeOptional.isPresent() ? findByPostCodeOptional.get() : null;
+    mapping = findByPostCodeOptional.orElse(null);
+    log.info("Mapping for {} is {}",postcode,mapping);
+    return mapping;
   }
 
   private PostcodeMapping getByPostcodeAndName(String postcode, String name) {
+    PostcodeMapping mapping;
+    log.info("Finding mapping by postcode and name");
     Optional<PostcodeMapping> findByPostCodeAndNameOptional =
         postcodeMappingRepository.findByPostCodeAndName(postcode, name);
-    log.info("Finding mapping by postcode and name");
-    return findByPostCodeAndNameOptional.isPresent() ? findByPostCodeAndNameOptional.get() : null;
+    mapping = findByPostCodeAndNameOptional.orElse(null);
+    log.info("Mapping for {} is {}",postcode,mapping);
+    return mapping;
   }
 
   private PostcodeMapping mapPostCodeToRegion(PostcodeMapping postcodeMapping){
+      log.info("Finding region details for {}",postcodeMapping.getPostCode());
       RegionRecord regionRecord = regionMapper.getRegionRecord(postcodeMapping.getPostCode());
       if(Objects.isNull(regionRecord)){
         return postcodeMapping;

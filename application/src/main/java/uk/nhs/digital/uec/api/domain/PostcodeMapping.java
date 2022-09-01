@@ -9,7 +9,7 @@ import lombok.ToString;
 
 // service-finder-local-postcode-location-mapping
 /* Domain object for postcode mapping */
-@DynamoDBTable(tableName = "uec-dos-api-pc-stg-postcode-location-mapping")
+@DynamoDBTable(tableName = "service-finder-local-postcode-location-mapping")
 @Getter
 @Setter
 @ToString
@@ -33,7 +33,6 @@ public class PostcodeMapping {
   @DynamoDBAttribute(attributeName = "geographyCode")
   private String geographyCode;
 
-
   @DynamoDBAttribute(attributeName = "nationalGroupingCode")
   private String nationalGroupingCode;
 
@@ -51,7 +50,5 @@ public class PostcodeMapping {
 
   private String region;
 
-
   private String subRegion;
-
 }

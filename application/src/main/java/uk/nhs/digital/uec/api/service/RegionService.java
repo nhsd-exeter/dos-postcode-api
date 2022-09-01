@@ -11,8 +11,10 @@ import java.util.Map;
 
 
 public interface RegionService {
-  Map<String,List<String>> getAllRegions();
+  Map<String, List<String>> getAllRegions();
+
   PostcodeMappingDTO getRegionByPostCode(String postcode) throws InvalidParameterException, NotFoundException, InvalidPostcodeException;
+
   List<PostcodeMappingDTO> getRegionByPostCodes(List<String> postcodes) throws InvalidParameterException, NotFoundException, InvalidPostcodeException;
 }
 
