@@ -28,4 +28,5 @@ POSTCODE_ENDPOINT = https://$(POSTCODE_DOMAIN)
 
 APPLICATION_SA_NAME := $(PROJECT_ID)-service-account
 TF_VAR_application_service_account_name := $(APPLICATION_SA_NAME)
-TF_VAR_project_namespace := $(Project_NameSpace)
+TF_VAR_service_account_role_name := $(APPLICATION_SA_NAME)
+TF_VAR_project_namespace := $(PROJECT_ID)
