@@ -39,7 +39,7 @@ terraform-apply-auto-approve: ### Set up infrastructure - mandatory: STACK|STACK
 	make terraform-apply \
 		STACKS="$(or $(STACK), $(or $(STACKS), $(INFRASTRUCTURE_STACKS)))" \
 		CMD="apply" \
-		OPTS="-auto-approve $(OPTS)"
+		OPTS="-auto-approve $(OPTS) -input=false"
 
 terraform-apply: ### Set up infrastructure - mandatory: STACK|STACKS|INFRASTRUCTURE_STACKS=[comma-separated names]; optional: PROFILE=[name],OPTS=[Terraform options]
 	make _terraform-stacks \
