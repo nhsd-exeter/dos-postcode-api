@@ -50,31 +50,11 @@ pipeline {
         }
       }
     }
-    stage('Provision ETL Infrastructure') {
-      steps {
-        script {
-          sh "make provision-etl PROFILE=${env.PROFILE}"
-        }
-      }
-    }
-    stage('Provision Infrastructure') {
-      steps {
-        script {
-          sh "make provision PROFILE=${env.PROFILE}"
-        }
-      }
-    }
+
     stage('Plan SNS Infrastructure') {
       steps {
         script {
           sh "make provision-sns-plan PROFILE=${env.PROFILE}"
-        }
-      }
-    }
-    stage('Provision SNS Infrastructure') {
-      steps {
-        script {
-          sh "make provision-sns PROFILE=${env.PROFILE}"
         }
       }
     }
