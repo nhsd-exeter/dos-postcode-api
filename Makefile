@@ -160,6 +160,10 @@ provision-sns-plan:
 provision-sns: # Provision environment - mandatory: PROFILE=[name]
 	make terraform-apply-auto-approve STACK=$(SNS_INFRASTRUCTURE_STACKS) PROFILE=$(PROFILE)
 
+destroy:
+	make delete-namespace PROFILE=$(PROFILE)
+	make destroy-infractructure PROFILE=$(PROFILE)
+
 delete-namespace: # Delete namespace - mandatory: PROFILE=[name]
 	make k8s-undeploy PROFILE=$(PROFILE)
 

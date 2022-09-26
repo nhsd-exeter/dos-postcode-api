@@ -8,7 +8,7 @@ pipeline {
     buildDiscarder(logRotator(daysToKeepStr: '7', numToKeepStr: '13'))
     disableConcurrentBuilds()
     parallelsAlwaysFailFast()
-    timeout(time: 30, unit: 'MINUTES')
+    timeout(time: 120, unit: 'MINUTES')
   }
 
   environment {
@@ -78,59 +78,10 @@ pipeline {
         }
       }
     }
-    stage('Deploy API') {
+    stage('Destory env API') {
       steps {
         script {
-          sh "make deploy PROFILE=${env.PROFILE} IMAGE_TAG=${IMAGE_TAG}"
-        }
-      }
-    }
-    stage('Monitor Deployment') {
-      steps {
-        script {
-          sh 'make k8s-check-deployment-of-replica-sets'
-        }
-      }
-    }
-    stage('Monitor Route53 Connection') {
-      steps {
-        script {
-          sh 'make monitor-r53-connection'
-        }
-      }
-    }
-    stage('Perform Extract Lambda function') {
-      steps {
-        script {
-          sh "make postcode-extract-etl PROFILE=${env.PROFILE}"
-        }
-      }
-    }
-    stage('Perform Insert Lambda function') {
-      steps {
-        script {
-          sh "make postcode-insert-etl PROFILE=${env.PROFILE}"
-        }
-      }
-    }
-    stage('Perform File Generator Lambda function') {
-      steps {
-        script {
-          sh "make file-generator-etl PROFILE=${env.PROFILE}"
-        }
-      }
-    }
-    stage('Perform Step Machine excution') {
-      steps {
-        script {
-          sh "make step-function-etl PROFILE=${env.PROFILE}"
-        }
-      }
-    }
-    stage('Smoke Tests') {
-      steps {
-        script {
-          sh 'make run-smoke-test'
+          sh "make destory PROFILE=${env.PROFILE}"
         }
       }
     }
