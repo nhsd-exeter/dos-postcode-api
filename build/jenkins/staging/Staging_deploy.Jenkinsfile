@@ -78,10 +78,10 @@ pipeline {
         }
       }
     }
-    stage('Destory env API') {
+    stage('Destroy env API') {
       steps {
         script {
-          sh "make destory PROFILE=${env.PROFILE}"
+          sh "make destroy PROFILE=${env.PROFILE}"
         }
       }
     }
