@@ -162,7 +162,7 @@ provision-sns: # Provision environment - mandatory: PROFILE=[name]
 
 destroy:
 	make delete-namespace PROFILE=$(PROFILE)
-	make destroy-infractructure PROFILE=$(PROFILE)
+	make destroy-infrastructure PROFILE=$(PROFILE)
 
 delete-namespace: # Delete namespace - mandatory: PROFILE=[name]
 	make k8s-undeploy PROFILE=$(PROFILE)
