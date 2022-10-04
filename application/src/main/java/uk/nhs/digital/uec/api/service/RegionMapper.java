@@ -3,7 +3,6 @@ package uk.nhs.digital.uec.api.service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
@@ -14,7 +13,7 @@ import javax.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import uk.nhs.digital.uec.api.domain.RegionRecord;
+import uk.nhs.digital.uec.api.model.RegionRecord;
 import uk.nhs.digital.uec.api.util.RegionUtil;
 
 @Slf4j

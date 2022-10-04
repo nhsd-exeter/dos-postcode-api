@@ -1,4 +1,4 @@
-package uk.nhs.digital.uec.api.domain;
+package uk.nhs.digital.uec.api.model;
 
 import com.opencsv.bean.CsvBindByName;
 import lombok.AllArgsConstructor;

@@ -23,6 +23,7 @@ public class MockAuthConfig extends WebSecurityConfigurerAdapter {
   public static final String HEALTH_CHECK_LIVENESS_URL = "/actuator/health/liveness";
   public static final String WELCOME_URL = "/api/home";
 
+
   public static final String SWAGGER_URL = "/swagger-ui.html";
   public static final String SWAGGER_API_DOCS = "/v2/api-docs";
   public static final String SWAGGER_RESOURCES_DIR = "/swagger-resources/**";
@@ -43,7 +44,8 @@ public class MockAuthConfig extends WebSecurityConfigurerAdapter {
             SWAGGER_WEBJARS,
             SWAGGER_API_DOCS_DIR,
             SWAGGER_UI_DIR,
-            WELCOME_URL);
+            WELCOME_URL
+          );
 
     http.addFilterBefore(mockAccessTokenFilter, AbstractPreAuthenticatedProcessingFilter.class)
         .cors()

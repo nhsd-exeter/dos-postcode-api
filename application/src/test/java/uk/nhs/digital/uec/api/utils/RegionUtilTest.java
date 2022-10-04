@@ -20,7 +20,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import uk.nhs.digital.uec.api.domain.RegionRecord;
+import uk.nhs.digital.uec.api.model.RegionRecord;
 import uk.nhs.digital.uec.api.util.RegionUtil;
 
 @ExtendWith(MockitoExtension.class)

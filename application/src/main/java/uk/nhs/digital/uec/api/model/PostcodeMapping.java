@@ -1,4 +1,4 @@
-package uk.nhs.digital.uec.api.domain;
+package uk.nhs.digital.uec.api.model;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;

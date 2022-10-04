@@ -1,4 +1,4 @@
-package uk.nhs.digital.uec.api.dto;
+package uk.nhs.digital.uec.api.model;
 
 import lombok.Getter;
 import lombok.Setter;
