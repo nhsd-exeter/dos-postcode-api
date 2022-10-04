@@ -1,7 +1,7 @@
 package uk.nhs.digital.uec.api.service;
 
 
-import uk.nhs.digital.uec.api.dto.PostcodeMappingDTO;
+import uk.nhs.digital.uec.api.model.PostcodeMappingDTO;
 import uk.nhs.digital.uec.api.exception.InvalidParameterException;
 import uk.nhs.digital.uec.api.exception.InvalidPostcodeException;
 import uk.nhs.digital.uec.api.exception.NotFoundException;

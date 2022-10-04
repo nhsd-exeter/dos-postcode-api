@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
-import uk.nhs.digital.uec.api.domain.RegionRecord;
+import uk.nhs.digital.uec.api.model.RegionRecord;
 
 @Slf4j
 @Component

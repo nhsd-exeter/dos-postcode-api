@@ -11,7 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import uk.nhs.digital.uec.api.domain.ErrorResponse;
+import uk.nhs.digital.uec.api.model.ErrorResponse;
 import uk.nhs.digital.uec.api.exception.ErrorMappingEnum.ValidationCodes;
 
 /** Controller advice class for postcode mapping details */

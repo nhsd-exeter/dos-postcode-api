@@ -5,7 +5,7 @@ import java.util.Optional;
 import org.socialsignin.spring.data.dynamodb.repository.EnableScan;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
-import uk.nhs.digital.uec.api.domain.PostcodeMapping;
+import uk.nhs.digital.uec.api.model.PostcodeMapping;
 
 /** This repository layer class retrieves the data from DynamoDB configured in this project */
 @EnableScan

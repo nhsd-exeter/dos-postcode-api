@@ -18,8 +18,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import uk.nhs.digital.uec.api.domain.PostcodeMapping;
-import uk.nhs.digital.uec.api.exception.ErrorMessageEnum;
+import uk.nhs.digital.uec.api.model.PostcodeMapping;
 import uk.nhs.digital.uec.api.exception.InvalidParameterException;
 import uk.nhs.digital.uec.api.exception.InvalidPostcodeException;
 import uk.nhs.digital.uec.api.exception.NotFoundException;
@@ -29,7 +28,7 @@ import uk.nhs.digital.uec.api.service.PostcodeMappingService;
 @RestController
 @RequestMapping("/api/search")
 @PreAuthorize("hasAnyRole('POSTCODE_API_ACCESS')")
-@Slf4j
+@Slf4j(topic = "Postcode API - Postcode controller")
 public class PostcodeMappingController {
 
   @Autowired private PostcodeMappingService postcodeMappingService;
