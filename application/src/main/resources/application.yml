@@ -3,22 +3,22 @@ spring:
       pathmatch:
             matching-strategy: ant_path_matcher
 server:
-  port: ${SERVER_PORT}
+  port: ${SERVER_PORT:443}
   ssl:
     key-store-type: PKCS12
-    keystore: classpath:certificate/${CERTIFICATE_DOMAIN}.p12
+    keystore: classpath:certificate/${CERTIFICATE_DOMAIN:certificate}.p12
     key-store-password:
 
 aws:
-  accessKeyId: ${AWS_ACCESS_KEY_ID}
-  secretAccessKey: ${AWS_SECRET_ACCESS_KEY}
+  accessKeyId: ${AWS_ACCESS_KEY_ID:dummy}
+  secretAccessKey: ${AWS_SECRET_ACCESS_KEY:dummy}
 
 dynamo:
   config:
     region: eu-west-2
   table:
-    name: ${DYNAMODB_POSTCODE_LOC_MAP_TABLE}
-  endpoint: ${POSTCODE_LOCATION_DYNAMO_URL}
+    name: ${DYNAMODB_POSTCODE_LOC_MAP_TABLE:service-finder-local-postcode-location-mapping}
+  endpoint: ${POSTCODE_LOCATION_DYNAMO_URL:http://localhost:8000}
 
 invalid:
   postcode: Please enter a valid postcode
@@ -27,3 +27,4 @@ api:
   version: 1.0.0
   title: NHS Postcode Mapping API
   description: NHS Postcode Mapping API provides northing and easting location coordinates for a given postcode
+

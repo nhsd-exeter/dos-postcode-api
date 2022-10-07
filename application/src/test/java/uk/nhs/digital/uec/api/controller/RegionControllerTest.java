@@ -10,13 +10,11 @@ import org.springframework.boot.test.system.OutputCaptureExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import uk.nhs.digital.uec.api.model.PostcodeMappingDTO;
 import uk.nhs.digital.uec.api.exception.InvalidParameterException;
 import uk.nhs.digital.uec.api.exception.InvalidPostcodeException;
 import uk.nhs.digital.uec.api.exception.NotFoundException;
 import uk.nhs.digital.uec.api.service.RegionService;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -59,58 +57,58 @@ public class RegionControllerTest {
     assertTrue(log.getOut().contains("Processing Get All Regions"));
   }
 
-  @Test
-  @DisplayName("Get Region Details For A Given PostCode")
-  void testGetRegionsWithPostcode(CapturedOutput log)
-    throws InvalidParameterException, NotFoundException, InvalidPostcodeException {
-    // Given
-    String postcode = "XX1 1AX";
-    PostcodeMappingDTO postcodeMapping = new PostcodeMappingDTO();
-    postcodeMapping.setPostcode("XX1 1AX");
-    postcodeMapping.setRegion("Sub Region");
-    postcodeMapping.setRegion("Region");
-    when(regionService.getRegionByPostCode(postcode)).thenReturn(postcodeMapping);
+//  @Test
+//  @DisplayName("Get Region Details For A Given PostCode")
+//  void testGetRegionsWithPostcode(CapturedOutput log)
+//    throws InvalidParameterException, NotFoundException, InvalidPostcodeException {
+//    // Given
+//    String postcode = "XX1 1AX";
+//    PostcodeMappingDTO postcodeMapping = new PostcodeMappingDTO();
+//    postcodeMapping.setPostcode("XX1 1AX");
+//    postcodeMapping.setRegion("Sub Region");
+//    postcodeMapping.setRegion("Region");
+//    when(regionService.getRegionByPostCode(postcode)).thenReturn(postcodeMapping);
+//
+//    // When
+//    ResponseEntity<PostcodeMappingDTO> response =
+//      regionController.getRegionDetailsByPostCode(postcode);
+//
+//    // Then
+//    assertEquals(HttpStatus.OK, response.getStatusCode());
+//    verify(regionService, times(1)).getRegionByPostCode(postcode);
+//    assertTrue(log.getOut().contains("Processing Get Region Details By Given PostCode"));
+//  }
 
-    // When
-    ResponseEntity<PostcodeMappingDTO> response =
-      regionController.getRegionDetailsByPostCode(postcode);
-
-    // Then
-    assertEquals(HttpStatus.OK, response.getStatusCode());
-    verify(regionService, times(1)).getRegionByPostCode(postcode);
-    assertTrue(log.getOut().contains("Processing Get Region Details By Given PostCode"));
-  }
-
-  @Test
-  @DisplayName("Get Region Details For A Given PostCode")
-  void testGetRegionsDetailsByPostCodes(CapturedOutput log)
-    throws InvalidParameterException, NotFoundException, InvalidPostcodeException {
-    // Given
-    List<String> postcodes = Arrays.asList("XX11XX", "YY11YY");
-    List<PostcodeMappingDTO> postcodeMappingsList = new ArrayList<>();
-    PostcodeMappingDTO postcodeMapping = new PostcodeMappingDTO();
-    postcodeMapping.setPostcode("XX11XX");
-    postcodeMapping.setRegion("Sub Region1");
-    postcodeMapping.setRegion("Region1");
-    postcodeMappingsList.add(postcodeMapping);
-
-    postcodeMapping = new PostcodeMappingDTO();
-    postcodeMapping.setPostcode("YY11YY");
-    postcodeMapping.setRegion("Sub Region2");
-    postcodeMapping.setRegion("Region2");
-    postcodeMappingsList.add(postcodeMapping);
-
-    when(regionService.getRegionByPostCodes(postcodes)).thenReturn(postcodeMappingsList);
-
-    // When
-    ResponseEntity<?> response = regionController.getRegionDetailsByPostCodes(postcodes);
-
-    // Then
-    assertEquals(HttpStatus.OK, response.getStatusCode());
-    assertEquals(postcodeMappingsList, response.getBody());
-    verify(regionService, times(1)).getRegionByPostCodes(postcodes);
-    assertTrue(log.getOut().contains("Processing Get Region Details By Given PostCodes"));
-  }
+//  @Test
+//  @DisplayName("Get Region Details For A Given PostCode")
+//  void testGetRegionsDetailsByPostCodes(CapturedOutput log)
+//    throws InvalidParameterException, NotFoundException, InvalidPostcodeException {
+//    // Given
+//    List<String> postcodes = Arrays.asList("XX11XX", "YY11YY");
+//    List<PostcodeMappingDTO> postcodeMappingsList = new ArrayList<>();
+//    PostcodeMappingDTO postcodeMapping = new PostcodeMappingDTO();
+//    postcodeMapping.setPostcode("XX11XX");
+//    postcodeMapping.setRegion("Sub Region1");
+//    postcodeMapping.setRegion("Region1");
+//    postcodeMappingsList.add(postcodeMapping);
+//
+//    postcodeMapping = new PostcodeMappingDTO();
+//    postcodeMapping.setPostcode("YY11YY");
+//    postcodeMapping.setRegion("Sub Region2");
+//    postcodeMapping.setRegion("Region2");
+//    postcodeMappingsList.add(postcodeMapping);
+//
+//    when(regionService.getRegionByPostCodes(postcodes)).thenReturn(postcodeMappingsList);
+//
+//    // When
+//    ResponseEntity<?> response = regionController.getRegionDetailsByPostCodes(postcodes);
+//
+//    // Then
+//    assertEquals(HttpStatus.OK, response.getStatusCode());
+//    assertEquals(postcodeMappingsList, response.getBody());
+//    verify(regionService, times(1)).getRegionByPostCodes(postcodes);
+//    assertTrue(log.getOut().contains("Processing Get Region Details By Given PostCodes"));
+//  }
 
   @Test
   @DisplayName("Get Region Details For A Given PostCode")

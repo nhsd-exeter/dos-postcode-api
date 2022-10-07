@@ -27,6 +27,7 @@ JMETER_SLAVE_IMAGE := jmeter-slave:5.4.1-log4j2-patch
 
 POSTCODE_LOCATION_DYNAMO_URL := https://dynamodb.$(AWS_REGION).amazonaws.com
 DYNAMODB_POSTCODE_LOC_MAP_TABLE := $(PROJECT_GROUP_NAME_SHORT)-$(PROFILE)-postcode-location-mapping
+BUCKET_NAME := $(TF_VAR_service_prefix)-application-resources
 
 REPLICAS := 1
 PROJECT_GROUP_NAME_SHORT := $(PROJECT_GROUP_SHORT)-$(PROJECT_NAME_SHORT)

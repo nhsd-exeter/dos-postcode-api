@@ -90,6 +90,7 @@ debug:
 		--env DYNAMODB_POSTCODE_LOC_MAP_TABLE='$(DYNAMODB_POSTCODE_LOC_MAP_TABLE)' \
 		--env CERTIFICATE_DOMAIN='$(CERTIFICATE_DOMAIN)' \
 		--env POSTCODE_LOCATION_DYNAMO_URL='$(POSTCODE_LOCATION_DYNAMO_URL)' \
+		--env BUCKET_NAME='s3_bucket' \
 		--env SERVER_PORT='$(SERVER_PORT)' \
 		--env VERSION='$(VERSION)' \
 		--env AWS_ACCESS_KEY_ID='dummy' \
@@ -229,19 +230,11 @@ postcode-extract-etl:
 
 postcode-insert-etl:
 	eval "$$(make aws-assume-role-export-variables)"
-	process=$$($(AWSCLI) lambda invoke --function-name $(PROJECT_ID)-$(PROFILE)-postcode-insert out.json --log-type Tail)
+	process=$$($(AWSCLI) lambda invoke --invocation-type Event --function-name $(PROJECT_ID)-$(PROFILE)-postcode-insert out.json --log-type Tail)
 	cat out.json
 	rm -r out.json
 
-	# http_result=$$($(AWSCLI) lambda invoke --function-name $(PROJECT_ID)-$(PROFILE)-postcode-insert out.json --log-type Tail | jq .StatusCode)
-	# if [[ ! $$http_result -eq 200 ]]; then
-	# 	cat out.json
-	# 	rm -r out.json
-	# 	exit 1
-	# fi
-	# echo $$http_result
-	# rm -r out.json
-
+#TODO: - Remove once SFD-4796 Complete
 postcode-region-etl:
 	eval "$$(make aws-assume-role-export-variables)"
 	process=$$($(AWSCLI) lambda invoke --invocation-type Event --function-name $(PROJECT_ID)-$(PROFILE)-region-update  out.json --log-type Tail)

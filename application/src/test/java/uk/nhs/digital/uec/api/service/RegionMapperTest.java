@@ -19,17 +19,20 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.io.ResourceLoader;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uk.nhs.digital.uec.api.model.RegionRecord;
+import uk.nhs.digital.uec.api.service.impl.RegionMapperImpl;
+import uk.nhs.digital.uec.api.util.CCGTask;
+
 import java.util.Map;
 
 @ExtendWith(MockitoExtension.class)
-@ExtendWith(SpringExtension.class)
 public class RegionMapperTest {
 
-  @InjectMocks RegionMapper classUnderTest;
+  @InjectMocks
+  RegionMapperImpl classUnderTest;
   @Mock private ResourceLoader resourceLoader;
   @Mock private ExecutorService executorService;
+  @Mock private CCGTask ccgTask;
   static final String postcode = "EX88XE";
   List<RegionRecord> regionRecords;
 

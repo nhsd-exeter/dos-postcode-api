@@ -1,10 +1,6 @@
 package uk.nhs.digital.uec.api.controller;
 
-import static uk.nhs.digital.uec.api.constants.SwaggerConstants.*;
-
 import io.swagger.annotations.ApiParam;
-import java.util.List;
-import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,19 +10,28 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import uk.nhs.digital.uec.api.model.PostcodeMappingDTO;
 import uk.nhs.digital.uec.api.exception.InvalidParameterException;
 import uk.nhs.digital.uec.api.exception.InvalidPostcodeException;
 import uk.nhs.digital.uec.api.exception.NotFoundException;
+import uk.nhs.digital.uec.api.model.PostcodeMapping;
 import uk.nhs.digital.uec.api.service.RegionService;
 
-/** RestController for Region Mapping service */
+import java.util.List;
+import java.util.Map;
+
+import static uk.nhs.digital.uec.api.constants.SwaggerConstants.POSTCODES_DESC;
+import static uk.nhs.digital.uec.api.constants.SwaggerConstants.POSTCODE_DESC;
+
+/**
+ * RestController for Region Mapping service
+ */
 @RestController
 @RequestMapping("/api/regions")
 @Slf4j(topic = "Postcode API - Region controller")
 public class RegionController {
 
-  @Autowired private RegionService regionService;
+  @Autowired
+  private RegionService regionService;
 
   @GetMapping
   @PreAuthorize("hasAnyRole('POSTCODE_API_ACCESS')")
@@ -41,11 +46,11 @@ public class RegionController {
   @GetMapping(params = {"postcodes"})
   @PreAuthorize("hasAnyRole('POSTCODE_API_ACCESS')")
   public ResponseEntity getRegionDetailsByPostCodes(
-      @ApiParam(POSTCODES_DESC) @RequestParam(name = "postcodes", required = false)
-          List<String> postcodes) {
+    @ApiParam(POSTCODES_DESC) @RequestParam(name = "postcodes", required = false)
+      List<String> postcodes) {
     try {
       long start = System.currentTimeMillis();
-      List<PostcodeMappingDTO> postcodeMappingList = regionService.getRegionByPostCodes(postcodes);
+      List<PostcodeMapping> postcodeMappingList = regionService.getRegionByPostCodes(postcodes);
       log.info("Processing Get Region Details By Given PostCodes:{}", postcodes);
       log.info("Preparing response {}ms", System.currentTimeMillis() - start);
       return new ResponseEntity(postcodeMappingList, HttpStatus.OK);
@@ -58,15 +63,15 @@ public class RegionController {
     } catch (Exception ex) {
       log.error("Exception happened while fetching postcode: {}", ex.getMessage());
     }
-    return new ResponseEntity(new PostcodeMappingDTO(), HttpStatus.OK);
+    return new ResponseEntity(new PostcodeMapping(), HttpStatus.OK);
   }
 
   @GetMapping(params = {"postcode"})
   @PreAuthorize("hasAnyRole('POSTCODE_API_ACCESS')")
   public ResponseEntity getRegionDetailsByPostCode(
-      @ApiParam(POSTCODE_DESC) @RequestParam(name = "postcode", required = false) String postcode) {
-    PostcodeMappingDTO postcodeMapping = new PostcodeMappingDTO();
-    postcodeMapping.setPostcode(postcode);
+    @ApiParam(POSTCODE_DESC) @RequestParam(name = "postcode", required = false) String postcode) {
+    PostcodeMapping postcodeMapping = new PostcodeMapping();
+    postcodeMapping.setPostCode(postcode);
     try {
       long start = System.currentTimeMillis();
       postcodeMapping = regionService.getRegionByPostCode(postcode);

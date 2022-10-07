@@ -12,5 +12,6 @@ VERSION := v0.0.1
 
 POSTCODE_LOCATION_DYNAMO_URL := http://dynamo.pc.local:8000/
 DYNAMODB_POSTCODE_LOC_MAP_TABLE := service-finder-${PROFILE}-postcode-location-mapping
+BUCKET_NAME := S3BUCKET
 
 CERTIFICATE_DOMAIN := certificate

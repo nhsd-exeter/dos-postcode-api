@@ -24,6 +24,7 @@ public class RegionUtil implements Callable<List<RegionRecord>> {
 
   @Override
   public List<RegionRecord> call() {
+    Long start = System.currentTimeMillis();
     log.info("loading Region csv async");
     Resource resource = resourceLoader.getResource("classpath:postcode_regions.csv");
     try (BufferedReader bufferedReader =
@@ -31,7 +32,7 @@ public class RegionUtil implements Callable<List<RegionRecord>> {
             new InputStreamReader(resource.getInputStream(), StandardCharsets.UTF_8))) {
       CsvToBean<RegionRecord> csvBean =
           new CsvToBeanBuilder<RegionRecord>(bufferedReader).withType(RegionRecord.class).build();
-      log.info("Successfully loaded region csv");
+      log.info("Successfully loaded region csv. {}ms", System.currentTimeMillis() - start);
       return csvBean.parse();
     } catch (IOException e) {
       log.error("Unable to collate regions: {}", e.getMessage());

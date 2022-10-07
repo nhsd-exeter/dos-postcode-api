@@ -199,7 +199,6 @@
       <version>${commons-io.version}</version>
     </dependency>
 
-    <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-collections4 -->
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-collections4</artifactId>
@@ -217,11 +216,6 @@
       <artifactId>springfox-boot-starter</artifactId>
       <version>${springfox-boot-starter.version}</version>
     </dependency>
-    <dependency>
-      <groupId>org.modelmapper</groupId>
-      <artifactId>modelmapper</artifactId>
-      <version>3.1.0</version>
-    </dependency>
 
     <dependency>
       <groupId>io.springfox</groupId>
@@ -234,8 +228,6 @@
       <artifactId>springfox-swagger-ui</artifactId>
       <version>${springfox-swagger-ui.version}</version>
     </dependency>
-
-
 
 
   </dependencies>
@@ -334,6 +326,14 @@
         <configuration>
           <failBuildOnCVSS>10</failBuildOnCVSS>
           <cveStartYear>2022</cveStartYear>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>9</source>
+          <target>9</target>
         </configuration>
       </plugin>
     </plugins>
