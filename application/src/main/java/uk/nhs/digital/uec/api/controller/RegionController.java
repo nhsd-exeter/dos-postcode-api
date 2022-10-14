@@ -58,7 +58,7 @@ public class RegionController {
     } catch (Exception ex) {
       log.error("Exception happened while fetching postcode: {}", ex.getMessage());
     }
-    return new ResponseEntity(new PostcodeMappingDTO(), HttpStatus.BAD_REQUEST);
+    return new ResponseEntity(new PostcodeMappingDTO(), HttpStatus.OK);
   }
 
   @GetMapping(params = {"postcode"})
@@ -83,6 +83,6 @@ public class RegionController {
     } catch (Exception ex) {
       log.error("Exception happened while fetching postcode: {}", ex.getMessage());
     }
-    return new ResponseEntity(postcodeMapping, HttpStatus.BAD_REQUEST);
+    return new ResponseEntity(postcodeMapping, HttpStatus.OK);
   }
 }
