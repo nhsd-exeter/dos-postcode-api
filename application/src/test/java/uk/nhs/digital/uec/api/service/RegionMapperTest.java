@@ -21,7 +21,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.io.ResourceLoader;
 import uk.nhs.digital.uec.api.model.RegionRecord;
 import uk.nhs.digital.uec.api.service.impl.RegionMapperImpl;
-import uk.nhs.digital.uec.api.util.CCGTask;
+import uk.nhs.digital.uec.api.util.CCGUtil;
 
 import java.util.Map;
 
@@ -32,7 +32,7 @@ public class RegionMapperTest {
   RegionMapperImpl classUnderTest;
   @Mock private ResourceLoader resourceLoader;
   @Mock private ExecutorService executorService;
-  @Mock private CCGTask ccgTask;
+  @Mock private CCGUtil ccgUtil;
   static final String postcode = "EX88XE";
   List<RegionRecord> regionRecords;
 

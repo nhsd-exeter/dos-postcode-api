@@ -27,14 +27,14 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @ExtendWith(SpringExtension.class)
-public class CCGTaskTest {
+public class CCGUtilTest {
 
   static final String path = "pcodeyx.csv";
   static final String mockCSV =
     "Postcode,Region,Nearby districts,UK region\n"
       + "EX8,Exeter,\"EX9, EX7, EX3, EX5, TQ14, EX2, EX1, EX10, EX4, EX11\",South West";
   @InjectMocks
-  CCGTask classUnderTest;
+  CCGUtil classUnderTest;
   @Mock
   ResourceLoader resourceLoader;
   InputStream inputStream;

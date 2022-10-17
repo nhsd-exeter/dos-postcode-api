@@ -8,7 +8,7 @@ import uk.nhs.digital.uec.api.model.CCGRecord;
 import uk.nhs.digital.uec.api.model.ICBRecord;
 import uk.nhs.digital.uec.api.model.RegionRecord;
 import uk.nhs.digital.uec.api.service.RegionMapper;
-import uk.nhs.digital.uec.api.util.CCGTask;
+import uk.nhs.digital.uec.api.util.CCGUtil;
 import uk.nhs.digital.uec.api.util.ICBUtil;
 import uk.nhs.digital.uec.api.util.RegionUtil;
 
@@ -17,7 +17,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
@@ -54,7 +53,7 @@ public class RegionMapperImpl implements RegionMapper {
   @Autowired
   private ICBUtil icbUtil;
   @Autowired
-  private CCGTask ccgTask;
+  private CCGUtil ccgUtil;
 
 
   @PostConstruct
@@ -94,8 +93,8 @@ public class RegionMapperImpl implements RegionMapper {
   @Async
   private Future<List<CCGRecord>> getCCGRecord(String collection) {
     log.info("Async call for CCG csv load");
-    ccgTask.setFileName(collection);
-    return executor.submit(() -> ccgTask.call());
+    ccgUtil.setFileName(collection);
+    return executor.submit(() -> ccgUtil.call());
   }
 
   private List<CCGRecord> getAllCCGs() {
