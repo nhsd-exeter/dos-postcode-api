@@ -1,9 +1,7 @@
 from __future__ import print_function
-import re
 import boto3
 import os
 import logging
-import csv
 
 s3 = boto3.resource("s3")
 dynamodb = boto3.resource("dynamodb")

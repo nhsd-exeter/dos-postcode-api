@@ -95,13 +95,6 @@ pipeline {
         }
       }
     }
-    stage('Perform Region Lambda function') {
-      steps {
-        script {
-          sh "make postcode-region-etl PROFILE=${env.PROFILE}"
-        }
-      }
-    }
     stage('Deploy jMeter') {
         steps {
           script {

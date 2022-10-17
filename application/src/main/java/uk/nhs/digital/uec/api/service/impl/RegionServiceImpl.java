@@ -35,7 +35,7 @@ public class RegionServiceImpl implements RegionService {
     PostcodeMapping postcodeMapping =
       postcodeMappingService.getByPostCodes(Arrays.asList(postcode)).stream()
         .findFirst()
-        .orElseThrow(NotFoundException::new);
+        .orElse(new PostcodeMapping());
     log.info(postcodeMapping.toString());
     return postcodeMapping;
   }

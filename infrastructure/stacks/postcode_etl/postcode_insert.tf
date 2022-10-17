@@ -18,10 +18,6 @@ resource "aws_lambda_function" "postcode_insert_lambda" {
       INPUT_FOLDER               = local.postcode_etl_s3_source_folder
       PROCESSED_FOLDER           = local.postcode_etl_s3_processed_folder
       LOGGING_LEVEL              = var.postcode_etl_logging_level
-      EMAIL_CCG_CSV_KEY          = "DOS_Email_and_ICB.csv"
-      CCG_CSV_KEY                = "master_ccg_file.csv"
-
-
     }
   }
   vpc_config {

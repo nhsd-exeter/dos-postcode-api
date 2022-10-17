@@ -8,19 +8,18 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CCGRecord implements Comparable<CCGRecord>{
+public class CCGRecord implements Comparable<CCGRecord> {
 
   @CsvBindByPosition(position = 0)
   private String postcode;
-
-//  @CsvBindByPosition(position = 1)
-//  private String national;
 
   @CsvBindByPosition(position = 2)
   private String orgCode;
 
   @Override
   public int compareTo(CCGRecord o) {
-    return this.getPostcode().replaceAll("\\s+","").compareTo(o.getPostcode().replaceAll("\\s+",""));
+    return this.getPostcode()
+        .replaceAll("\\s+", "")
+        .compareTo(o.getPostcode().replaceAll("\\s+", ""));
   }
 }

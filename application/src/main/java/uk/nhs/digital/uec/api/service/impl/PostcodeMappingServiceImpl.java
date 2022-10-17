@@ -1,5 +1,9 @@
 package uk.nhs.digital.uec.api.service.impl;
 
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,11 +19,6 @@ import uk.nhs.digital.uec.api.service.PostcodeMappingService;
 import uk.nhs.digital.uec.api.service.RegionMapper;
 import uk.nhs.digital.uec.api.service.ValidationService;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 /**
  * This is a service class to retrieve data from the repository layer and defines other business
  * logic
@@ -28,56 +27,52 @@ import java.util.stream.Collectors;
 @Slf4j
 public class PostcodeMappingServiceImpl implements PostcodeMappingService {
 
-  @Autowired
-  private PostcodeMappingRepository postcodeMappingRepository;
-  @Autowired
-  private ValidationService validationService;
-  @Autowired
-  private RegionMapper regionMapper;
+  @Autowired private PostcodeMappingRepository postcodeMappingRepository;
+  @Autowired private ValidationService validationService;
+  @Autowired private RegionMapper regionMapper;
 
   @Override
   public List<PostcodeMapping> getByPostCodes(List<String> postCodes)
-    throws InvalidPostcodeException, NotFoundException {
+      throws InvalidPostcodeException, NotFoundException {
     log.info("Validating postcode input");
     List<String> validPostcodes = validationService.validatePostCodes(postCodes);
     log.info("Attempting to get postcode mapping from database - getByPostCodes");
     List<PostcodeMapping> location =
-      validPostcodes.stream()
-        .map(this::getByPostcode)
-        .filter(Objects::nonNull)
-        .map(this::mapPostCodeToRegion)
-        .collect(Collectors.toList());
+        validPostcodes.stream()
+            .map(this::getByPostcode)
+            .filter(Objects::nonNull)
+            .map(this::mapPostCodeToRegion)
+            .collect(Collectors.toList());
     log.info("Validating response, returning locations");
     return validationService.validateAndReturn(location);
   }
 
   @Override
   public List<PostcodeMapping> getByName(String name)
-    throws InvalidParameterException, NotFoundException {
+      throws InvalidParameterException, NotFoundException {
     log.info("Attempting to get postcode mapping from database - getByName");
     List<PostcodeMapping> location =
-      postcodeMappingRepository.findByName(name)
-        .stream()
-        .filter(Optional::isPresent)
-        .map(Optional::get)
-        .map(this::mapPostCodeToRegion)
-        .collect(Collectors.toList());
+        postcodeMappingRepository.findByName(name).stream()
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .map(this::mapPostCodeToRegion)
+            .collect(Collectors.toList());
     log.info("Validating response, returning locations");
     return validationService.validateAndReturn(location);
   }
 
   @Override
   public List<PostcodeMapping> getByPostCodesAndName(List<String> postCodes, String name)
-    throws InvalidPostcodeException, NotFoundException {
+      throws InvalidPostcodeException, NotFoundException {
     log.info("Validating postcode input");
     List<String> validPostcodes = validationService.validatePostCodes(postCodes);
     log.info("Attempting to get postcode mapping from database - getByPostcodeAndName");
     List<PostcodeMapping> location =
-      validPostcodes.stream()
-        .map(t -> getByPostcodeAndName(t, name))
-        .filter(Objects::nonNull)
-        .map(this::mapPostCodeToRegion)
-        .collect(Collectors.toList());
+        validPostcodes.stream()
+            .map(t -> getByPostcodeAndName(t, name))
+            .filter(Objects::nonNull)
+            .map(this::mapPostCodeToRegion)
+            .collect(Collectors.toList());
     log.info("Validating response, returning locations");
     return validationService.validateAndReturn(location);
   }
@@ -86,7 +81,7 @@ public class PostcodeMappingServiceImpl implements PostcodeMappingService {
     PostcodeMapping mapping;
     log.info("Finding mapping by postcode {}", postcode);
     Optional<PostcodeMapping> findByPostCodeOptional =
-      postcodeMappingRepository.findByPostCode(postcode);
+        postcodeMappingRepository.findByPostCode(postcode);
     mapping = findByPostCodeOptional.orElse(null);
     log.info("Mapping for {} is {}", postcode, mapping);
     return mapping;
@@ -96,7 +91,7 @@ public class PostcodeMappingServiceImpl implements PostcodeMappingService {
     PostcodeMapping mapping;
     log.info("Finding mapping by postcode and name");
     Optional<PostcodeMapping> findByPostCodeAndNameOptional =
-      postcodeMappingRepository.findByPostCodeAndName(postcode, name);
+        postcodeMappingRepository.findByPostCodeAndName(postcode, name);
     mapping = findByPostCodeAndNameOptional.orElse(null);
     log.info("Mapping for {} is {}", postcode, mapping);
     return mapping;
@@ -110,7 +105,8 @@ public class PostcodeMappingServiceImpl implements PostcodeMappingService {
     }
     postcodeMapping.setRegion(regionRecord.getRegion());
     postcodeMapping.setSubRegion(regionRecord.getSubRegion());
-    CCGRecord ccgRecord = regionMapper.getCCGRecord(postcodeMapping.getPostCode(),regionRecord.getRegion());
+    CCGRecord ccgRecord =
+        regionMapper.getCCGRecord(postcodeMapping.getPostCode(), regionRecord.getRegion());
     if (Objects.isNull(ccgRecord)) {
       return postcodeMapping;
     }
