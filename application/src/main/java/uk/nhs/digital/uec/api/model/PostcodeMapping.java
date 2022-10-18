@@ -30,12 +30,6 @@ public class PostcodeMapping {
   @DynamoDBAttribute(attributeName = "ccgName")
   private String ccg;
 
-  @DynamoDBAttribute(attributeName = "geographyCode")
-  private String geographyCode;
-
-  @DynamoDBAttribute(attributeName = "nationalGroupingCode")
-  private String nationalGroupingCode;
-
   @DynamoDBAttribute(attributeName = "organisationCode")
   private String organisationCode;
 

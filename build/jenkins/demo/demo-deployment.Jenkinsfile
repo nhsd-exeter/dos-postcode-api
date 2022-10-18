@@ -110,13 +110,6 @@ pipeline {
         }
       }
     }
-    stage('Perform Insert Lambda function') {
-      steps {
-        script {
-          sh "make postcode-insert-etl PROFILE=${env.PROFILE}"
-        }
-      }
-    }
     stage('Perform File Generator Lambda function') {
       steps {
         script {
@@ -124,13 +117,14 @@ pipeline {
         }
       }
     }
-    stage('Perform Step Machine excution') {
+    stage('Perform Insert Lambda function') {
       steps {
         script {
-          sh "make step-function-etl PROFILE=${env.PROFILE}"
+          sh "make postcode-insert-etl PROFILE=${env.PROFILE}"
         }
       }
     }
+
     stage('Smoke Tests') {
       steps {
         script {

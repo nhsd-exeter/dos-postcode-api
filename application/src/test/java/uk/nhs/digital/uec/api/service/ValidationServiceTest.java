@@ -19,6 +19,7 @@ import uk.nhs.digital.uec.api.model.PostcodeMapping;
 import uk.nhs.digital.uec.api.exception.ErrorMessageEnum;
 import uk.nhs.digital.uec.api.exception.InvalidPostcodeException;
 import uk.nhs.digital.uec.api.exception.NotFoundException;
+import uk.nhs.digital.uec.api.service.impl.ValidationServiceImpl;
 
 @ExtendWith(MockitoExtension.class)
 @ExtendWith(SpringExtension.class)

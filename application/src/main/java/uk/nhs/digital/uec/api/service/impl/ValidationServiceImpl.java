@@ -1,4 +1,4 @@
-package uk.nhs.digital.uec.api.service;
+package uk.nhs.digital.uec.api.service.impl;
 
 import java.util.Collections;
 import java.util.List;
@@ -14,6 +14,7 @@ import uk.nhs.digital.uec.api.model.PostcodeMapping;
 import uk.nhs.digital.uec.api.exception.ErrorMessageEnum;
 import uk.nhs.digital.uec.api.exception.InvalidPostcodeException;
 import uk.nhs.digital.uec.api.exception.NotFoundException;
+import uk.nhs.digital.uec.api.service.ValidationService;
 
 @Component
 @Slf4j

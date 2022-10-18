@@ -3,7 +3,7 @@ import boto3
 import os
 import logging
 
-s3 = boto3.resource(u"s3")
+s3 = boto3.resource("s3")
 dynamodb = boto3.resource("dynamodb")
 SOURCE_BUCKET = os.environ.get("SOURCE_BUCKET")
 INPUT_FOLDER = os.environ.get("INPUT_FOLDER")
@@ -14,7 +14,8 @@ DYNAMODB_DESTINATION_TABLE = os.environ.get("DYNAMODB_DESTINATION_TABLE")
 LOGGING_LEVEL = os.environ.get("LOGGING_LEVEL")
 
 logging.basicConfig(level=LOGGING_LEVEL)
-logger=logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
+
 
 # method to loop over items in s3 Bucket
 def readCsvFiles():
@@ -25,9 +26,7 @@ def readCsvFiles():
         # delete the previously processed files so we have a clean workspace
         bucket.objects.filter(Prefix=PROCESSED_FOLDER).delete()
 
-        postcode_location_csv_files = bucket.objects.filter(
-            Prefix=INPUT_FOLDER, Delimiter="/"
-        )
+        postcode_location_csv_files = bucket.objects.filter(Prefix=INPUT_FOLDER, Delimiter="/")
 
         for postcode_location_csv_file in postcode_location_csv_files:
             name = postcode_location_csv_file.key
@@ -45,13 +44,9 @@ def readCsvFiles():
 
 def processCompletedCsvFiles(bucket, status, postcode_location_csv_file):
     if status.startswith("FAILED"):
-        postProcessFilePath = ERROR_FOLDER + postcode_location_csv_file.key.replace(
-            INPUT_FOLDER, ""
-        )
+        postProcessFilePath = ERROR_FOLDER + postcode_location_csv_file.key.replace(INPUT_FOLDER, "")
     else:
-        postProcessFilePath = SUCCESS_FOLDER + postcode_location_csv_file.key.replace(
-            INPUT_FOLDER, ""
-        )
+        postProcessFilePath = SUCCESS_FOLDER + postcode_location_csv_file.key.replace(INPUT_FOLDER, "")
 
     logger.info("moving processed file to: " + postProcessFilePath)
 
@@ -67,9 +62,7 @@ def processCompletedCsvFiles(bucket, status, postcode_location_csv_file):
 def readCsvFileData(postcode_location_csv_file):
     status = ""
     try:
-        postcode_location_entries = (
-            postcode_location_csv_file["Body"].read().splitlines()
-        )
+        postcode_location_entries = postcode_location_csv_file["Body"].read().splitlines()
         postcode_location_records = list()
 
         i = 0
@@ -83,11 +76,7 @@ def readCsvFileData(postcode_location_csv_file):
             record["postcode"] = postcode_location_attributes[0]
             record["easting"] = int(postcode_location_attributes[1])
             record["northing"] = int(postcode_location_attributes[2])
-            record["name"] = (
-                postcode_location_attributes[3]
-                if postcode_location_attributes[3] != ""
-                else " "
-            )
+            record["name"] = postcode_location_attributes[3] if postcode_location_attributes[3] != "" else " "
 
             postcode_location_records.append(record)
 

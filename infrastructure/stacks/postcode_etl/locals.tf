@@ -5,7 +5,7 @@ locals {
   postcode_insert_description          = "Service Finder function to insert postcode and postcode mappings into DynamoDB"
   postcode_insert_runtime              = "python3.8"
   postcode_insert_timeout              = 900
-  postcode_insert_memory_size          = 1024
+  postcode_insert_memory_size          = 10240
 
   postcode_extract_function_name = "${var.service_prefix}-postcode-extract"
   postcode_extract_description   = "Service Finder function to extract postcode and postcode mapping from DoS database into csv files"

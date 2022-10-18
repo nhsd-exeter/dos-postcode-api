@@ -1,4 +1,4 @@
-package uk.nhs.digital.uec.api.service;
+package uk.nhs.digital.uec.api.service.impl;
 
 import java.util.List;
 import java.util.Objects;
@@ -7,12 +7,17 @@ import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import uk.nhs.digital.uec.api.model.PostcodeMapping;
-import uk.nhs.digital.uec.api.model.RegionRecord;
 import uk.nhs.digital.uec.api.exception.InvalidParameterException;
 import uk.nhs.digital.uec.api.exception.InvalidPostcodeException;
 import uk.nhs.digital.uec.api.exception.NotFoundException;
+import uk.nhs.digital.uec.api.model.CCGRecord;
+import uk.nhs.digital.uec.api.model.ICBRecord;
+import uk.nhs.digital.uec.api.model.PostcodeMapping;
+import uk.nhs.digital.uec.api.model.RegionRecord;
 import uk.nhs.digital.uec.api.repository.PostcodeMappingRepository;
+import uk.nhs.digital.uec.api.service.PostcodeMappingService;
+import uk.nhs.digital.uec.api.service.RegionMapper;
+import uk.nhs.digital.uec.api.service.ValidationService;
 
 /**
  * This is a service class to retrieve data from the repository layer and defines other business
@@ -47,8 +52,7 @@ public class PostcodeMappingServiceImpl implements PostcodeMappingService {
       throws InvalidParameterException, NotFoundException {
     log.info("Attempting to get postcode mapping from database - getByName");
     List<PostcodeMapping> location =
-        postcodeMappingRepository.findByName(name)
-          .stream()
+        postcodeMappingRepository.findByName(name).stream()
             .filter(Optional::isPresent)
             .map(Optional::get)
             .map(this::mapPostCodeToRegion)
@@ -75,11 +79,11 @@ public class PostcodeMappingServiceImpl implements PostcodeMappingService {
 
   private PostcodeMapping getByPostcode(String postcode) {
     PostcodeMapping mapping;
-    log.info("Finding mapping by postcode {}",postcode);
+    log.info("Finding mapping by postcode {}", postcode);
     Optional<PostcodeMapping> findByPostCodeOptional =
         postcodeMappingRepository.findByPostCode(postcode);
     mapping = findByPostCodeOptional.orElse(null);
-    log.info("Mapping for {} is {}",postcode,mapping);
+    log.info("Mapping for {} is {}", postcode, mapping);
     return mapping;
   }
 
@@ -89,18 +93,31 @@ public class PostcodeMappingServiceImpl implements PostcodeMappingService {
     Optional<PostcodeMapping> findByPostCodeAndNameOptional =
         postcodeMappingRepository.findByPostCodeAndName(postcode, name);
     mapping = findByPostCodeAndNameOptional.orElse(null);
-    log.info("Mapping for {} is {}",postcode,mapping);
+    log.info("Mapping for {} is {}", postcode, mapping);
     return mapping;
   }
 
-  private PostcodeMapping mapPostCodeToRegion(PostcodeMapping postcodeMapping){
-      log.info("Finding region details for {}",postcodeMapping.getPostCode());
-      RegionRecord regionRecord = regionMapper.getRegionRecord(postcodeMapping.getPostCode());
-      if(Objects.isNull(regionRecord)){
-        return postcodeMapping;
-      }
-      postcodeMapping.setRegion(regionRecord.getRegion());
-      postcodeMapping.setSubRegion(regionRecord.getSubRegion());
+  private PostcodeMapping mapPostCodeToRegion(PostcodeMapping postcodeMapping) {
+    log.info("Finding region details for {}", postcodeMapping.getPostCode());
+    RegionRecord regionRecord = regionMapper.getRegionRecord(postcodeMapping.getPostCode());
+    if (Objects.isNull(regionRecord)) {
       return postcodeMapping;
+    }
+    postcodeMapping.setRegion(regionRecord.getRegion());
+    postcodeMapping.setSubRegion(regionRecord.getSubRegion());
+    CCGRecord ccgRecord =
+        regionMapper.getCCGRecord(postcodeMapping.getPostCode(), regionRecord.getRegion());
+    if (Objects.isNull(ccgRecord)) {
+      return postcodeMapping;
+    }
+    ICBRecord icbRecord = regionMapper.getICBRecord(ccgRecord.getOrgCode());
+    if (Objects.isNull(icbRecord)) {
+      return postcodeMapping;
+    }
+    postcodeMapping.setIcb(icbRecord.getNhsIcb());
+    postcodeMapping.setNhs_region(icbRecord.getNhsRegion());
+    postcodeMapping.setEmail(icbRecord.getEmail());
+    postcodeMapping.setCcg(icbRecord.getNhsRegion());
+    return postcodeMapping;
   }
 }

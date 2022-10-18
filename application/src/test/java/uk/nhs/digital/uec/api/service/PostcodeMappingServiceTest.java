@@ -14,6 +14,8 @@ import uk.nhs.digital.uec.api.exception.InvalidParameterException;
 import uk.nhs.digital.uec.api.exception.InvalidPostcodeException;
 import uk.nhs.digital.uec.api.exception.NotFoundException;
 import uk.nhs.digital.uec.api.repository.PostcodeMappingRepository;
+import uk.nhs.digital.uec.api.service.impl.PostcodeMappingServiceImpl;
+import uk.nhs.digital.uec.api.service.impl.RegionMapperImpl;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -39,7 +41,7 @@ public class PostcodeMappingServiceTest {
   @MockBean
   private ValidationService validationService;
   @MockBean
-  private RegionMapper regionMapper;
+  private RegionMapperImpl regionMapper;
   private List<PostcodeMapping> postcodeMappingList;
   private List<Optional<PostcodeMapping>> postcodeMappingOptList;
   private List<String> postCodes = null;

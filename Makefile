@@ -214,9 +214,6 @@ file-generator-etl:
 
 postcode-extract-etl:
 	eval "$$(make aws-assume-role-export-variables)"
-	# process=$$(aws lambda invoke --function-name $(PROJECT_ID)-$(PROFILE)-postcode-extract out.json --log-type Tail)
-	# cat out.json
-	# rm -r out.json
 	http_result=$$(aws lambda invoke --function-name $(PROJECT_ID)-$(PROFILE)-postcode-extract out.json --log-type Tail | jq .StatusCode)
 	if [[ ! $$http_result -eq 200 ]]; then
 		cat out.json
@@ -230,21 +227,6 @@ postcode-extract-etl:
 postcode-insert-etl:
 	eval "$$(make aws-assume-role-export-variables)"
 	process=$$($(AWSCLI) lambda invoke --function-name $(PROJECT_ID)-$(PROFILE)-postcode-insert out.json --log-type Tail)
-	cat out.json
-	rm -r out.json
-
-	# http_result=$$($(AWSCLI) lambda invoke --function-name $(PROJECT_ID)-$(PROFILE)-postcode-insert out.json --log-type Tail | jq .StatusCode)
-	# if [[ ! $$http_result -eq 200 ]]; then
-	# 	cat out.json
-	# 	rm -r out.json
-	# 	exit 1
-	# fi
-	# echo $$http_result
-	# rm -r out.json
-
-postcode-region-etl:
-	eval "$$(make aws-assume-role-export-variables)"
-	process=$$($(AWSCLI) lambda invoke --invocation-type Event --function-name $(PROJECT_ID)-$(PROFILE)-region-update  out.json --log-type Tail)
 	cat out.json
 	rm -r out.json
 
