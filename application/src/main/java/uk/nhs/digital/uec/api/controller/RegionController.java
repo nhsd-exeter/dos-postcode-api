@@ -71,7 +71,7 @@ public class RegionController {
   public ResponseEntity getRegionDetailsByPostCode(
     @ApiParam(POSTCODE_DESC) @RequestParam(name = "postcode", required = false) String postcode) {
     PostcodeMapping postcodeMapping = new PostcodeMapping();
-    postcodeMapping.setPostCode(postcode);
+    postcodeMapping.setPostcode(postcode);
     try {
       long start = System.currentTimeMillis();
       postcodeMapping = regionService.getRegionByPostCode(postcode);

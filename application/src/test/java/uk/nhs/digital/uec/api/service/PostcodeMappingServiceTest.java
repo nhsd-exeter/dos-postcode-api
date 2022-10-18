@@ -51,7 +51,7 @@ public class PostcodeMappingServiceTest {
   public void init() {
     PostcodeMapping postcodeMapping = new PostcodeMapping();
     postcodeMapping.setName(serviceName);
-    postcodeMapping.setPostCode("WA1 1QY");
+    postcodeMapping.setPostcode("WA1 1QY");
     postcodeMapping.setEasting(12345);
     postcodeMapping.setNorthing(360);
     postcodeMappingList = new ArrayList<>();
