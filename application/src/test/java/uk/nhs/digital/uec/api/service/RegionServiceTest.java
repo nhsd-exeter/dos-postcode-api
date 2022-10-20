@@ -11,6 +11,7 @@ import uk.nhs.digital.uec.api.exception.InvalidParameterException;
 import uk.nhs.digital.uec.api.exception.InvalidPostcodeException;
 import uk.nhs.digital.uec.api.exception.NotFoundException;
 import uk.nhs.digital.uec.api.model.PostcodeMapping;
+import uk.nhs.digital.uec.api.model.Region;
 import uk.nhs.digital.uec.api.service.impl.RegionMapperImpl;
 import uk.nhs.digital.uec.api.service.impl.RegionServiceImpl;
 
@@ -55,7 +56,7 @@ public class RegionServiceTest {
     pcodeMapping.setPostcode(postcode);
     pcodeMapping.setName(name);
     pcodeMapping.setSubRegion(subRegion);
-    pcodeMapping.setRegion(region);
+    pcodeMapping.setRegion(Region.LONDON);
     postcodeMappingsList.add(pcodeMapping);
 
     postcodeMapping = postcodeMappingsList.stream().findFirst().orElse(null);
@@ -84,7 +85,7 @@ public class RegionServiceTest {
     assertEquals(null, postcodeMappingDTO.getNorthing());
     assertEquals(null, postcodeMappingDTO.getNhs_region());
     assertEquals(null, postcodeMappingDTO.getIcb());
-    assertEquals(region, postcodeMappingDTO.getRegion());
+    assertEquals(Region.LONDON, postcodeMappingDTO.getRegion());
     assertEquals(null, postcodeMappingDTO.getEmail());
 
   }

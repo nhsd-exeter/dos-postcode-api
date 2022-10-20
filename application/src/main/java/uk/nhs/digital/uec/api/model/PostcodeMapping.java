@@ -42,7 +42,7 @@ public class PostcodeMapping {
   @DynamoDBAttribute(attributeName = "email")
   private String email;
 
-  private String region;
+  private Region region;
 
   private String subRegion;
 }
