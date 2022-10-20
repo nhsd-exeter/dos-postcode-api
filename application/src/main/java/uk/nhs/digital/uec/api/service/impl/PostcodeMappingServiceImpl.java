@@ -81,7 +81,7 @@ public class PostcodeMappingServiceImpl implements PostcodeMappingService {
     PostcodeMapping mapping;
     log.info("Finding mapping by postcode {}", postcode);
     Optional<PostcodeMapping> findByPostCodeOptional =
-        postcodeMappingRepository.findByPostCode(postcode);
+        postcodeMappingRepository.findByPostcode(postcode);
     mapping = findByPostCodeOptional.orElse(null);
     log.info("Mapping for {} is {}", postcode, mapping);
     return mapping;
@@ -91,7 +91,7 @@ public class PostcodeMappingServiceImpl implements PostcodeMappingService {
     PostcodeMapping mapping;
     log.info("Finding mapping by postcode and name");
     Optional<PostcodeMapping> findByPostCodeAndNameOptional =
-        postcodeMappingRepository.findByPostCodeAndName(postcode, name);
+        postcodeMappingRepository.findByPostcodeAndName(postcode, name);
     mapping = findByPostCodeAndNameOptional.orElse(null);
     log.info("Mapping for {} is {}", postcode, mapping);
     return mapping;
