@@ -63,7 +63,7 @@ public class RegionControllerTest {
     // Given
     String postcode = "XX1 1AX";
     PostcodeMapping postcodeMapping = new PostcodeMapping();
-    postcodeMapping.setPostCode("XX1 1AX");
+    postcodeMapping.setPostcode("XX1 1AX");
     postcodeMapping.setRegion("Sub Region");
     postcodeMapping.setRegion("Region");
     when(regionService.getRegionByPostCode(postcode)).thenReturn(postcodeMapping);
@@ -86,13 +86,13 @@ public class RegionControllerTest {
     List<String> postcodes = Arrays.asList("XX11XX", "YY11YY");
     List<PostcodeMapping> postcodeMappingsList = new ArrayList<>();
     PostcodeMapping postcodeMapping = new PostcodeMapping();
-    postcodeMapping.setPostCode("XX11XX");
+    postcodeMapping.setPostcode("XX11XX");
     postcodeMapping.setRegion("Sub Region1");
     postcodeMapping.setRegion("Region1");
     postcodeMappingsList.add(postcodeMapping);
 
     postcodeMapping = new PostcodeMapping();
-    postcodeMapping.setPostCode("YY11YY");
+    postcodeMapping.setPostcode("YY11YY");
     postcodeMapping.setRegion("Sub Region2");
     postcodeMapping.setRegion("Region2");
     postcodeMappingsList.add(postcodeMapping);

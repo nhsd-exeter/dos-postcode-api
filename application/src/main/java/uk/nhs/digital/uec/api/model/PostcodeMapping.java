@@ -16,7 +16,7 @@ import lombok.ToString;
 public class PostcodeMapping {
   @DynamoDBHashKey
   @DynamoDBAttribute(attributeName = "postcode")
-  private String postCode;
+  private String postcode;
 
   @DynamoDBAttribute(attributeName = "name")
   private String name;

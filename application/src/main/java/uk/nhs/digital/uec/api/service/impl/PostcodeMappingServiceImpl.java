@@ -98,15 +98,15 @@ public class PostcodeMappingServiceImpl implements PostcodeMappingService {
   }
 
   private PostcodeMapping mapPostCodeToRegion(PostcodeMapping postcodeMapping) {
-    log.info("Finding region details for {}", postcodeMapping.getPostCode());
-    RegionRecord regionRecord = regionMapper.getRegionRecord(postcodeMapping.getPostCode());
+    log.info("Finding region details for {}", postcodeMapping.getPostcode());
+    RegionRecord regionRecord = regionMapper.getRegionRecord(postcodeMapping.getPostcode());
     if (Objects.isNull(regionRecord)) {
       return postcodeMapping;
     }
     postcodeMapping.setRegion(regionRecord.getRegion());
     postcodeMapping.setSubRegion(regionRecord.getSubRegion());
     CCGRecord ccgRecord =
-        regionMapper.getCCGRecord(postcodeMapping.getPostCode(), regionRecord.getRegion());
+        regionMapper.getCCGRecord(postcodeMapping.getPostcode(), regionRecord.getRegion());
     if (Objects.isNull(ccgRecord)) {
       return postcodeMapping;
     }

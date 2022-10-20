@@ -52,7 +52,7 @@ public class RegionServiceTest {
 
     postcodeMappingsList = new ArrayList<>();
     PostcodeMapping pcodeMapping = new PostcodeMapping();
-    pcodeMapping.setPostCode(postcode);
+    pcodeMapping.setPostcode(postcode);
     pcodeMapping.setName(name);
     pcodeMapping.setSubRegion(subRegion);
     pcodeMapping.setRegion(region);
@@ -79,7 +79,7 @@ public class RegionServiceTest {
     PostcodeMapping postcodeMappingDTO = regionService.getRegionByPostCode(postcode);
 
     //Then
-    assertEquals(postcodeMapping.getPostCode(), postcodeMappingDTO.getPostCode());
+    assertEquals(postcodeMapping.getPostcode(), postcodeMappingDTO.getPostcode());
     assertEquals(null, postcodeMappingDTO.getEasting());
     assertEquals(null, postcodeMappingDTO.getNorthing());
     assertEquals(null, postcodeMappingDTO.getNhs_region());
@@ -97,7 +97,7 @@ public class RegionServiceTest {
     List<PostcodeMapping> postcodeMappingDTOList = regionService.getRegionByPostCodes(postcodes);
     //Then
     assertEquals(1, postcodeMappingDTOList.size());
-    assertEquals(postcodeMappingsList.get(0).getPostCode(), postcodeMappingDTOList.get(0).getPostCode());
+    assertEquals(postcodeMappingsList.get(0).getPostcode(), postcodeMappingDTOList.get(0).getPostcode());
 
   }
 

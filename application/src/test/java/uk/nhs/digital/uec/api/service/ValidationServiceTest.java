@@ -98,7 +98,7 @@ public class ValidationServiceTest {
   @Test
   public void validateAndReturnTest() throws NotFoundException {
     PostcodeMapping mapping = new PostcodeMapping();
-    mapping.setPostCode("EX1 1SR");
+    mapping.setPostcode("EX1 1SR");
     mapping.setEasting(123456);
     mapping.setEasting(654321);
     List<PostcodeMapping> response =
@@ -107,6 +107,6 @@ public class ValidationServiceTest {
     Optional<PostcodeMapping> mappingOptional = response.stream().findAny();
     PostcodeMapping mappingResponse =
         mappingOptional.isPresent() ? mappingOptional.get() : new PostcodeMapping();
-    assertEquals("EX1 1SR", mappingResponse.getPostCode());
+    assertEquals("EX1 1SR", mappingResponse.getPostcode());
   }
 }
