@@ -62,4 +62,6 @@ public class CCGUtil implements Callable<List<CCGRecord>> {
   private InputStream getStream(String fileName) throws IOException {
     return resourceLoader.getResource("classpath:" + fileName).getInputStream();
   }
+
+
 }

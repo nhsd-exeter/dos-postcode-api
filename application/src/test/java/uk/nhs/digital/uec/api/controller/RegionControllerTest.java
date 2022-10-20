@@ -25,6 +25,7 @@ import uk.nhs.digital.uec.api.exception.InvalidParameterException;
 import uk.nhs.digital.uec.api.exception.InvalidPostcodeException;
 import uk.nhs.digital.uec.api.exception.NotFoundException;
 import uk.nhs.digital.uec.api.model.PostcodeMapping;
+import uk.nhs.digital.uec.api.model.Region;
 import uk.nhs.digital.uec.api.service.RegionService;
 
 @ExtendWith(SpringExtension.class)
@@ -64,8 +65,8 @@ public class RegionControllerTest {
     String postcode = "XX1 1AX";
     PostcodeMapping postcodeMapping = new PostcodeMapping();
     postcodeMapping.setPostcode("XX1 1AX");
-    postcodeMapping.setRegion("Sub Region");
-    postcodeMapping.setRegion("Region");
+    postcodeMapping.setSubRegion("Sub Region");
+    postcodeMapping.setRegion(Region.LONDON);
     when(regionService.getRegionByPostCode(postcode)).thenReturn(postcodeMapping);
 
     // When
@@ -87,14 +88,14 @@ public class RegionControllerTest {
     List<PostcodeMapping> postcodeMappingsList = new ArrayList<>();
     PostcodeMapping postcodeMapping = new PostcodeMapping();
     postcodeMapping.setPostcode("XX11XX");
-    postcodeMapping.setRegion("Sub Region1");
-    postcodeMapping.setRegion("Region1");
+    postcodeMapping.setSubRegion("Sub Region");
+    postcodeMapping.setRegion(Region.LONDON);
     postcodeMappingsList.add(postcodeMapping);
 
     postcodeMapping = new PostcodeMapping();
     postcodeMapping.setPostcode("YY11YY");
-    postcodeMapping.setRegion("Sub Region2");
-    postcodeMapping.setRegion("Region2");
+    postcodeMapping.setSubRegion("Sub Region");
+    postcodeMapping.setRegion(Region.LONDON);
     postcodeMappingsList.add(postcodeMapping);
 
     when(regionService.getRegionByPostCodes(postcodes)).thenReturn(postcodeMappingsList);

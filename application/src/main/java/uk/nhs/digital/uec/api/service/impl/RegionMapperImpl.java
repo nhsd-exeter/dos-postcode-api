@@ -1,16 +1,5 @@
 package uk.nhs.digital.uec.api.service.impl;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import javax.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
@@ -23,7 +12,20 @@ import uk.nhs.digital.uec.api.util.CCGUtil;
 import uk.nhs.digital.uec.api.util.ICBUtil;
 import uk.nhs.digital.uec.api.util.RegionUtil;
 
-@Slf4j(topic = "Postcode API - Region Mapper Service")
+import javax.annotation.PostConstruct;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+@Slf4j(topic = "Postcode API - Region_Mapper_Service")
 @Component
 public class RegionMapperImpl implements RegionMapper {
 
@@ -45,10 +47,14 @@ public class RegionMapperImpl implements RegionMapper {
   private List<CCGRecord> southWest;
   private List<CCGRecord> london;
 
-  @Autowired private ExecutorService executor;
-  @Autowired private RegionUtil regionUtil;
-  @Autowired private ICBUtil icbUtil;
-  @Autowired private CCGUtil ccgUtil;
+  @Autowired
+  private ExecutorService executor;
+  @Autowired
+  private RegionUtil regionUtil;
+  @Autowired
+  private ICBUtil icbUtil;
+  @Autowired
+  private CCGUtil ccgUtil;
 
   @PostConstruct
   public void init() {
@@ -92,16 +98,22 @@ public class RegionMapperImpl implements RegionMapper {
   }
 
   private List<CCGRecord> getAllCCGs() {
-    return Stream.of(yorkshire, london, eastEngland, southEast, southWest, northWest, midlands)
-        .flatMap(Collection::stream)
-        .collect(Collectors.toList());
+    List<CCGRecord> allRec = new ArrayList<>();
+    allRec.addAll(yorkshire);
+    allRec.addAll(london);
+    allRec.addAll(eastEngland);
+    allRec.addAll(southEast);
+    allRec.addAll(southWest);
+    allRec.addAll(northWest);
+    allRec.addAll(midlands);
+    return allRec;
   }
 
   public RegionRecord getRegionRecord(String postcode) {
     List<RegionRecord> regionRecordList =
-        recordsList.stream()
-            .filter(regionRecord -> postcode.startsWith(regionRecord.getPartPostcode()))
-            .collect(Collectors.toList());
+      recordsList.stream()
+        .filter(regionRecord -> postcode.startsWith(regionRecord.getPartPostcode()))
+        .collect(Collectors.toList());
     RegionRecord regionRecord = null;
     if (regionRecordList.size() == 1) {
       regionRecord = regionRecordList.stream().findFirst().orElse(null);
@@ -109,8 +121,8 @@ public class RegionMapperImpl implements RegionMapper {
       int postCodeLength = postcode.replaceAll(" ", "").length() == 6 ? 3 : 4;
       final String partPostCode = postcode.substring(0, postCodeLength);
       int index =
-          binarySearchIndex(
-              regionRecordList.stream().map(RegionRecord::getPartPostcode).toArray(), partPostCode);
+        binarySearchIndex(
+          regionRecordList.stream().map(RegionRecord::getPartPostcode).toArray(), partPostCode);
       regionRecord = regionRecordList.get(index);
     }
     return regionRecord;
@@ -119,22 +131,22 @@ public class RegionMapperImpl implements RegionMapper {
   public Map<String, List<String>> getAllRegions() {
     Map<String, List<String>> regions = new HashMap<>();
     List<String> distinctRegionNames =
-        recordsList.stream()
-            .map(RegionRecord::getRegion)
-            .distinct()
-            .sorted()
-            .collect(Collectors.toList());
+      recordsList.stream()
+        .map(RegionRecord::getRegion)
+        .distinct()
+        .sorted()
+        .collect(Collectors.toList());
     for (String strRegion : distinctRegionNames) {
       Predicate<RegionRecord> regionFilter =
-          regionRecord -> regionRecord.getRegion().matches(strRegion);
+        regionRecord -> regionRecord.getRegion().matches(strRegion);
       List<String> list =
-          recordsList.stream()
-              .filter(regionFilter)
-              .map(RegionRecord::getSubRegion)
-              .map(String::trim)
-              .distinct()
-              .sorted()
-              .collect(Collectors.toList());
+        recordsList.stream()
+          .filter(regionFilter)
+          .map(RegionRecord::getSubRegion)
+          .map(String::trim)
+          .distinct()
+          .sorted()
+          .collect(Collectors.toList());
       regions.put(strRegion, list);
     }
     return regions;
@@ -143,7 +155,7 @@ public class RegionMapperImpl implements RegionMapper {
   public ICBRecord getICBRecord(String orgCode) {
     ICBRecord icbRecord = null;
     int index =
-        binarySearchIndex(icbRecordList.stream().map(ICBRecord::getOrgCode).toArray(), orgCode);
+      binarySearchIndex(icbRecordList.stream().map(ICBRecord::getOrgCode).toArray(), orgCode);
     icbRecord = icbRecordList.get(index);
     return icbRecord;
   }
@@ -151,46 +163,49 @@ public class RegionMapperImpl implements RegionMapper {
   public CCGRecord getCCGRecord(String postcode, String district) {
     CCGRecord ccgRecord = null;
     log.info("Searching {} in district {}", postcode, district);
-    String code = postcode.substring(0, 4).trim();
+    String code;
+    if(postcode.length() == 6){
+      code = postcode.substring(0, 3).trim();
+    }else{
+      code = postcode.substring(0, 4).trim();
+    }
     try {
-      if (district.contains("yorkshire")) {
+      if (district.contains("Yorkshire")) {
         ccgRecord =
-            yorkshire.get(
-                binarySearchIndex(
-                    yorkshire.stream().map(CCGRecord::getPostcode).toArray(),
-                    code.substring(0, 4).trim()));
-      } else if (district.equalsIgnoreCase("london")) {
+          yorkshire.get(
+            binarySearchIndex(yorkshire.stream().map(CCGRecord::getPostcode).toArray(), code));
+      }  else if (district.equalsIgnoreCase("london")) {
         ccgRecord =
-            london.get(
-                binarySearchIndex(london.stream().map(CCGRecord::getPostcode).toArray(), code));
+          london.get(
+            binarySearchIndex(london.stream().map(CCGRecord::getPostcode).toArray(), code));
       } else if (district.equalsIgnoreCase("east of england")) {
         ccgRecord =
-            eastEngland.get(
-                binarySearchIndex(
-                    eastEngland.stream().map(CCGRecord::getPostcode).toArray(), code));
+          eastEngland.get(
+            binarySearchIndex(
+              eastEngland.stream().map(CCGRecord::getPostcode).toArray(), code));
       } else if (district.equalsIgnoreCase("west midlands")
-          || district.equalsIgnoreCase("east midlands")) {
+        || district.equalsIgnoreCase("east midlands")) {
         ccgRecord =
-            midlands.get(
-                binarySearchIndex(midlands.stream().map(CCGRecord::getPostcode).toArray(), code));
+          midlands.get(
+            binarySearchIndex(midlands.stream().map(CCGRecord::getPostcode).toArray(), code));
       } else if (district.equalsIgnoreCase("north west")) {
         ccgRecord =
-            northWest.get(
-                binarySearchIndex(northWest.stream().map(CCGRecord::getPostcode).toArray(), code));
+          northWest.get(
+            binarySearchIndex(northWest.stream().map(CCGRecord::getPostcode).toArray(), code));
       } else if (district.equalsIgnoreCase("south west")) {
         ccgRecord =
-            southWest.get(
-                binarySearchIndex(southWest.stream().map(CCGRecord::getPostcode).toArray(), code));
+          southWest.get(
+            binarySearchIndex(southWest.stream().map(CCGRecord::getPostcode).toArray(), code));
       } else if (district.equalsIgnoreCase("south east")) {
         ccgRecord =
-            southEast.get(
-                binarySearchIndex(southEast.stream().map(CCGRecord::getPostcode).toArray(), code));
+          southEast.get(
+            binarySearchIndex(southEast.stream().map(CCGRecord::getPostcode).toArray(), code));
       } else {
         ccgRecord =
-            getAllCCGs()
-                .get(
-                    binarySearchIndex(
-                        getAllCCGs().stream().map(CCGRecord::getPostcode).toArray(), code));
+          getAllCCGs()
+            .get(
+              binarySearchIndex(
+                getAllCCGs().stream().map(CCGRecord::getPostcode).toArray(), code));
       }
     } catch (Exception e) {
       log.error("An error with the binary search {}", e.getMessage());

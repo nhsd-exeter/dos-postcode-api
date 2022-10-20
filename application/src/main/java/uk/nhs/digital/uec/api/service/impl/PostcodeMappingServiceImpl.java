@@ -13,6 +13,7 @@ import uk.nhs.digital.uec.api.exception.NotFoundException;
 import uk.nhs.digital.uec.api.model.CCGRecord;
 import uk.nhs.digital.uec.api.model.ICBRecord;
 import uk.nhs.digital.uec.api.model.PostcodeMapping;
+import uk.nhs.digital.uec.api.model.Region;
 import uk.nhs.digital.uec.api.model.RegionRecord;
 import uk.nhs.digital.uec.api.repository.PostcodeMappingRepository;
 import uk.nhs.digital.uec.api.service.PostcodeMappingService;
@@ -103,7 +104,7 @@ public class PostcodeMappingServiceImpl implements PostcodeMappingService {
     if (Objects.isNull(regionRecord)) {
       return postcodeMapping;
     }
-    postcodeMapping.setRegion(regionRecord.getRegion());
+    postcodeMapping.setRegion(Region.getRegionEnum(regionRecord.getRegion()));
     postcodeMapping.setSubRegion(regionRecord.getSubRegion());
     CCGRecord ccgRecord =
         regionMapper.getCCGRecord(postcodeMapping.getPostcode(), regionRecord.getRegion());
