@@ -64,7 +64,7 @@ public class PostcodeMappingServiceTest {
 
   @Test
   public void testGetByPostCodeInAndName() throws InvalidPostcodeException, NotFoundException {
-    when(postcodeMappingRepository.findByPostCodeAndName(postCodes.get(0), serviceName))
+    when(postcodeMappingRepository.findByPostcodeAndName(postCodes.get(0), serviceName))
       .thenReturn(postcodeMappingOptList.get(0));
     when(validationService.validatePostCodes(postCodes)).thenReturn(postCodes);
     when(validationService.validateAndReturn(anyList())).thenReturn(postcodeMappingList);
@@ -76,7 +76,7 @@ public class PostcodeMappingServiceTest {
 
   @Test
   public void testGetByPostCodes() throws InvalidPostcodeException, NotFoundException {
-    when(postcodeMappingRepository.findByPostCode(postCodes.get(0)))
+    when(postcodeMappingRepository.findByPostcode(postCodes.get(0)))
       .thenReturn(postcodeMappingOptList.get(0));
     when(validationService.validatePostCodes(postCodes)).thenReturn(postCodes);
     when(validationService.validateAndReturn(anyList())).thenReturn(postcodeMappingList);

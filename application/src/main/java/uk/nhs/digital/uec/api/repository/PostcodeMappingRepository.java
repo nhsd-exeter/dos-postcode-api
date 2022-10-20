@@ -17,9 +17,9 @@ public interface PostcodeMappingRepository extends CrudRepository<PostcodeMappin
 
   Optional<PostcodeMapping> findById(String id);
 
-  Optional<PostcodeMapping> findByPostCode(String postCode);
+  Optional<PostcodeMapping> findByPostcode(String postcode);
 
   List<Optional<PostcodeMapping>> findByName(String name);
 
-  Optional<PostcodeMapping> findByPostCodeAndName(String postCode, String name);
+  Optional<PostcodeMapping> findByPostcodeAndName(String postcode, String name);
 }
