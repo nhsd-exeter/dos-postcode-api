@@ -14,7 +14,6 @@ import uk.nhs.digital.uec.api.util.RegionUtil;
 
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,7 +22,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Slf4j(topic = "Postcode API - Region_Mapper_Service")
 @Component
@@ -164,9 +162,11 @@ public class RegionMapperImpl implements RegionMapper {
     CCGRecord ccgRecord = null;
     log.info("Searching {} in district {}", postcode, district);
     String code;
-    if(postcode.length() == 6){
+    if (postcode.length() == 5) {
+      code = postcode.substring(0, 2).trim();
+    } else if (postcode.length() == 6) {
       code = postcode.substring(0, 3).trim();
-    }else{
+    } else {
       code = postcode.substring(0, 4).trim();
     }
     try {
@@ -174,7 +174,7 @@ public class RegionMapperImpl implements RegionMapper {
         ccgRecord =
           yorkshire.get(
             binarySearchIndex(yorkshire.stream().map(CCGRecord::getPostcode).toArray(), code));
-      }  else if (district.equalsIgnoreCase("london")) {
+      } else if (district.equalsIgnoreCase("london")) {
         ccgRecord =
           london.get(
             binarySearchIndex(london.stream().map(CCGRecord::getPostcode).toArray(), code));
