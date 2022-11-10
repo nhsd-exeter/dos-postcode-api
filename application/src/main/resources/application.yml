@@ -28,3 +28,6 @@ api:
   title: NHS Postcode Mapping API
   description: NHS Postcode Mapping API provides northing and easting location coordinates for a given postcode
 
+logging:
+  pattern:
+    console: '[%thread][%d] %X{correlationId} %-5level %logger{0} - %msg %n'
