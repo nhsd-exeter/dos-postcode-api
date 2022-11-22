@@ -261,9 +261,10 @@
         <configuration>
           <excludes>
             <exclude>**/config/*.*</exclude>
-            <exclude>**/domain/*.*</exclude>
-            <exclude>**/dto/*.*</exclude>
+            <exclude>**/model/*.*</exclude>
+            <exclude>**/constants/*.*</exclude>
             <exclude>**/exception/*.class</exclude>
+            <exclude>**/interceptor/*.class</exclude>
             <exclude>**/filter/*.class</exclude>
             <exclude>**/PostcodeMappingApplication.class</exclude>
             <exclude>**/test-classes/**/*.class</exclude>
