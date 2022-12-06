@@ -30,5 +30,6 @@ api:
 
 logging:
   pattern:
-    console: "{\"time\": \"%d\", \"level\": \"%p\", \"correlation-id\": \"%X{correlationId}\", \"source\": \"%logger{63}:%L\", \"message\": \"%replace(%m%wEx{6}){'[\r\n]+', '\\n'}%nopex\"}%n"
-
+    console: "{\"date-time\": \"%d\", \"level\": \"%p\", \"correlation-id\": \"%X{correlationId}\", \"source-path\": \"%logger{63}:%L\", \"message\": \"%replace(%m%wEx{6}){'[\r\n]+', '\\n'}%nopex\"}%n"
+  level:
+    root: INFO
