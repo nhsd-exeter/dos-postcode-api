@@ -207,7 +207,16 @@ public class RegionMapperImpl implements RegionMapper {
               binarySearchIndex(
                 getAllCCGs().stream().map(CCGRecord::getPostcode).toArray(), code));
       }
-    } catch (Exception e) {
+    }
+    catch (IndexOutOfBoundsException e) {
+      log.error("An error with the binary search in getCCGRecord {}", e.getMessage());
+      if (ccgRecord == null){
+        log.info("searching in all CCGs without filter by regions");
+        int index = binarySearchIndex(getAllCCGs().stream().map(CCGRecord::getPostcode).toArray(), code);
+        ccgRecord = index < 0 ? null : getAllCCGs().get(index);
+      }
+    }
+    catch (Exception e) {
       log.error("An error with the binary search {}", e.getMessage());
     }
 
