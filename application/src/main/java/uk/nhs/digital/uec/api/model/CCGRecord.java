@@ -2,12 +2,14 @@ package uk.nhs.digital.uec.api.model;
 
 import com.opencsv.bean.CsvBindByPosition;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class CCGRecord implements Comparable<CCGRecord> {
 
   @CsvBindByPosition(position = 0)

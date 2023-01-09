@@ -2,12 +2,14 @@ package uk.nhs.digital.uec.api.model;
 
 import com.opencsv.bean.CsvBindByName;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Builder
 public class ICBRecord implements Comparable<ICBRecord>{
 
   @CsvBindByName(column = "organisation_code")

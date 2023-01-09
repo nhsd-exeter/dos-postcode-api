@@ -211,10 +211,10 @@ public class RegionMapperImpl implements RegionMapper {
     }
     catch (IndexOutOfBoundsException e) {
       log.error("An error with the binary search in getCCGRecord {}", e.getMessage());
-      if (ccgRecord == null){
-        int index = binarySearchIndex(getAllCCGs().stream().map(CCGRecord::getPostcode).toArray(), code);
-        ccgRecord = index < 0 ? null : getAllCCGs().get(index);
-      }
+        if (ccgRecord == null){
+          int index = binarySearchIndex(getAllCCGs().stream().map(CCGRecord::getPostcode).toArray(), code);
+          ccgRecord = index < 0 ? null : getAllCCGs().get(index);
+        }
     }
     catch (Exception e) {
       log.error("An error with the binary search {}", e.getMessage());
