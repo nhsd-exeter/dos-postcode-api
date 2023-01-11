@@ -14,6 +14,7 @@ import uk.nhs.digital.uec.api.util.RegionUtil;
 
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -104,7 +105,7 @@ public class RegionMapperImpl implements RegionMapper {
     allRec.addAll(southWest);
     allRec.addAll(northWest);
     allRec.addAll(midlands);
-    return allRec;
+    return allRec.stream().sorted().collect(Collectors.toList());
   }
 
   public RegionRecord getRegionRecord(String postcode) {
@@ -207,7 +208,15 @@ public class RegionMapperImpl implements RegionMapper {
               binarySearchIndex(
                 getAllCCGs().stream().map(CCGRecord::getPostcode).toArray(), code));
       }
-    } catch (Exception e) {
+    }
+    catch (IndexOutOfBoundsException e) {
+      log.error("An error with the binary search in getCCGRecord {}", e.getMessage());
+        if (ccgRecord == null){
+          int index = binarySearchIndex(getAllCCGs().stream().map(CCGRecord::getPostcode).toArray(), code);
+          ccgRecord = index < 0 ? null : getAllCCGs().get(index);
+        }
+    }
+    catch (Exception e) {
       log.error("An error with the binary search {}", e.getMessage());
     }
 
@@ -217,7 +226,6 @@ public class RegionMapperImpl implements RegionMapper {
   private int binarySearchIndex(Object[] records, String target) {
     int low = 0;
     int high = records.length - 1;
-
     while (low <= high) {
       int middle = low + ((high - low) / 2);
       String s = records[middle].toString();

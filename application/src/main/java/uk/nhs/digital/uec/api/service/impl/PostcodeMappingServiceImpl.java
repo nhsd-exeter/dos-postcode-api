@@ -111,7 +111,9 @@ public class PostcodeMappingServiceImpl implements PostcodeMappingService {
     if (Objects.isNull(ccgRecord)) {
       return postcodeMapping;
     }
-    ICBRecord icbRecord = regionMapper.getICBRecord(ccgRecord.getOrgCode());
+    String orgCode = ccgRecord.getOrgCode();
+    postcodeMapping.setOrganisationCode(orgCode);
+    ICBRecord icbRecord = regionMapper.getICBRecord(orgCode);
     if (Objects.isNull(icbRecord)) {
       return postcodeMapping;
     }
