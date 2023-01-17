@@ -1,7 +1,8 @@
 ORG_NAME = nhsd-exeter
 PROGRAMME = uec
 PROJECT_GROUP = uec/dos-api
-PROJECT_GROUP_SHORT = uec-dos-api
+PROJECT_GROUP_SHORT = uec-sf
+# PROJECT_GROUP_SHORT = uec-dos-api
 PROJECT_NAME = dos-postcode-api
 PROJECT_NAME_SHORT = pc
 PROJECT_DISPLAY_NAME = DoS Postcode API

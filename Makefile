@@ -8,7 +8,11 @@ include $(abspath $(PROJECT_DIR)/test/jmeter/jMeter.mk)
 prepare: ## Prepare environment
 	make \
 		git-config \
-		docker-config
+		docker-config \
+		pipeline-prepare
+
+pipeline-prepare:
+	sh $(PROJECT_DIR)/scripts/assume_role.sh $(JENKINS_ENV) $(JENKINS_SERVICE_TEAM)
 
 compile:
 	make docker-run-mvn \
@@ -40,7 +44,6 @@ build: project-config
 		-Dsonar.exclusions='src/main/java/**/config/*.*,src/main/java/**/domain/*.*,src/main/java/**/exception/*.*,src/test/**/*.*,src/main/java/**/filter/*.*,src/main/java/**/PostcodeMappingApplication.*' \
 		sonar:sonar"
 	fi
-
 	mv \
 		$(PROJECT_DIR)/application/target/dos-postcode-api-*.jar \
 		$(PROJECT_DIR)/build/docker/dos-postcode-api/assets/application/dos-postcode-api.jar

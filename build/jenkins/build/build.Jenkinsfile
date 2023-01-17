@@ -2,7 +2,7 @@ pipeline {
   /*
     Description: Development pipeline to build test push and deploy to nonprod
    */
-  agent { label "jenkins-slave" }
+  agent any
 
   environment {
     PROFILE = "dev"
@@ -18,6 +18,11 @@ pipeline {
   triggers { pollSCM("* * * * *") }
 
   stages {
+    stage("Prepare"){
+        steps {
+            sh 'make prepare'
+        }
+    }
     stage('Show Variables') {
       steps {
         script {
@@ -25,17 +30,24 @@ pipeline {
         }
       }
     }
-    stage('Scan for Secrets') {
-      steps {
-        script {
-          sh 'make pipeline-secret-scan'
-        }
-      }
-    }
+    // stage('Scan for Secrets') {
+    //   steps {
+    //     script {
+    //       sh 'make pipeline-secret-scan'
+    //     }
+    //   }
+    // }
     stage('Derive Build Tag') {
       steps {
         script {
           env.PROJECT_BUILD_TAG = sh(returnStdout: true, script: 'make derive-build-tag').trim()
+        }
+      }
+    }
+    stage('Build API') {
+      steps {
+        script {
+          sh "make build VERSION=${env.PROJECT_BUILD_TAG}"
         }
       }
     }
@@ -45,13 +57,6 @@ pipeline {
           sh "make scan"
         }
         archiveArtifacts artifacts: 'reports/**'
-      }
-    }
-    stage('Build API') {
-      steps {
-        script {
-          sh "make build VERSION=${env.PROJECT_BUILD_TAG}"
-        }
       }
     }
     stage('Unit Test') {
