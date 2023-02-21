@@ -38,7 +38,7 @@ build: project-config
 		-Dsonar.organization='nhsd-exeter' \
 		-Dsonar.projectKey='uec-dos-api-pca' \
 		-Dsonar.projectName='DoS Postcode API' \
-		-Dsonar.login='$$(make secret-fetch NAME=service-finder-sonar-pass | jq .SONAR_HOST_TOKEN | tr -d '"' || exit 1)' \
+		-Dsonar.login='$$(make secret-fetch NAME=uec-sf-service-finder-sonar-pass | jq .SONAR_HOST_TOKEN | tr -d '"' || exit 1)' \
 		-Dsonar.sourceEncoding='UTF-8' \
 		-Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco \
 		-Dsonar.exclusions='src/main/java/**/config/*.*,src/main/java/**/domain/*.*,src/main/java/**/exception/*.*,src/test/**/*.*,src/main/java/**/filter/*.*,src/main/java/**/PostcodeMappingApplication.*' \
