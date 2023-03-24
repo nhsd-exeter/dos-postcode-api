@@ -22,3 +22,5 @@ variable "postcode_etl_sns_logging_level" { description = "Logging level for pos
 variable "postcode_etl_extract_alarm_period" { description = "The period in seconds which the alarm monitors if the extract lambda has triggered" }
 
 variable "postcode_etl_insert_alarm_period" { description = "The period in seconds which the alarm monitors if the insert lambda has triggered" }
+
+variable "texas_vpc_name" { description = "VPC Name for service finder provided by texas" }
