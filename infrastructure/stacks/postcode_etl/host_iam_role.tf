@@ -1,11 +1,7 @@
-data "terraform_remote_state" "eks" {
-  backend = "s3"
-  config = {
-    bucket = var.terraform_platform_state_store
-    key    = var.eks_terraform_state_key
-    region = var.aws_region
-  }
+data "aws_eks_cluster" "eks" {
+  name = "live-leks-cluster"
 }
+
 resource "aws_iam_role" "iam_host_role" {
   path = "/"
   name = local.service_account_role_name
@@ -17,12 +13,12 @@ resource "aws_iam_role" "iam_host_role" {
     {
       "Effect": "Allow",
       "Principal": {
-        "Federated" : "arn:aws:iam::${var.aws_account_id}:oidc-provider/${trimprefix(data.terraform_remote_state.eks.outputs.eks_oidc_issuer_url, "https://")}"
+        "Federated" : "arn:aws:iam::${var.aws_account_id}:oidc-provider/${trimprefix(data.aws_eks_cluster.eks.identity[0].oidc[0].issuer, "https://")}"
         },
         "Action": ["sts:AssumeRole","sts:AssumeRoleWithWebIdentity"],
         "Condition": {
           "StringLike": {
-            "${trimprefix(data.terraform_remote_state.eks.outputs.eks_oidc_issuer_url, "https://")}:sub": "system:serviceaccount:${var.project_id}*:uec-dos-api-pc-service-account"
+            "${trimprefix(data.aws_eks_cluster.eks.identity[0].oidc[0].issuer, "https://")}:sub": "system:serviceaccount:${var.project_id}*:uec-dos-api-pc-service-account"
         }
       }
     }

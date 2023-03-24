@@ -22,11 +22,7 @@ resource "aws_lambda_function" "region_update_lambda" {
     }
   }
   vpc_config {
-    subnet_ids = [
-      data.terraform_remote_state.vpc.outputs.private_subnets[0],
-      data.terraform_remote_state.vpc.outputs.private_subnets[1],
-      data.terraform_remote_state.vpc.outputs.private_subnets[2]
-    ]
+    subnet_ids = keys(data.aws_subnet.texas_private_subnet_ids_as_map_of_objects)
     security_group_ids = [aws_security_group.region_lambda_sg.id]
   }
 }
@@ -34,7 +30,7 @@ resource "aws_lambda_function" "region_update_lambda" {
 resource "aws_security_group" "region_lambda_sg" {
   name        = "${var.service_prefix}-region-lambda-sg"
   description = "Security group for the region update lambda"
-  vpc_id      = data.terraform_remote_state.vpc.outputs.vpc_id
+  vpc_id      = data.aws_vpc.vpc[0].id
 
   tags = local.standard_tags
 }
