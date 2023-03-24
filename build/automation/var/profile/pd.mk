@@ -53,3 +53,6 @@ TF_VAR_postcode_etl_source_db := pathwaysdos
 CERTIFICATE_DOMAIN := certificate
 CHECK_DEPLOYMENT_TIME_LIMIT := 600
 CHECK_DEPLOYMENT_POLL_INTERVAL := 10
+
+
+TF_VAR_texas_vpc_name = lk8s-$(AWS_ACCOUNT_NAME).texasplatform.uk

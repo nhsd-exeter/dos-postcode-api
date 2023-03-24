@@ -46,3 +46,5 @@ variable "postcode_etl_source_db" { description = "The dos read replica source d
 variable "service_prefix" { description = "service prefix for all infrastructure related to this application" }
 
 variable "postcode_etl_logging_level" { description = "Logging level for service_etl lambda" }
+
+variable "texas_vpc_name" { description = "VPC Name for service finder provided by texas" }
