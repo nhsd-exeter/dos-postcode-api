@@ -134,22 +134,19 @@ deploy: # Deploy artefacts - mandatory: PROFILE=[name]
 plan-etl: # Plan environment - mandatory: PROFILE=[name]
 	make prepare-lambda-deployment-postcode-extract
 	make prepare-lambda-deployment-postcode-insert
-	make prepare-lambda-deployment-region-update
-	make prepare-lambda-deployment-ccg-file-generator
-	make prepare-lambda-deployment-email-update
 	make terraform-plan STACK=$(INFRASTRUCTURE_STACKS) PROFILE=$(PROFILE)
 	sleep $(SLEEP_AFTER_PLAN)
 
 provision-etl: # Provision environment - mandatory: PROFILE=[name]
 	make prepare-lambda-deployment-postcode-extract
 	make prepare-lambda-deployment-postcode-insert
-	make prepare-lambda-deployment-region-update
-	make prepare-lambda-deployment-ccg-file-generator
-	make prepare-lambda-deployment-email-update
 	make terraform-apply-auto-approve STACK=$(INFRASTRUCTURE_STACKS) PROFILE=$(PROFILE)
 
-provision-plan:
+plan:
+	make prepare-lambda-deployment-postcode-extract
+	make prepare-lambda-deployment-postcode-insert
 	make terraform-plan STACK=$(INFRASTRUCTURE_STACKS) PROFILE=$(PROFILE)
+	sleep $(SLEEP_AFTER_PLAN)
 
 provision: # Provision environment - mandatory: PROFILE=[name]
 	make terraform-apply-auto-approve STACK=$(INFRASTRUCTURE_STACKS) PROFILE=$(PROFILE)
@@ -265,84 +262,6 @@ prepare-lambda-deployment-postcode-insert: # Downloads the required libraries fo
 		$(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-postcode-insert/deploy
 	cp -R $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-postcode-insert/psycopg2 \
 		$(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-postcode-insert/deploy
-
-prepare-lambda-deployment-email-update: # Downloads the required libraries for the Lambda functions
-	cd $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-email-update
-	if [ $(BUILD_ID) -eq 0 ]; then
-		pip install \
-			-r requirements.txt \
-			-t $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-email-update/deploy \
-			--upgrade \
-			--no-deps
-	else
-		pip install \
-			-r requirements.txt \
-			-t $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-email-update/deploy \
-			--upgrade \
-			--no-deps \
-			--system
-	fi
-	cd $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-email-update/deploy
-	rm -rf ./bin
-	rm -rf ./*.dist-info
-	rm -f LICENSE
-	cp $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-email-update/email_update.py  \
-		$(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-email-update/deploy
-	cp -R $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-email-update/psycopg2 \
-		$(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-email-update/deploy
-
-
-prepare-lambda-deployment-region-update: # Downloads the required libraries for the Lambda functions
-	cd $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-region-update
-	if [ $(BUILD_ID) -eq 0 ]; then
-		pip install \
-			-r requirements.txt \
-			-t $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-region-update/deploy \
-			--upgrade \
-			--no-deps
-	else
-		pip install \
-			-r requirements.txt \
-			-t $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-region-update/deploy \
-			--upgrade \
-			--no-deps \
-			--system
-	fi
-	cd $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-region-update/deploy
-	rm -rf ./bin
-	rm -rf ./*.dist-info
-	rm -f LICENSE
-	cp $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-region-update/region_update.py  \
-		$(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-region-update/deploy
-	cp -R $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-region-update/psycopg2 \
-		$(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-region-update/deploy
-
-
-
-prepare-lambda-deployment-ccg-file-generator: # Downloads the required libraries for the Lambda functions
-	cd $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-ccg-file-generator
-	if [ $(BUILD_ID) -eq 0 ]; then
-		pip install \
-			-r requirements.txt \
-			-t $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-ccg-file-generator/deploy \
-			--upgrade \
-			--no-deps
-	else
-		pip install \
-			-r requirements.txt \
-			-t $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-ccg-file-generator/deploy \
-			--upgrade \
-			--no-deps \
-			--system
-	fi
-	cd $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-ccg-file-generator/deploy
-	rm -rf ./bin
-	rm -rf ./*.dist-info
-	rm -f LICENSE
-	cp $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-ccg-file-generator/file_generator.py  \
-		$(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-ccg-file-generator/deploy
-	cp -R $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-ccg-file-generator/psycopg2 \
-		$(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-ccg-file-generator/deploy
 
 
 prepare-lambda-deployment-postcode-extract: # Downloads the required libraries for the Lambda functions

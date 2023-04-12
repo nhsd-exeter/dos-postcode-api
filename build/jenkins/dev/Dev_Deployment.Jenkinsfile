@@ -36,46 +36,17 @@ pipeline {
         }
       }
     }
-    stage('Plan Infrastructure') {
-      steps {
-        script {
-          sh "make provision-plan PROFILE=${env.PROFILE}"
-        }
-      }
-    }
-    stage('Plan ETL Infrastructure') {
-      steps {
-        script {
-          sh "make plan-etl PROFILE=${env.PROFILE}"
-        }
-      }
-    }
-
-    stage('Provision ETL Infrastructure') {
-      steps {
-        script {
-          sh "make provision-etl PROFILE=${env.PROFILE}"
-        }
-      }
-    }
+    // stage('Plan Infrastructure') {
+    //   steps {
+    //     script {
+    //       sh "make plan PROFILE=${env.PROFILE}"
+    //     }
+    //   }
+    // }
     stage('Provision Infrastructure') {
       steps {
         script {
           sh "make provision PROFILE=${env.PROFILE}"
-        }
-      }
-    }
-    stage('Plan SNS Infrastructure') {
-      steps {
-        script {
-          sh "make provision-sns-plan PROFILE=${env.PROFILE}"
-        }
-      }
-    }
-    stage('Provision SNS Infrastructure') {
-      steps {
-        script {
-          sh "make provision-sns PROFILE=${env.PROFILE}"
         }
       }
     }
@@ -104,13 +75,6 @@ pipeline {
       steps {
         script {
           sh "make postcode-extract-etl PROFILE=${env.PROFILE}"
-        }
-      }
-    }
-    stage('Perform File Generator Lambda function') {
-      steps {
-        script {
-          sh "make file-generator-etl PROFILE=${env.PROFILE}"
         }
       }
     }
