@@ -1,6 +1,6 @@
 resource "aws_wafv2_web_acl" "waf_acl" {
   name        = var.waf_name
-  description = "SF Fuzzy Search Application WAF"
+  description = "SF PostcodeAPI Application WAF"
   scope       = "REGIONAL"
 
   default_action {
