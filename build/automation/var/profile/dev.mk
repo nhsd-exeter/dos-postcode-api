@@ -16,7 +16,8 @@ DEPLOYMENT_STACKS := application
 SNS_INFRASTRUCTURE_STACKS := postcode_etl_sns
 INFRASTRUCTURE_STACKS_ETL := postcode_etl
 INFRASTRUCTURE_STACK_STORE := datastore
-INFRASTRUCTURE_STACKS := $(INFRASTRUCTURE_STACK_STORE),$(INFRASTRUCTURE_STACKS_ETL)
+INFRASTRUCTURE_STACK_FIREWALL := firewall
+INFRASTRUCTURE_STACKS := $(INFRASTRUCTURE_STACK_STORE),$(INFRASTRUCTURE_STACKS_ETL),$(INFRASTRUCTURE_STACK_FIREWALL),$(SNS_INFRASTRUCTURE_STACKS)
 
 
 SERVER_PORT := 443
@@ -57,3 +58,13 @@ TF_VAR_postcode_etl_source_db := pathwaysdos_regression
 TF_VAR_core_dos_python_libs := core-dos-python-libs
 
 TF_VAR_texas_vpc_name = lk8s-$(AWS_ACCOUNT_NAME).texasplatform.uk
+
+# ===================== firewall
+TF_VAR_waf_dashboard_name = $(SERVICE_PREFIX)-wafv2-dashboard
+TF_VAR_waf_name = $(SERVICE_PREFIX)-waf-acl
+TF_VAR_waf_log_group_name = aws-waf-logs-$(SERVICE_PREFIX)
+TF_VAR_non_gb_rule_metric_name = $(SERVICE_PREFIX)-waf-non-GB-geo-match-metric
+TF_VAR_ip_reputation_list_metric_name = $(SERVICE_PREFIX)-waf-aws-ip-reputation-list-metric
+TF_VAR_common_rule_set_metric_name = $(SERVICE_PREFIX)-waf-aws-common-rule-set-metric
+TF_VAR_sql_injection_rules_metric = $(SERVICE_PREFIX)-waf-aws-bad-inputs-rule-set-metric
+TF_VAR_bad_input_metric_name = $(SERVICE_PREFIX)-waf-aws-bad-inputs-rule-set-metric
