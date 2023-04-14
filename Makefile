@@ -302,24 +302,6 @@ create-lambda-deploy-dir:
 		touch $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-postcode-insert/deploy/test.txt
 	fi
 
-	if [ ! -d $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-region-update/deploy ]
-	then
-		mkdir $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-region-update/deploy
-		touch $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-region-update/deploy/test.txt
-	fi
-
-	if [ ! -d $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-ccg-file-generator/deploy ]
-	then
-		mkdir $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-ccg-file-generator/deploy
-		touch $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-ccg-file-generator/deploy/test.txt
-	fi
-
-	if [ ! -d $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-email-update/deploy ]
-	then
-		mkdir $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-email-update/deploy
-		touch $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-email-update/deploy/test.txt
-	fi
-
 build-artefact:
 	echo TODO: $(@)
 
