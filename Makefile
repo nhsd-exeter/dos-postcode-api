@@ -10,6 +10,9 @@ prepare: ## Prepare environment
 		git-config \
 		docker-config
 
+fetch-project-variables:
+	export TEXAS_WAF_ACL_ID=$$(make -s aws-waf-get WAF_NAME=$(WAF_NAME))
+
 compile:
 	make docker-run-mvn \
 		DIR="application" \
@@ -129,6 +132,7 @@ tag-release: # Create the release tag - mandatory DEV_TAG RELEASE_TAG
 	docker push $(DOCKER_REGISTRY_LIVE)/api:$(RELEASE_TAG)
 
 deploy: # Deploy artefacts - mandatory: PROFILE=[name]
+	make fetch-project-variables
 	make project-deploy STACK=application PROFILE=$(PROFILE)
 
 plan-etl: # Plan environment - mandatory: PROFILE=[name]
