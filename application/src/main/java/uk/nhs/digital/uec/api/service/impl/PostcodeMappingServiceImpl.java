@@ -140,7 +140,7 @@ public class PostcodeMappingServiceImpl implements PostcodeMappingService {
     postcodeMapping.setIcb(icbRecord.getNhsIcb());
     postcodeMapping.setNhs_region(icbRecord.getNhsRegion());
     postcodeMapping.setEmail(icbRecord.getEmail());
-    postcodeMapping.setCcg(icbRecord.getNhsRegion());
+    postcodeMapping.setCcg(icbRecord.getNhsCcg());
     return postcodeMapping;
   }
 }
