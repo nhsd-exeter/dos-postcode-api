@@ -26,7 +26,7 @@ aws-assume-role-export-variables: ### Get assume role export for the pipeline us
 aws-waf-get:
 	make -s docker-run-tools ARGS="$$(echo $(AWSCLI) | grep awslocal > /dev/null 2>&1 && echo '--env LOCALSTACK_HOST=$(LOCALSTACK_HOST)' ||:)" CMD=" \
 		$(AWSCLI) wafv2 list-web-acls --scope=REGIONAL --output=json \
-			| jq -r '.WebACLs[] |	select(.Name == \""$(WAF_NAME)"\") | .Id' \
+			| jq -r '.WebACLs[] |	select(.Name == \""$(WAF_NAME)"\") | .ARN' \
 	" | tr -d '\r' | tr -d '\n'
 
 aws-user-get-role:
