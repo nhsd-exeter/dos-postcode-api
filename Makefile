@@ -65,13 +65,6 @@ scan:
 
 
 start: project-start	# Start project
-	make local-dynamodb-scripts
-
-local-dynamodb-scripts:
-	cd $(PROJECT_DIR)/data/dynamo/test
-	chmod +x *.sh
-	./00-postcode-location-mapping-table.sh > /dev/null
-	./01-postcode-location-mapping-table.sh
 
 stop: project-stop # Stop project
 
@@ -133,7 +126,9 @@ tag-release: # Create the release tag - mandatory DEV_TAG RELEASE_TAG
 	docker push $(DOCKER_REGISTRY_LIVE)/api:$(RELEASE_TAG)
 
 deploy: # Deploy artefacts - mandatory: PROFILE=[name]
-	make fetch-project-variables
+	eval "$$(make aws-assume-role-export-variables)"
+	export AWS_WAF_ACL_ARN=$$(make -s aws-waf-get WAF_NAME=$(WAF_NAME))
+	echo $$AWS_WAF_ACL_ARN
 	make project-deploy STACK=application PROFILE=$(PROFILE)
 
 plan-etl: # Plan environment - mandatory: PROFILE=[name]
@@ -414,9 +409,6 @@ run-smoke:
 	if [ $(PROFILE) == pd ] || [ $(PROFILE) == dmo ] || [ $(PROFILE) == stg ]
 	then
 	echo "Profile: $(PROFILE). Executing real token test"
-	echo "Auth_EndPoint: $(AUTHENTICATION_ENDPOINT)"
-	echo "EmailAddress: $(POSTCODE_USER)"
-	echo "Password: $(COGNITO_USER_PASS)"
 	TOKEN=$$(curl -X POST -H "Content-Type: application/json" $(AUTHENTICATION_ENDPOINT) -d "{\"emailAddress\":\"$(POSTCODE_USER)\", \"password\":\"$(COGNITO_USER_PASS)\"}" | jq .accessToken | tr -d '"')
 	echo $$TOKEN
 	sed -i -e "s/MOCK_POSTCODE_API_ACCESS_TOKEN/$$TOKEN/g" $(APPLICATION_TEST_DIR)/contract/environment/postcode_smoke.postman_environment.json
