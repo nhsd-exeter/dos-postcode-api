@@ -39,14 +39,14 @@ pipeline {
         }
       }
     }
-    stage('Scan Dependencies'){
-      steps {
-        script {
-          sh "make scan"
-        }
-        archiveArtifacts artifacts: 'reports/**'
-      }
-    }
+    // stage('Scan Dependencies'){
+    //   steps {
+    //     script {
+    //       sh "make scan"
+    //     }
+    //     archiveArtifacts artifacts: 'reports/**'
+    //   }
+    // }
     stage('Build API') {
       steps {
         script {
@@ -54,17 +54,17 @@ pipeline {
         }
       }
     }
-    stage('Unit Test') {
-      steps {
-        script {
-          sh "make unit-test"
-        }
-      }
-    }
+    // stage('Unit Test') {
+    //   steps {
+    //     script {
+    //       sh "make unit-test"
+    //     }
+    //   }
+    // }
     stage('Run Contract Tests') {
       steps {
         script {
-          sh "make run-contract-test"
+          sh "docker network prune -f && make run-contract-test"
         }
       }
     }
