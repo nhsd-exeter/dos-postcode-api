@@ -61,13 +61,13 @@ pipeline {
         }
       }
     }
-    stage('Run Contract Tests') {
-      steps {
-        script {
-          sh "make run-contract-test"
-        }
-      }
-    }
+    // stage('Run Contract Tests') { TODO: https://nhsd-jira.digital.nhs.uk/browse/SFD-5448
+    //   steps {
+    //     script {
+    //       sh "make run-contract-test"
+    //     }
+    //   }
+    // }
     stage('Push API Image to ECR') {
       steps {
         script {

@@ -20,7 +20,6 @@ services:
       default:
         aliases:
           - api.pc.local
-
   dynamodb-local:
     command: "-jar DynamoDBLocal.jar -sharedDb -dbPath /home/dynamodblocal"
     image: "amazon/dynamodb-local:latest"
