@@ -14,7 +14,7 @@ services:
       AWS_SECRET_ACCESS_KEY: ACCESS_SEC
       DYNAMODB_POSTCODE_LOC_MAP_TABLE: $DYNAMODB_POSTCODE_LOC_MAP_TABLE
     ports:
-      - 443:443
+      - 9443:443
     command: [ "java", "-jar", "/application/dos-postcode-api.jar" ]
     networks:
       default:
