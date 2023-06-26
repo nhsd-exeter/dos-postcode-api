@@ -64,7 +64,7 @@ pipeline {
     stage('Run Contract Tests') {
       steps {
         script {
-          sh "docker network prune -f && make run-contract-test"
+          sh "make run-contract-test"
         }
       }
     }

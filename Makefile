@@ -177,7 +177,7 @@ run-smoke-test:
 	make run-smoke COGNITO_USER_PASS=$$(make aws-secret-get NAME=$(PROJECT_GROUP_SHORT)-sfsa-${PROFILE}-cognito-passwords | jq .POSTCODE_PASSWORD | tr -d '"')
 
 run-contract-test:
-	make run-contract
+	make docker-config run-contract
 
 monitor-deployment:
 	make k8s-check-deployment-of-replica-sets
