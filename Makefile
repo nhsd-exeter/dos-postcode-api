@@ -387,6 +387,11 @@ k8s-check-deployment-of-replica-sets:
 	echo "Conditional Success: The deployment has not completed within the timescales, but carrying on anyway"
 	exit 0
 
+local-dynamodb-scripts:
+	cd $(PROJECT_DIR)/data/dynamo/test
+	chmod +x *.sh
+	./00-postcode-location-mapping-table.sh > /dev/null
+	./01-postcode-location-mapping-table.sh
 
 run-contract:
 	make stop

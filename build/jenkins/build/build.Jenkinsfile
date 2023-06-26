@@ -54,20 +54,20 @@ pipeline {
         }
       }
     }
-    // stage('Unit Test') {
-    //   steps {
-    //     script {
-    //       sh "make unit-test"
-    //     }
-    //   }
-    // }
-    stage('Run Contract Tests') {
+    stage('Unit Test') {
       steps {
         script {
-          sh "make run-contract-test"
+          sh "make unit-test"
         }
       }
     }
+    // stage('Run Contract Tests') { TODO: https://nhsd-jira.digital.nhs.uk/browse/SFD-5448
+    //   steps {
+    //     script {
+    //       sh "make run-contract-test"
+    //     }
+    //   }
+    // }
     stage('Push API Image to ECR') {
       steps {
         script {

@@ -20,15 +20,6 @@ services:
       default:
         aliases:
           - api.pc.local
-  postman:
-    image: postman/newman:$DOCKER_POSTMAN_NEWMAN_VERSION
-    container_name: postman
-    volumes:
-      - $APPLICATION_TEST_DIR/contract
-    ports:
-      - 443:443
-    command: ["run collections/PostcodeAPIContractTests.postman_collection.json -e \ environment/postcode_contract.postman_environment.json --verbose --insecure"]
-
   dynamodb-local:
     command: "-jar DynamoDBLocal.jar -sharedDb -dbPath /home/dynamodblocal"
     image: "amazon/dynamodb-local:latest"
