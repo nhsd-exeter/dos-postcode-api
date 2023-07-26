@@ -7,7 +7,7 @@
 ### Fixed
 
 ## [3.1.0] - 26/07/2023
-#### Tag:
+#### Tag: 202307261034-79273e3
 
 ### Added:
 - SFD-5216 Fetch WAF ID from aws
