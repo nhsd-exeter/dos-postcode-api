@@ -1,9 +1,13 @@
-name: "Check code format and quality"
-on:
+name: Check code format and quality
+'on':
   push:
-    branches: [master]
+    branches:
+      - master
   pull_request:
-    types: [opened, synchronize, reopened]
+    types:
+      - opened
+      - synchronize
+      - reopened
 jobs:
   check-code-quality:
     runs-on: ubuntu-latest
@@ -23,17 +27,17 @@ jobs:
       - name: Create coverage report
         run: |
           make compile coverage-report
-      # - uses: sonarsource/sonarcloud-github-action@master
-        # SEE: https://github.com/SonarSource/sonarcloud-github-action
-          #env:
-            #GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-            #SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          #with:
-            #projectBaseDir: ./application
-            #args: >
-              #-Dsonar.organization=nhsd-exeter
-              #-Dsonar.projectKey=uec-dos-api-pca
-              #-Dsonar.java.binaries=target/classes
-              #-Dsonar.coverage.exclusions=src/main/java/**/config/*.*,src/main/java/**/domain/*.*,src/main/java/**/exception/*.*,src/test/**/*.*,src/main/java/**/filter/*.*,src/main/java/**/PostcodeMappingApplication.*
-              #-Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco
-              #-Dsonar.verbose=true
+      - uses: sonarsource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
+          SONAR_TOKEN: '${{ secrets.SONAR_TOKEN }}'
+        with:
+          projectBaseDir: ./application
+          args: >
+            -Dsonar.organization=nhsd-exeter
+            -Dsonar.projectKey=uec-dos-api-pca
+            -Dsonar.java.binaries=target/classes
+            -Dsonar.coverage.exclusions=src/main/java/**/config/*.*,src/main/java/**/domain/*.*,src/main/java/**/exception/*.*,src/test/**/*.*,src/main/java/**/filter/*.*,src/main/java/**/PostcodeMappingApplication.*
+            -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco
+            -Dsonar.verbose=true
+
