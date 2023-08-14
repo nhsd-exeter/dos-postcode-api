@@ -637,7 +637,12 @@ PATH_SYSTEM := /usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin
 .ONESHELL:
 .PHONY: *
 MAKEFLAGS := --no-print-director
-PATH := $(PATH_DEVOPS):$(PATH_HOMEBREW):$(PATH_SYSTEM)
+ifeq ($(findstring jenkins-prod, $(JENKINS_URL)), jenkins-prod)
+	PATH := $(PATH_DEVOPS):$(PATH_HOMEBREW):$(PATH_SYSTEM)
+else
+	PATH_PYENV = /.pyenv/versions/jenkins/bin
+	PATH := $(PATH_PYENV):$(PATH_DEVOPS):$(PATH_HOMEBREW):$(PATH_SYSTEM)
+endif
 SHELL := /bin/bash
 ifeq (true, $(shell [[ "$(DEBUG)" =~ ^(true|yes|y|on|1|TRUE|YES|Y|ON)$$ ]] && echo true))
 	.SHELLFLAGS := -cex
