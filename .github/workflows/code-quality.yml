@@ -2,7 +2,7 @@ name: Check code format and quality
 'on':
   push:
     branches:
-      - master
+      - task/SFD-5448_Contract_tests_in_postcode_API_not_running
   pull_request:
     types:
       - opened
@@ -34,8 +34,8 @@ jobs:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
-      - name: Build and analyze with SonarQube
-        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Pcoverage
+      - name: Build and Analyze with SonarQube
+        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
