@@ -36,9 +36,11 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
       - name: Build and Analyze with SonarQube
         run: |
-          pwd
+          ls -la ${{ github.workspace }}
           cd ${{ github.workspace }}/dos-postcode-api
+          ls -la
           mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
