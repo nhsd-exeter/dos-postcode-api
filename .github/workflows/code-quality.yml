@@ -2,7 +2,7 @@ name: Check code format and quality
 'on':
   push:
     branches:
-      - task/SFD-5448_Contract_tests_in_postcode_API_not_running
+      - master
   pull_request:
     types:
       - opened
@@ -37,7 +37,7 @@ jobs:
       - name: Build and Analyze with SonarQube
         run: |
           pwd
-          cd dos-postcode-api
+          cd ${{ github.workspace }}/dos-postcode-api
           mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
