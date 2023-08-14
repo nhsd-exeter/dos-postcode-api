@@ -37,8 +37,7 @@ jobs:
       - name: Build and Analyze with SonarQube
         run: |
           ls -la ${{ github.workspace }}
-          cd ${{ github.workspace }}/dos-postcode-api
-          ls -la
+          cd ${{ github.workspace }}/application/dos-postcode-api
           mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
