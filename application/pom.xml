@@ -232,14 +232,6 @@
         <groupId>org.sonarsource.scanner.maven</groupId>
         <artifactId>sonar-maven-plugin</artifactId>
         <version>3.7.0.1746</version>
-        <executions>
-          <execution>
-            <phase>verify</phase>
-            <goals>
-              <goal>sonar</goal>
-            </goals>
-          </execution>
-        </executions>
       </plugin>
 
       <plugin>
@@ -292,6 +284,7 @@
             </goals>
             <configuration>
               <rules>
+
                 <rule>
                   <element>PACKAGE</element>
                   <excludes>

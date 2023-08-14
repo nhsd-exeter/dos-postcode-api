@@ -2,7 +2,7 @@ name: Check code format and quality
 'on':
   push:
     branches:
-      - master
+      -  task/SFD-5448_Contract_tests_in_postcode_API_not_running
   pull_request:
     types:
       - opened
@@ -40,4 +40,5 @@ jobs:
             -Dsonar.coverage.exclusions=src/main/java/**/config/*.*,src/main/java/**/domain/*.*,src/main/java/**/exception/*.*,src/test/**/*.*,src/main/java/**/filter/*.*,src/main/java/**/PostcodeMappingApplication.*
             -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco
             -Dsonar.verbose=true
+
 
