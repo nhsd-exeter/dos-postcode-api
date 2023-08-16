@@ -12,7 +12,6 @@ public enum Region {
   NORTH_EAST_AND_YORKSHIRE("Yorkshire and The Humber"),
   NORTHERN_IRELAND("Northern Ireland"),
   NORTH_WEST("North West"),
-  NORTH_EAST("North East"),
   SOUTH_EAST("South East"),
   SOUTH_WEST("South West"),
   SCOTLAND("Scotland"),

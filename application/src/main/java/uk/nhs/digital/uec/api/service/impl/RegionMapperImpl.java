@@ -1,15 +1,5 @@
 package uk.nhs.digital.uec.api.service.impl;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-import javax.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
@@ -22,11 +12,22 @@ import uk.nhs.digital.uec.api.util.CCGUtil;
 import uk.nhs.digital.uec.api.util.ICBUtil;
 import uk.nhs.digital.uec.api.util.RegionUtil;
 
+import javax.annotation.PostConstruct;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+
 @Slf4j
 @Component
 public class RegionMapperImpl implements RegionMapper {
 
-  private static final String YORKSHIRE_PCODERY63 = "pcodey63.csv";
+  private static final String NORTH_EAST_AND_YORKSHIRE_PCODERY63 = "pcodey63.csv";
   private static final String NORTHWEST_PCODEY62 = "pcodey62.csv";
   private static final String EASTENGLAND_PCODEY61 = "pcodey61.csv";
   private static final String MIDLANDS_PCODEY60 = "pcodey60.csv";
@@ -36,7 +37,7 @@ public class RegionMapperImpl implements RegionMapper {
 
   private List<RegionRecord> recordsList;
   private List<ICBRecord> icbRecordList;
-  private List<CCGRecord> yorkshire;
+  private List<CCGRecord> ne_and_yorkshire;
   private List<CCGRecord> northWest;
   private List<CCGRecord> eastEngland;
   private List<CCGRecord> midlands;
@@ -61,7 +62,7 @@ public class RegionMapperImpl implements RegionMapper {
     try {
       recordsList = this.loadCSVFileToPojo().get();
       icbRecordList = this.loadICBToPoJO().get();
-      yorkshire = this.getCCGRecord(YORKSHIRE_PCODERY63).get();
+      ne_and_yorkshire = this.getCCGRecord(NORTH_EAST_AND_YORKSHIRE_PCODERY63).get();
       northWest = this.getCCGRecord(NORTHWEST_PCODEY62).get();
       eastEngland = this.getCCGRecord(EASTENGLAND_PCODEY61).get();
       midlands = this.getCCGRecord(MIDLANDS_PCODEY60).get();
@@ -98,7 +99,7 @@ public class RegionMapperImpl implements RegionMapper {
 
   private List<CCGRecord> getAllCCGs() {
     List<CCGRecord> allRec = new ArrayList<>();
-    allRec.addAll(yorkshire);
+    allRec.addAll(ne_and_yorkshire);
     allRec.addAll(london);
     allRec.addAll(eastEngland);
     allRec.addAll(southEast);
@@ -192,9 +193,9 @@ public class RegionMapperImpl implements RegionMapper {
     try {
       if (district.contains("Yorkshire")) {
         ccgRecord =
-          yorkshire.get(
+          ne_and_yorkshire.get(
             binarySearchIndex(
-              yorkshire.stream().map(CCGRecord::getPostcode).toArray(),
+              ne_and_yorkshire.stream().map(CCGRecord::getPostcode).toArray(),
               code
             )
           );
