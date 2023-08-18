@@ -142,6 +142,10 @@ public class RegionMapperImpl implements RegionMapper {
       );
       regionRecord = regionRecordList.get(index);
     }
+    if (regionRecord.getRegion().equals("North East")){
+      regionRecord.setRegion("Yorkshire and The Humber");
+      log.info("Updated region from North East to Yorkshire and The Humber: {}, {}",postcode, regionRecord);
+    }
     return regionRecord;
   }
 
@@ -276,6 +280,7 @@ public class RegionMapperImpl implements RegionMapper {
       log.error("An error with the binary search {}", e.getMessage());
     }
 
+    log.info("Found CCG Records: {}",ccgRecord);
     return ccgRecord;
   }
 
