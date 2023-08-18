@@ -138,6 +138,8 @@ In the cloud environment, service data is imported into the DynamoDB from the Do
 
 In the local and in the dev environments, the Authentication mechanism of the API is mocked, and as such, the following token must be provided in API requests: MOCK_POSTCODE_API_ACCESS_TOKEN
 
+In the local environment dynamodb-admin runs on port 8001 to see the table data
+
 ### Manual check
 
 Once the application is spun up, use postman to call the available endpoints of the API. Full API documentation can be found at the Swagger endpoint.

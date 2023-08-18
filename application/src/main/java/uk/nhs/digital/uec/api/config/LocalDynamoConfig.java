@@ -62,6 +62,7 @@ public class LocalDynamoConfig {
   String entry10 = "{\"postcode\":\"S12HE\",\"easting\":\"435364\", \"northing\":\"387300\",\"name\":\"NHS SHEFFIELD CCG\"}";
   String entry11 = "{\"postcode\":\"DL170HF\",\"easting\":\"428580\", \"northing\":\"529821\",\"name\":\"NHS DURHAM DALES\"}";
   String entry12 = "{\"postcode\":\"DH88TF\",\"easting\":\"428580\", \"northing\":\"529821\",\"name\":\"NHS DURHAM DALES\"}";
+  String entry13 = "{\"postcode\":\"NE639UZ\",\"easting\":\"427406\", \"northing\":\"587768\",\"name\":\"NHS Northumberland CCG\"}";
 
 
   @Bean
@@ -84,7 +85,7 @@ public class LocalDynamoConfig {
     }
     log.info("Table created: " + tableDescription.table());
 
-    String[] itemsStrings = new String[]{entry1, entry2, entry3, entry4, entry5, entry6, entry7, entry8, entry9,entry10,entry11,entry12};
+    String[] itemsStrings = new String[]{entry1, entry2, entry3, entry4, entry5, entry6, entry7, entry8, entry9,entry10,entry11,entry12,entry13};
     List<PutItemRequest> items = Arrays.stream(itemsStrings)
       .map(this::jsonToMap)
       .filter(Objects::nonNull)
