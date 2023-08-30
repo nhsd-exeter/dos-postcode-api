@@ -14,3 +14,6 @@ POSTCODE_LOCATION_DYNAMO_URL := http://dynamo.pc.local:8000/
 DYNAMODB_POSTCODE_LOC_MAP_TABLE := service-finder-${PROFILE}-postcode-location-mapping
 
 CERTIFICATE_DOMAIN := certificate
+
+AWS_ACCESS_KEY_ID:= dummykeyid
+AWS_SECRET_ACCESS_KEY:= dummysecret
