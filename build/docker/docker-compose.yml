@@ -2,6 +2,7 @@ version: "3.7"
 
 services:
   api:
+    container_name: application
     image: $DOCKER_REGISTRY/dos-postcode-api:latest
     environment:
       SPRING_PROFILES_ACTIVE: $SPRING_PROFILES_ACTIVE
@@ -20,6 +21,7 @@ services:
         aliases:
           - api.pc.local
   dynamodb-local:
+    container_name: data
     command: "-jar DynamoDBLocal.jar -sharedDb -dbPath /home/dynamodblocal"
     image: "amazon/dynamodb-local:1.22.0"
     environment:
@@ -34,6 +36,7 @@ services:
         aliases:
           - dynamo.pc.local
   dynamodb-admin:
+    container_name: admin
     image: aaronshaf/dynamodb-admin
     ports:
       - "8001:8001"
