@@ -245,15 +245,13 @@ prepare-lambda-deployment-postcode-insert: # Downloads the required libraries fo
 			-r requirements.txt \
 			-t $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-postcode-insert/deploy \
 			--upgrade \
-			--no-deps \
-			--system
+			--no-deps
 	else
 		pip install \
 			-r requirements.txt \
 			-t $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-postcode-insert/deploy \
 			--upgrade \
-			--no-deps \
-			--system
+			--no-deps
 	fi
 	cd $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-postcode-insert/deploy
 	rm -rf ./bin
@@ -272,15 +270,13 @@ prepare-lambda-deployment-postcode-extract: # Downloads the required libraries f
 			-r requirements.txt \
 			-t $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-postcode-extract/deploy \
 			--upgrade \
-			--no-deps \
-			--system
+			--no-deps
 	else
 		pip install \
 			-r requirements.txt \
 			-t $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-postcode-extract/deploy \
 			--upgrade \
-			--no-deps \
-			--system
+			--no-deps
 	fi
 	cd $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-postcode-extract/deploy
 	rm -rf ./bin
