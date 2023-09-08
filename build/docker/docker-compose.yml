@@ -3,7 +3,6 @@ version: "3.7"
 services:
   api:
     image: $DOCKER_REGISTRY/dos-postcode-api:latest
-    container_name: dos-postcode-api
     environment:
       SPRING_PROFILES_ACTIVE: $SPRING_PROFILES_ACTIVE
       CERTIFICATE_DOMAIN: $CERTIFICATE_DOMAIN
@@ -23,7 +22,6 @@ services:
   dynamodb-local:
     command: "-jar DynamoDBLocal.jar -sharedDb -dbPath /home/dynamodblocal"
     image: "amazon/dynamodb-local:latest"
-    container_name: dynamodb-pc-local
     environment:
       ALLOWED_ORIGINS: "{$ALLOWED_ORIGINS}"
     ports:

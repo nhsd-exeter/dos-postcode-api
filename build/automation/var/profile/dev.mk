@@ -49,14 +49,23 @@ CHECK_DEPLOYMENT_TIME_LIMIT := 600
 CHECK_DEPLOYMENT_POLL_INTERVAL := 10
 
 # Connection to DoS Read Replica for extraction Lambdas
-TF_VAR_sf_read_replica_db := core-dos-regression-sf-replica.dos-db-rds
+TF_VAR_sf_read_replica_db := uec-core-dos-performance-sf-replica.dos-db-sync-rds
 TF_VAR_sf_read_replica_db_sg := live-lk8s-nonprod-uec-sf-core-dos-sf-replica-sg
-TF_VAR_dos_read_replica_secret_name := core-dos-dev/deployment
+TF_VAR_dos_read_replica_secret_name := core-dos-db-sync/deployment
 TF_VAR_dos_read_replica_key := DB_SF_READONLY_PASSWORD
 TF_VAR_postcode_etl_db_user := dos_sf_readonly
-TF_VAR_postcode_etl_source_db := pathwaysdos_regression
+TF_VAR_postcode_etl_source_db := pathwaysdos
 TF_VAR_core_dos_python_libs := core-dos-python-libs
 
+# <!-- TO BE Removed after aurora testing
+# TF_VAR_sf_read_replica_db := core-dos-regression-sf-replica.dos-db-rds
+# TF_VAR_sf_read_replica_db_sg := live-lk8s-nonprod-uec-sf-core-dos-sf-replica-sg
+# TF_VAR_dos_read_replica_secret_name := core-dos-dev/deployment
+# TF_VAR_dos_read_replica_key := DB_SF_READONLY_PASSWORD
+# TF_VAR_postcode_etl_db_user := dos_sf_readonly
+# TF_VAR_postcode_etl_source_db := pathwaysdos_regression
+# TF_VAR_core_dos_python_libs := core-dos-python-libs
+# -->
 TF_VAR_texas_vpc_name = lk8s-$(AWS_ACCOUNT_NAME).texasplatform.uk
 
 # ===================== firewall
