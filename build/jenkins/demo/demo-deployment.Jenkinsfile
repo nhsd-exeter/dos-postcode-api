@@ -3,9 +3,7 @@ pipeline {
     Description: Deployment pipeline for the Demo environment
    */
 
-  agent {
-    label 'jenkins-slave'
-  }
+  agent any
 
   options {
     buildDiscarder(logRotator(daysToKeepStr: '7', numToKeepStr: '13'))
@@ -25,8 +23,14 @@ pipeline {
       defaultValue: ''
     )
   }
-
   stages {
+    stage('Pipeline Prepare') {
+      steps {
+        script {
+          sh 'make pipeline-prepare'
+        }
+      }
+    }
     stage('Show Variables') {
       steps {
         script {
@@ -99,10 +103,9 @@ pipeline {
     }
   }
   post {
-    always {
-      script {
+    always { script {
         sh 'make clean'
-      }
     }
   }
+}
 }

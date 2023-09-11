@@ -101,33 +101,41 @@ resource "aws_security_group_rule" "sns_lambda_egress_443" {
 }
 
 resource "aws_lambda_permission" "allow_cloudwatch_extract" {
+  count = length(data.aws_cloudwatch_log_groups.extract_log_groups) > 0 ? 1 : 0
+
   statement_id  = "AllowExecutionFromCloudWatchExtract"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.postcode_etl_sns_lambda.function_name
   principal     = "logs.${var.aws_region}.amazonaws.com"
-  source_arn    = data.aws_cloudwatch_log_group.postcode_etl_extract_log_group.arn
+  source_arn    = data.aws_cloudwatch_log_group.postcode_etl_extract_log_group[0].arn
 }
 
 resource "aws_cloudwatch_log_subscription_filter" "postcode_etl_extract_sns_cloudwatch_log_trigger" {
+  count = length(data.aws_cloudwatch_log_groups.extract_log_groups) > 0 ? 1 : 0
+
   depends_on      = [aws_lambda_permission.allow_cloudwatch_extract]
   name            = local.postcode_etl_sns_cloudwatch_event_name
-  log_group_name  = data.aws_cloudwatch_log_group.postcode_etl_extract_log_group.name
+  log_group_name  = data.aws_cloudwatch_log_group.postcode_etl_extract_log_group[0].name
   filter_pattern  = "?ERROR ?WARN ?5xx"
   destination_arn = aws_lambda_function.postcode_etl_sns_lambda.arn
 }
 
 resource "aws_lambda_permission" "allow_cloudwatch_insert" {
+  count = length(data.aws_cloudwatch_log_groups.insert_log_groups) > 0 ? 1 : 0
+
   statement_id  = "AllowExecutionFromCloudWatchInsert"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.postcode_etl_sns_lambda.function_name
   principal     = "logs.${var.aws_region}.amazonaws.com"
-  source_arn    = data.aws_cloudwatch_log_group.postcode_etl_insert_log_group.arn
+  source_arn    = data.aws_cloudwatch_log_group.postcode_etl_insert_log_group[0].arn
 }
 
 resource "aws_cloudwatch_log_subscription_filter" "postcode_etl_insert_sns_cloudwatch_log_trigger" {
+  count = length(data.aws_cloudwatch_log_groups.insert_log_groups) > 0 ? 1 : 0
+
   depends_on      = [aws_lambda_permission.allow_cloudwatch_insert]
   name            = local.postcode_etl_sns_cloudwatch_event_name
-  log_group_name  = data.aws_cloudwatch_log_group.postcode_etl_insert_log_group.name
+  log_group_name  = data.aws_cloudwatch_log_group.postcode_etl_insert_log_group[0].name
   filter_pattern  = "?ERROR ?WARN ?5xx"
   destination_arn = aws_lambda_function.postcode_etl_sns_lambda.arn
 }

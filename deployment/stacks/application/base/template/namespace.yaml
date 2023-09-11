@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: uec-dos-api-pc
+  name: uec-sf-pc
   labels:
     ttl: TTL_TO_REPLACE
     project-group: PROJECT_GROUP_NAME_SHORT_TO_REPLACE

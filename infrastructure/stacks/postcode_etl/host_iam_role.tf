@@ -18,7 +18,7 @@ resource "aws_iam_role" "iam_host_role" {
         "Action": ["sts:AssumeRole","sts:AssumeRoleWithWebIdentity"],
         "Condition": {
           "StringLike": {
-            "${trimprefix(data.aws_eks_cluster.eks.identity[0].oidc[0].issuer, "https://")}:sub": "system:serviceaccount:${var.project_id}*:uec-dos-api-pc-service-account"
+            "${trimprefix(data.aws_eks_cluster.eks.identity[0].oidc[0].issuer, "https://")}:sub": "system:serviceaccount:${var.project_id}*:uec-sf-pc-service-account"
         }
       }
     }

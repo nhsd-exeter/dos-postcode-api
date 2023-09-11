@@ -10,8 +10,8 @@ services:
       SERVER_PORT: $SERVER_PORT
       VERSION: $VERSION
       POSTCODE_LOCATION_DYNAMO_URL: $POSTCODE_LOCATION_DYNAMO_URL
-      AWS_ACCESS_KEY_ID: ACCESS_ID
-      AWS_SECRET_ACCESS_KEY: ACCESS_SEC
+      AWS_ACCESS_KEY_ID: ACCESSID
+      AWS_SECRET_ACCESS_KEY: ACCESSSEC
       DYNAMODB_POSTCODE_LOC_MAP_TABLE: $DYNAMODB_POSTCODE_LOC_MAP_TABLE
     ports:
       - 443:443
@@ -23,7 +23,7 @@ services:
   dynamodb-local:
     container_name: db
     command: "-jar DynamoDBLocal.jar -sharedDb -dbPath /home/dynamodblocal"
-    image: "amazon/dynamodb-local:latest"
+    image: "amazon/dynamodb-local:2.0.0"
     environment:
       ALLOWED_ORIGINS: "{$ALLOWED_ORIGINS}"
     ports:

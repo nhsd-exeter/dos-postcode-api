@@ -68,6 +68,12 @@ public class LocalDynamoConfig {
   @Bean
   public void setupDynamoTables() {
     Boolean execute = Arrays.stream(environment.getActiveProfiles()).anyMatch(env -> env.equalsIgnoreCase("local"));
+
+    log.info("Authenticating DynamoDB Instance");
+    log.info("Amazon dynamodb endpoint:{}", amazonDynamoDBEndpoint);
+    log.info("Amazon dynamodb awsRegion:{}", awsRegion);
+    log.info("Execute:{}", execute);
+
     if (!execute) {
       return;
     }
@@ -75,6 +81,8 @@ public class LocalDynamoConfig {
       .endpointOverride(URI.create(amazonDynamoDBEndpoint))
       .region(Region.of(EU_WEST_2.name()))
       .build();
+
+    log.info("Client created");
 
     CreateTableResponse response = client.createTable(createTable());
     // Wait for the table to become active
@@ -96,6 +104,9 @@ public class LocalDynamoConfig {
       PutItemResponse putItemResponse = client.putItem(putItemRequest);
       putItemResponse.toString();
     }
+
+    log.info("Items put into table");
+
   }
 
   private Map<String, AttributeValue> jsonToMap(String json) {

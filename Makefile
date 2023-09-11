@@ -8,7 +8,11 @@ include $(abspath $(PROJECT_DIR)/test/jmeter/jMeter.mk)
 prepare: ## Prepare environment
 	make \
 		git-config \
-		docker-config
+		docker-config \
+		pipeline-prepare
+
+pipeline-prepare:
+	sh $(PROJECT_DIR)scripts/assume_role.sh $(JENKINS_ENV) $(JENKINS_SERVICE_TEAM)
 
 compile:
 	make docker-run-mvn \
@@ -23,7 +27,6 @@ build: project-config
 	cp \
 		$(PROJECT_DIR)/build/automation/etc/certificate/* \
 		$(PROJECT_DIR)/application/src/main/resources/certificate
-
 	if [ $(PROFILE) == 'local' ]
 	then
 		make docker-run-mvn \
@@ -41,7 +44,7 @@ build: project-config
 		-Dsonar.login='$$(make secret-fetch NAME=service-finder-sonar-pass | jq .SONAR_HOST_TOKEN | tr -d '"' || exit 1)' \
 		-Dsonar.sourceEncoding='UTF-8' \
 		-Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco \
-		-Dsonar.exclusions='src/main/java/**/config/*.*,src/main/java/**/domain/*.*,src/main/java/**/exception/*.*,src/test/**/*.*,src/main/java/**/filter/*.*,src/main/java/**/PostcodeMappingApplication.*' \
+		-Dsonar.exclusions='src/main/java/**/config/*.*,src/main/java/**/model/*.*,src/main/java/**/exception/*.*,src/main/java/**/constants/*.*,src/main/java/**/interceptor/*.*,src/test/**/*.*,src/main/java/**/filter/*.*,src/main/java/**/PostcodeMappingApplication.*' \
 		sonar:sonar"
 	fi
 
@@ -174,7 +177,7 @@ clean: # Clean up project
 
 run-smoke-test:
 	eval "$$(make aws-assume-role-export-variables)"
-	make run-smoke COGNITO_USER_PASS=$$(make aws-secret-get NAME=$(PROJECT_GROUP_SHORT)-sfsa-${PROFILE}-cognito-passwords | jq .POSTCODE_PASSWORD | tr -d '"')
+	make run-smoke COGNITO_USER_PASS=$$(make aws-secret-get NAME=$(PROJECT_GROUP_SHORT)-sfsa-${PROFILE}-cognito-password | jq .POSTCODE_PASSWORD | tr -d '"')
 
 run-contract-test:
 	make run-contract
@@ -395,6 +398,9 @@ run-contract:
 	make stop
 	make start PROFILE=local
 	sleep 20
+	make docker-compose-log DO_NOT_FOLLOW=true
+	echo "list docker processes"
+	docker ps -a
 	make docker-run-postman \
 		DIR="$(APPLICATION_TEST_DIR)/contract" \
 		CMD=" \
@@ -500,7 +506,7 @@ pipeline-create-resources: ## Create all the pipeline deployment supporting reso
 
 pipeline-secret-scan:
 	make -s git-secrets-load
-	result=$$(make git-secrets-scan-repo-files)
+	result=$$(make -s git-secrets-scan-repo-files)
 	if [ -z result ]; then
 		echo "Secrets found: $$result"
 		exit 1

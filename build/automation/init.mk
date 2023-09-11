@@ -306,7 +306,7 @@ _devops-project-update-variables: ### Set up project variables - mandatory: DIR=
 	pns=$$(cat $$file | grep "PROJECT_NAME_SHORT = " | sed "s/PROJECT_NAME_SHORT = //")
 	pdn=$$(cat $$file | grep "PROJECT_DISPLAY_NAME = " | sed "s/PROJECT_DISPLAY_NAME = //")
 	if [[ ! "$(ALWAYS_ASK)" =~ ^(true|yes|y|on|1|TRUE|YES|Y|ON)$$ ]]; then
-		if [ "$$pg" != '[uec/dos-api]' ] && [ "$$pgs" != '[uec-dos-api]' ] && [ "$$pn" != '[project-name]' ] && [ "$$pns" != '[pns]' ] && [ "$$pdn" != '[Project Name]' ]; then
+		if [ "$$pg" != '[uec/dos-api]' ] && [ "$$pgs" != '[uec-sf]' ] && [ "$$pn" != '[project-name]' ] && [ "$$pns" != '[pns]' ] && [ "$$pdn" != '[Project Name]' ]; then
 			exit 0
 		fi
 	fi

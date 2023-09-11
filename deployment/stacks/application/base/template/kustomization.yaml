@@ -16,7 +16,7 @@ resources:
   - network-policy/allow-external-ingress.yaml
 
 configMapGenerator:
-  - name: uec-dos-api-pc-configmap
+  - name: uec-sf-pc-configmap
     literals:
       - SERVER_PORT=SERVER_PORT_TO_REPLACE
       - SPRING_PROFILES_ACTIVE=SPRING_PROFILES_ACTIVE_TO_REPLACE

@@ -35,3 +35,5 @@ variable "service_prefix" { description = "Used to identifier project resources"
 variable "profile" { description = "Indication of environment resource" }
 
 variable "aws_region" { description = "Texas AWS deployment region" }
+
+variable "aws_profile" { description = "Texas AWS profile name" }
