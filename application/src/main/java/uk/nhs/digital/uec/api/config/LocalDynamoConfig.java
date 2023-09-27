@@ -18,11 +18,12 @@ public class LocalDynamoConfig {
 
   @Value("${dynamo.config.region}")
   private String awsRegion;
+
   @Value("${dynamo.endpoint}")
   private String amazonDynamoDBEndpoint;
+
   @Value("${dynamo.table.name}")
   private String dynamoDbTableName;
-  
 
   @Bean
   public DynamoDbClient setupDynamoTables(Environment environment) {
@@ -32,10 +33,8 @@ public class LocalDynamoConfig {
     log.info("Amazon dynamodb awsRegion:{}", awsRegion);
 
     return DynamoDbClient.builder()
-      .endpointOverride(URI.create(amazonDynamoDBEndpoint))
-      .region(Region.of(EU_WEST_2.name()))
-      .build();
-
+        .endpointOverride(URI.create(amazonDynamoDBEndpoint))
+        .region(Region.of(EU_WEST_2.name()))
+        .build();
   }
-
 }
