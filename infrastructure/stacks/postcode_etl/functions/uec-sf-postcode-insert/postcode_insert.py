@@ -33,8 +33,10 @@ def readCsvFiles():
             if name != INPUT_FOLDER:
                 print("processing: " + name)
                 status = readCsvFileData(postcode_location_csv_file.get())
+                print("read CSV data status: " + status)
                 response[name] = status
                 processCompletedCsvFiles(bucket, status, postcode_location_csv_file)
+                print("process completed: " + name)
 
     except Exception as e:
         logger.error("unable to retrieve csv files due to {}".format(e))
@@ -48,14 +50,18 @@ def processCompletedCsvFiles(bucket, status, postcode_location_csv_file):
     else:
         postProcessFilePath = SUCCESS_FOLDER + postcode_location_csv_file.key.replace(INPUT_FOLDER, "")
 
-    logger.info("moving processed file to: " + postProcessFilePath)
+    print("moving processed file to: " + postProcessFilePath)
 
     # copy the processed file to the relevant processed folder
     copy_source = {"Bucket": SOURCE_BUCKET, "Key": postcode_location_csv_file.key}
     s3.meta.client.copy(copy_source, SOURCE_BUCKET, postProcessFilePath)
 
+    print("copied: " + postcode_location_csv_file.key + " to: " + SOURCE_BUCKET + " with path " + postProcessFilePath)
+
     # delete the processed file so we have a clean workspace
     bucket.objects.filter(Prefix=postcode_location_csv_file.key).delete()
+
+    print("filtered: " + postcode_location_csv_file.key + " from: " + SOURCE_BUCKET)
 
 
 # method to read data from a single postcode_locations csv file
@@ -107,7 +113,7 @@ def insert_bulk_data(postcode_location_records):
                     "name": postcode_location["name"],
                 }
             )
-
+        print("inserted {} records into table {}".format(len(postcode_location_records), DYNAMODB_DESTINATION_TABLE))
 
 # This is the entry point for the Lambda function
 def lambda_handler(event, context):

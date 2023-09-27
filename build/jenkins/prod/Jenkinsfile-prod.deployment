@@ -3,9 +3,7 @@ pipeline {
     Description: Deployment pipeline for the Prod environment
    */
 
-  agent {
-    label "jenkins-slave"
-  }
+  agent any
 
   options {
     buildDiscarder(logRotator(daysToKeepStr: "7", numToKeepStr: "13"))
@@ -18,15 +16,21 @@ pipeline {
     PROFILE = "pd"
   }
 
-  parameters {
-    string(
-      description: 'Enter image tag to deploy, e.g. 202103111417-e362c87',
-      name: 'IMAGE_TAG',
-      defaultValue: ''
-    )
+parameters {
+        string(
+            description: 'Enter image tag to deploy, e.g. 202103111417-e362c87',
+            name: 'IMAGE_TAG',
+            defaultValue: ''
+        )
   }
-
   stages {
+    stage('Pipeline Prepare') {
+      steps {
+        script {
+          sh 'make pipeline-prepare'
+        }
+      }
+    }
     stage('Show Variables') {
       steps {
         script {
@@ -99,10 +103,9 @@ pipeline {
     }
   }
   post {
-    always {
-      script {
+    always { script {
         sh 'make clean'
-      }
     }
   }
+}
 }

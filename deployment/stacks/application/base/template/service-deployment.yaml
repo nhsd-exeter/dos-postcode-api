@@ -2,12 +2,12 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   namespace: K8S_APP_NAMESPACE_TO_REPLACE
-  name: uec-dos-api-pc
+  name: uec-sf-pc
 spec:
   replicas: REPLICAS_TO_REPLACE
   selector:
     matchLabels:
-      app: uec-dos-api-pc
+      app: uec-sf-pc
       env: PROFILE_TO_REPLACE
   strategy:
     type: RollingUpdate
@@ -17,11 +17,11 @@ spec:
   template:
     metadata:
       labels:
-        app: uec-dos-api-pc
+        app: uec-sf-pc
         env: PROFILE_TO_REPLACE
     spec:
-      serviceAccountName: uec-dos-api-pc-service-account
-      serviceAccount: uec-dos-api-pc-service-account
+      serviceAccountName: uec-sf-pc-service-account
+      serviceAccount: uec-sf-pc-service-account
       affinity:
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
@@ -32,16 +32,16 @@ spec:
                     - key: app
                       operator: In
                       values:
-                        - uec-dos-api-pc
+                        - uec-sf-pc
                 topologyKey: kubernetes.io/hostname
       containers:
-      - name: uec-dos-api-pc
+      - name: uec-sf-pc
         image: ECR_URL_TO_REPLACE:IMAGE_TAG_TO_REPLACE
         securityContext:
           runAsUser: 0
         envFrom:
         - configMapRef:
-            name: uec-dos-api-pc-configmap
+            name: uec-sf-pc-configmap
         readinessProbe:
           httpGet:
             path: /actuator/health/readiness

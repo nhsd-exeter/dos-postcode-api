@@ -19,6 +19,9 @@ INFRASTRUCTURE_STACK_STORE := datastore
 INFRASTRUCTURE_STACK_FIREWALL := firewall
 INFRASTRUCTURE_STACKS := $(INFRASTRUCTURE_STACK_STORE),$(INFRASTRUCTURE_STACKS_ETL),$(INFRASTRUCTURE_STACK_FIREWALL),$(SNS_INFRASTRUCTURE_STACKS)
 
+REPLICAS := 1
+PROJECT_GROUP_NAME_SHORT := $(PROJECT_GROUP_SHORT)-$(PROJECT_NAME_SHORT)
+SERVICE_PREFIX := $(PROJECT_GROUP_NAME_SHORT)-$(PROFILE)
 
 SERVER_PORT := 443
 IMAGE_TAG := v0.0.1
@@ -27,13 +30,11 @@ JMETER_MASTER_IMAGE := jmeter-master:5.4.1-log4j2-patch
 JMETER_SLAVE_IMAGE := jmeter-slave:5.4.1-log4j2-patch
 
 POSTCODE_LOCATION_DYNAMO_URL := https://dynamodb.$(AWS_REGION).amazonaws.com
-DYNAMODB_POSTCODE_LOC_MAP_TABLE := $(PROJECT_GROUP_NAME_SHORT)-$(PROFILE)-postcode-location-mapping
+DYNAMODB_POSTCODE_LOC_MAP_TABLE := $(SERVICE_PREFIX)-postcode-location-mapping
 
-REPLICAS := 1
-PROJECT_GROUP_NAME_SHORT := $(PROJECT_GROUP_SHORT)-$(PROJECT_NAME_SHORT)
 TTL := 2d
+SPLUNK_INDEX := eks_logs_service_finder_nonprod
 
-SERVICE_PREFIX := $(PROJECT_GROUP_NAME_SHORT)-$(PROFILE)
 TF_VAR_service_prefix := $(PROJECT_GROUP_NAME_SHORT)-$(PROFILE)
 TF_VAR_postcode_mapping_dynamo_name := $(TF_VAR_service_prefix)-postcode-location-mapping
 TF_VAR_region_mapping_dynamo_name := $(TF_VAR_service_prefix)-region-location-mapping
@@ -50,9 +51,9 @@ CHECK_DEPLOYMENT_POLL_INTERVAL := 10
 
 # Connection to DoS Read Replica for extraction Lambdas
 
-TF_VAR_sf_read_replica_db := core-dos-regression-sf-replica.dos-db-rds
+TF_VAR_sf_read_replica_db := uec-core-dos-dev-db-replica-di.dos-db-rds
 TF_VAR_sf_read_replica_db_sg := live-lk8s-nonprod-uec-sf-core-dos-sf-replica-sg
-TF_VAR_dos_read_replica_secret_name := core-dos-dev/deployment
+TF_VAR_dos_read_replica_secret_name := service-finder/deployment
 TF_VAR_dos_read_replica_key := DB_SF_READONLY_PASSWORD
 TF_VAR_postcode_etl_db_user := dos_sf_readonly
 TF_VAR_postcode_etl_source_db := pathwaysdos_regression
@@ -70,3 +71,4 @@ TF_VAR_ip_reputation_list_metric_name = $(SERVICE_PREFIX)-waf-aws-ip-reputation-
 TF_VAR_common_rule_set_metric_name = $(SERVICE_PREFIX)-waf-aws-common-rule-set-metric
 TF_VAR_sql_injection_rules_metric = $(SERVICE_PREFIX)-waf-aws-bad-inputs-rule-set-metric
 TF_VAR_bad_input_metric_name = $(SERVICE_PREFIX)-waf-aws-bad-inputs-rule-set-metric
+TF_VAR_service_finder_prefix = service-finder-nonprod

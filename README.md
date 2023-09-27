@@ -286,7 +286,7 @@ The high level principles that the product /development team must adhere to are:
 
   In the event of ETL failure, an error log will be written to the postcode-etl-alerts slack channels. There will be a slack channel per environment.
 
-  Cloudwatch logs for the ETLs are also available under the log group of: /aws/lambda/uec-dos-api-pca-dev...
+  Cloudwatch logs for the ETLs are also available under the log group of: /aws/lambda/uec-sf-pca-dev...
 
 - Monitoring
 
@@ -312,13 +312,13 @@ No backups are required for this project since we do not change the underlying d
 
 - Development
   - Profile: `dev`
-  - URL address: [ https://uec-dos-api-pca-dev-uec-dos-api-pc-ingress.k8s-nonprod.texasplatform.uk/]( https://uec-dos-api-pca-dev-uec-dos-api-pc-ingress.k8s-nonprod.texasplatform.uk/)
+  - URL address: [ https://uec-sf-pca-dev-uec-sf-pc-ingress.k8s-nonprod.texasplatform.uk/]( https://uec-sf-pca-dev-uec-sf-pc-ingress.k8s-nonprod.texasplatform.uk/)
 - Demo
   - Profile `demo`
-  - URL address: [ https://uec-dos-api-pca-demo-uec-dos-api-pc-ingress.k8s-prod.texasplatform.uk/]( https://uec-dos-api-pca-demo-uec-dos-api-pc-ingress.k8s-prod.texasplatform.uk/)
+  - URL address: [ https://uec-sf-pca-demo-uec-sf-pc-ingress.k8s-prod.texasplatform.uk/]( https://uec-sf-pca-demo-uec-sf-pc-ingress.k8s-prod.texasplatform.uk/)
 - Live
   - Profile `live`
-  - URL address: [ https://uec-dos-api-pca-live-uec-dos-api-pc-ingress.k8s-prod.texasplatform.uk/]( https://uec-dos-api-pca-live-uec-dos-api-pc-ingress.k8s-prod.texasplatform.uk/)
+  - URL address: [ https://uec-sf-pca-live-uec-sf-pc-ingress.k8s-prod.texasplatform.uk/]( https://uec-sf-pca-live-uec-sf-pc-ingress.k8s-prod.texasplatform.uk/)
 
 
 ### Runbooks

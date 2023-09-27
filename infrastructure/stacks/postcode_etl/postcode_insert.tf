@@ -21,7 +21,7 @@ resource "aws_lambda_function" "postcode_insert_lambda" {
     }
   }
   vpc_config {
-    subnet_ids = keys(data.aws_subnet.texas_private_subnet_ids_as_map_of_objects)
+    subnet_ids         = keys(data.aws_subnet.texas_private_subnet_ids_as_map_of_objects)
     security_group_ids = [aws_security_group.insert_lambda_sg.id]
   }
 }

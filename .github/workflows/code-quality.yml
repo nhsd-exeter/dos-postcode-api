@@ -23,17 +23,10 @@ jobs:
       - name: Create coverage report
         run: |
           make compile coverage-report
-      # - uses: sonarsource/sonarcloud-github-action@master
-        # SEE: https://github.com/SonarSource/sonarcloud-github-action
-          #env:
-            #GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-            #SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          #with:
-            #projectBaseDir: ./application
-            #args: >
-              #-Dsonar.organization=nhsd-exeter
-              #-Dsonar.projectKey=uec-dos-api-pca
-              #-Dsonar.java.binaries=target/classes
-              #-Dsonar.coverage.exclusions=src/main/java/**/config/*.*,src/main/java/**/domain/*.*,src/main/java/**/exception/*.*,src/test/**/*.*,src/main/java/**/filter/*.*,src/main/java/**/PostcodeMappingApplication.*
-              #-Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco
-              #-Dsonar.verbose=true
+      - name: Build and analyze
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: https://sonarcloud.io
+        working-directory: ./application
+        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=uec-dos-api-pca -Dsonar.organization=nhsd-exeter -Dsonar.java.binaries=target/classes -Dsonar.coverage.exclusions=src/main/java/**/config/*.*,src/main/java/**/model/*.*,src/main/java/**/exception/*.*,src/main/java/**/constants/*.*,src/main/java/**/interceptor/*.*,src/test/**/*.*,src/main/java/**/filter/*.*,src/main/java/**/PostcodeMappingApplication.* -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml

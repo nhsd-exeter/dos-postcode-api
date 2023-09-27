@@ -10,6 +10,7 @@ import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -41,6 +42,30 @@ public class AccessTokenFilter extends OncePerRequestFilter {
       HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
       throws ServletException, IOException {
     String token = jwtUtil.getTokenFromHeader(request);
+
+    // Log path and method
+    String requestDetails = "Path: " + request.getMethod() + " " + request.getRequestURI();
+
+    // Log query parameters
+    String queryString = request.getQueryString();
+    if (queryString != null) {
+      requestDetails += "?"+ queryString;
+    }
+
+    // Log headers
+    StringBuilder headersInfo = new StringBuilder();
+    Enumeration<String> headerNames = request.getHeaderNames();
+    while (headerNames.hasMoreElements()) {
+      String headerName = headerNames.nextElement();
+      String headerValue = request.getHeader(headerName);
+      headersInfo.append(headerName).append(": ").append(headerValue).append(", ");
+    }
+    if (headersInfo.length() > 0) {
+      requestDetails += " | Headers: " + headersInfo.toString();
+    }
+
+    log.info("REQUEST: {}", requestDetails);
+
     log.info("TOKEN: {}", token);
     try {
       jwtUtil.isTokenValid(token);
