@@ -45,13 +45,6 @@ pipeline {
         }
       }
     }
-    stage('Destroy Infrastructure') {
-      steps {
-        script {
-          sh "make destroy PROFILE=${env.PROFILE}"
-        }
-      }
-    }
     stage('Plan Infrastructure') {
       steps {
         script {
