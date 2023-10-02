@@ -46,7 +46,7 @@ pipeline {
         }
       }
     }
-    stage('Infrastructure') {
+    stage('Import Infrastructure') {
       steps {
         script {
           sh "make terraform-import-stack PROFILE=${env.PROFILE} STACK=${env.STACK}"
