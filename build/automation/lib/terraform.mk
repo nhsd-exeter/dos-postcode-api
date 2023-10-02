@@ -213,6 +213,7 @@ _terraform-stack: ### Set up infrastructure for a single stack - mandatory: STAC
 	if [[ ! "$(TERRAFORM_REINIT)" =~ ^(false|no|n|off|0|FALSE|NO|N|OFF)$$ ]] || [ ! -f $(TERRAFORM_DIR)/$(STACK)/terraform.tfstate ]; then
 		make _terraform-reinitialise DIR="$(TERRAFORM_DIR)" STACK="$(STACK)"
 	fi
+	make docker-run-terraform DIR="$(TERRAFORM_DIR)/$(STACK)" CMD="refresh"
 	make docker-run-terraform DIR="$(TERRAFORM_DIR)/$(STACK)" CMD="$(CMD)"
 
 _terraform-reinitialise: ### Reinitialise infrastructure state - mandatory: STACK=[name]; optional: TERRAFORM_DO_NOT_REMOVE_STATE_FILE=true,PROFILE=[name]
