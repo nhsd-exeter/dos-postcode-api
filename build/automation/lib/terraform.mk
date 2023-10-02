@@ -144,35 +144,8 @@ terraform-export-variables-from-json: ### Convert JSON to Terraform input export
 
 # ==============================================================================
 
-_terraform-copy-state:
-# set up
-	eval "$$(make aws-assume-role-export-variables)"
-	eval "$$(make terraform-export-variables)"
-# run stacks
-	for stack in $$(echo $(or $(STACK), $(or $(STACKS), $(INFRASTRUCTURE_STACKS))) | tr "," "\n"); do
-
-		MD5=`aws dynamodb get-item --table-name $(TEXAS_TERRAFORM_STATE_LOCK) \ # Find path relevant to postcode api
-		--key "{\"LockID\": {\"S\": \"$(TEXAS_TERRAFORM_STATE_LOCK)/uec-service-finder-$$stack-$(ENVIRONMENT)/terraform.state-md5\"}}" \
-		| jq -r '.Item.Digest.S'`
-
-		echo "aws s3 cp s3://$(TEXAS_TERRAFORM_STATE_LOCK)/uec-service-finder-$$stack-$(ENVIRONMENT)/terraform.state \
-					s3://$(TEXAS_TERRAFORM_STATE_LOCK)/$(PROJECT_GROUP_SHORT)/pc/$(ENVIRONMENT)/$$stack/terraform.state"
-
-		echo "aws dynamodb update-item \
-        --table-name $(TEXAS_TERRAFORM_STATE_LOCK) \
-        --key '{\"LockID\": {\"S\": \"$(TEXAS_TERRAFORM_STATE_LOCK)/$(PROJECT_GROUP_SHORT)/pc/$(ENVIRONMENT)/$$stack/terraform.state-md5\"}}' \
-        --update-expression \"SET Digest = :newDigest\" \
-        --expression-attribute-values '{\":newDigest\": {\"S\": \"$MD5\"}}'"
-
-	done
-
 terraform-import-stack:
-# aws_iam_role.iam_host_role uec-sf-pc-dmo-role
-# aws_iam_policy.service_account_policy uec-sf-pc-dmo-policy
-# aws_security_group.extract_lambda_sg uec-sf-pc-dmo-extract-lambda-sg
-# aws_iam_role.postcode_extract_lambda_role uec-sf-pc-dmo-postcode-extract-lambda
-# aws_security_group.insert_lambda_sg uec-sf-pc-dmo-postcode-insert-lambda
-# aws_s3_bucket.postcode_etl_s3 uec-sf-pc-dmo-application-resources
+
 	# set up
 	eval "$$(make aws-assume-role-export-variables)"
 	eval "$$(make terraform-export-variables)"
@@ -186,6 +159,7 @@ terraform-import-stack:
 	if [[ ! "$(TERRAFORM_REINIT)" =~ ^(false|no|n|off|0|FALSE|NO|N|OFF)$$ ]] || [ ! -f $(TERRAFORM_DIR)/$(STACK)/terraform.tfstate ]; then
 		make _terraform-reinitialise DIR="$(TERRAFORM_DIR)" STACK="$(STACK)"
 	fi
+	make docker-run-terraform DIR="$(TERRAFORM_DIR)/$(STACK)" CMD="import aws_lambda_function.postcode_extract_lambda uec-sf-pc-dmo-postcode-extract"
 	# make docker-run-terraform DIR="$(TERRAFORM_DIR)/$(STACK)" CMD="import aws_iam_role.iam_host_role uec-sf-pc-dmo-role"
 	# make docker-run-terraform DIR="$(TERRAFORM_DIR)/$(STACK)" CMD="import aws_iam_policy.service_account_policy uec-sf-pc-dmo-policy"
 	# make docker-run-terraform DIR="$(TERRAFORM_DIR)/$(STACK)" CMD="import aws_security_group.extract_lambda_sg sg-0ee7a3eabfed74596"
