@@ -144,6 +144,34 @@ terraform-export-variables-from-json: ### Convert JSON to Terraform input export
 
 # ==============================================================================
 
+_terraform-copy-state:
+# set up
+	eval "$$(make aws-assume-role-export-variables)"
+	eval "$$(make terraform-export-variables)"
+# run stacks
+	for stack in $$(echo $(or $(STACK), $(or $(STACKS), $(INFRASTRUCTURE_STACKS))) | tr "," "\n"); do
+
+		MD5=`aws dynamodb get-item --table-name $(TEXAS_TERRAFORM_STATE_LOCK) \ # Find path relevant to postcode api
+		--key "{\"LockID\": {\"S\": \"$(TEXAS_TERRAFORM_STATE_LOCK)/uec-service-finder-$$stack-$(ENVIRONMENT)/terraform.state-md5\"}}" \
+		| jq -r '.Item.Digest.S'`
+
+		echo "aws s3 cp s3://$(TEXAS_TERRAFORM_STATE_LOCK)/uec-service-finder-$$stack-$(ENVIRONMENT)/terraform.state \
+					s3://$(TEXAS_TERRAFORM_STATE_LOCK)/$(PROJECT_GROUP_SHORT)/pc/$(ENVIRONMENT)/$$stack/terraform.state"
+
+		echo "aws dynamodb update-item \
+        --table-name $(TEXAS_TERRAFORM_STATE_LOCK) \
+        --key '{\"LockID\": {\"S\": \"$(TEXAS_TERRAFORM_STATE_LOCK)/$(PROJECT_GROUP_SHORT)/pc/$(ENVIRONMENT)/$$stack/terraform.state-md5\"}}' \
+        --update-expression \"SET Digest = :newDigest\" \
+        --expression-attribute-values '{\":newDigest\": {\"S\": \"$MD5\"}}'"
+
+	done
+
+terraform-import-stack:
+	# set up
+	eval "$$(make aws-assume-role-export-variables)"
+	eval "$$(make terraform-export-variables)"
+	make docker-run-terraform CMD="import aws_iam_role.iam_host_role uec-sf-pc-dmo-role"
+
 _terraform-stacks: ### Set up infrastructure for a given list of stacks - mandatory: STACK|STACKS|INFRASTRUCTURE_STACKS=[comma-separated names],CMD=[Terraform command]; optional: PROFILE=[name]
 	# set up
 	eval "$$(make aws-assume-role-export-variables)"
