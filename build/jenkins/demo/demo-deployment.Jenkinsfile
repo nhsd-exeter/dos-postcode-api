@@ -46,10 +46,11 @@ pipeline {
         }
       }
     }
-    stage('Import Infrastructure') {
+    stage('Infrastructure') {
       steps {
         script {
-          sh "make terraform-import-stack PROFILE=${env.PROFILE} STACK=${env.STACK}"
+          // sh "make terraform-import-stack PROFILE=${env.PROFILE} STACK=${env.STACK}"
+          sh "make destroy-infrastructure PROFILE=${env.PROFILE}"
         }
       }
     }
