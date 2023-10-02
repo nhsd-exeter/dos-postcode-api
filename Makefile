@@ -168,7 +168,7 @@ delete-namespace: # Delete namespace - mandatory: PROFILE=[name]
 	make k8s-undeploy PROFILE=$(PROFILE)
 
 destroy-infrastructure:  # Destroy environment - mandatory: PROFILE=[name]
-	# make terraform-destroy-auto-approve STACK=$(SNS_INFRASTRUCTURE_STACKS) PROFILE=$(PROFILE)
+	make terraform-destroy-auto-approve STACK=$(SNS_INFRASTRUCTURE_STACKS) PROFILE=$(PROFILE)
 	make terraform-destroy-auto-approve STACK=$(INFRASTRUCTURE_STACKS) PROFILE=$(PROFILE)
 
 clean: # Clean up project
