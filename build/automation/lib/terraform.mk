@@ -170,7 +170,17 @@ terraform-import-stack:
 	# set up
 	eval "$$(make aws-assume-role-export-variables)"
 	eval "$$(make terraform-export-variables)"
-	make docker-run-terraform CMD="import aws_iam_role.iam_host_role uec-sf-pc-dmo-role"
+	if [ -f $(TERRAFORM_DIR)/$(STACK)/terraform.tf ]; then
+		if [ "$(TERRAFORM_USE_STATE_STORE)" == false ]; then
+				sed -i 's/  backend "s3"/  #backend "s3"/g' $(TERRAFORM_DIR)/$(STACK)/terraform.tf
+		else
+				sed -i 's/  #backend "s3"/  backend "s3"/g' $(TERRAFORM_DIR)/$(STACK)/terraform.tf
+		fi
+	fi
+	if [[ ! "$(TERRAFORM_REINIT)" =~ ^(false|no|n|off|0|FALSE|NO|N|OFF)$$ ]] || [ ! -f $(TERRAFORM_DIR)/$(STACK)/terraform.tfstate ]; then
+		make _terraform-reinitialise DIR="$(TERRAFORM_DIR)" STACK="$(STACK)"
+	fi
+	make docker-run-terraform DIR="$(TERRAFORM_DIR)/$(STACK)" CMD="import aws_iam_role.iam_host_role uec-sf-pc-dmo-role"
 
 _terraform-stacks: ### Set up infrastructure for a given list of stacks - mandatory: STACK|STACKS|INFRASTRUCTURE_STACKS=[comma-separated names],CMD=[Terraform command]; optional: PROFILE=[name]
 	# set up

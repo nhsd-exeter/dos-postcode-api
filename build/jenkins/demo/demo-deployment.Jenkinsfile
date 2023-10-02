@@ -48,7 +48,7 @@ pipeline {
     stage('Import Infrastructure') {
       steps {
         script {
-          sh "make terraform-import-stack PROFILE=${env.PROFILE}"
+          sh "make terraform-import-stack PROFILE=${env.PROFILE} STACK=${postcode_etl}"
         }
       }
     }
