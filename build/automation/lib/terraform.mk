@@ -167,6 +167,12 @@ _terraform-copy-state:
 	done
 
 terraform-import-stack:
+# aws_iam_role.iam_host_role uec-sf-pc-dmo-role
+# aws_iam_policy.service_account_policy uec-sf-pc-dmo-policy
+# aws_security_group.extract_lambda_sg uec-sf-pc-dmo-extract-lambda-sg
+# aws_iam_role.postcode_extract_lambda_role uec-sf-pc-dmo-postcode-extract-lambda
+# aws_security_group.insert_lambda_sg uec-sf-pc-dmo-postcode-insert-lambda
+# aws_s3_bucket.postcode_etl_s3 uec-sf-pc-dmo-application-resources
 	# set up
 	eval "$$(make aws-assume-role-export-variables)"
 	eval "$$(make terraform-export-variables)"
@@ -181,6 +187,11 @@ terraform-import-stack:
 		make _terraform-reinitialise DIR="$(TERRAFORM_DIR)" STACK="$(STACK)"
 	fi
 	make docker-run-terraform DIR="$(TERRAFORM_DIR)/$(STACK)" CMD="import aws_iam_role.iam_host_role uec-sf-pc-dmo-role"
+	make docker-run-terraform DIR="$(TERRAFORM_DIR)/$(STACK)" CMD="import aws_iam_policy.service_account_policy uec-sf-pc-dmo-policy"
+	make docker-run-terraform DIR="$(TERRAFORM_DIR)/$(STACK)" CMD="import aws_security_group.extract_lambda_sg uec-sf-pc-dmo-extract-lambda-sg"
+	make docker-run-terraform DIR="$(TERRAFORM_DIR)/$(STACK)" CMD="import aws_iam_role.postcode_extract_lambda_role uec-sf-pc-dmo-postcode-extract-lambda"
+	make docker-run-terraform DIR="$(TERRAFORM_DIR)/$(STACK)" CMD="import aws_security_group.insert_lambda_sg uec-sf-pc-dmo-postcode-insert-lambda"
+	make docker-run-terraform DIR="$(TERRAFORM_DIR)/$(STACK)" CMD="import aws_s3_bucket.postcode_etl_s3 uec-sf-pc-dmo-application-resources"
 
 _terraform-stacks: ### Set up infrastructure for a given list of stacks - mandatory: STACK|STACKS|INFRASTRUCTURE_STACKS=[comma-separated names],CMD=[Terraform command]; optional: PROFILE=[name]
 	# set up
