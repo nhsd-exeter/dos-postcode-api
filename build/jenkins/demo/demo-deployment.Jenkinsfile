@@ -14,7 +14,7 @@ pipeline {
 
   environment {
     PROFILE = 'dmo'
-    STACK = 'postcode-etl'
+    STACK = 'postcode_etl'
   }
 
   parameters {
