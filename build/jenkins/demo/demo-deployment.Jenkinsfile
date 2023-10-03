@@ -46,13 +46,13 @@ pipeline {
         }
       }
     }
-    stage('Import Infrastructure') {
-      steps {
-        script {
-          sh "make terraform-import-stack PROFILE=${env.PROFILE} STACK=${env.STACK}"
-        }
-      }
-    }
+    // stage('Import Infrastructure') {
+    //   steps {
+    //     script {
+    //       sh "make terraform-import-stack PROFILE=${env.PROFILE} STACK=${env.STACK}"
+    //     }
+    //   }
+    // }
     stage('Plan Infrastructure') {
       steps {
         script {
