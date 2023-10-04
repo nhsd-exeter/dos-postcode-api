@@ -171,8 +171,8 @@ terraform-import-stack:
 	#
 	# STACK firewall
 	#
-	make docker-run-terraform DIR="$(TERRAFORM_DIR)/$(STACK)" CMD="import aws_iam_role.cw_to_subscription_filter_role uec-sf-pc-dmo_CWLtoSubscriptionFilterRole"
-	make docker-run-terraform DIR="$(TERRAFORM_DIR)/$(STACK)" CMD="import aws_iam_policy.central_cw_subscription_iam_policy uec-sf-pc-dmo_central_cw_subscription"
+	# make docker-run-terraform DIR="$(TERRAFORM_DIR)/$(STACK)" CMD="import aws_iam_role.cw_to_subscription_filter_role uec-sf-pc-dmo_CWLtoSubscriptionFilterRole"
+	make docker-run-terraform DIR="$(TERRAFORM_DIR)/$(STACK)" CMD="import aws_iam_policy.central_cw_subscription_iam_policy arn:aws:iam::950573124017:policy/uec-sf-pc-dmo_central_cw_subscription"
 	make docker-run-terraform DIR="$(TERRAFORM_DIR)/$(STACK)" CMD="import aws_wafv2_web_acl.waf_acl c873f01f-560a-4cb3-843a-daf72f601171/uec-sf-pc-dmo-waf-acl/REGIONAL"
 	make docker-run-terraform DIR="$(TERRAFORM_DIR)/$(STACK)" CMD="import aws_cloudwatch_log_group.waf_logs aws-waf-logs-uec-sf-pc-dmo"
 
