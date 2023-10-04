@@ -162,6 +162,9 @@ terraform-import-stack:
 	# make docker-run-terraform DIR="$(TERRAFORM_DIR)/$(STACK)" CMD="import aws_lambda_permission.allow_cloudwatch_to_call_insert_postcode uec-sf-pc-dmo-postcode-insert:AllowExecutionFromCloudWatch"
 	# make docker-run-terraform DIR="$(TERRAFORM_DIR)/$(STACK)" CMD="import aws_lambda_permission.allow_cloudwatch_to_call_extract_postcode uec-sf-pc-dmo-postcode-extract:AllowExecutionFromCloudWatch"
 	# make docker-run-terraform DIR="$(TERRAFORM_DIR)/$(STACK)" CMD="import aws_cloudwatch_log_group.postcode_insert_log_group /aws/lambda/uec-sf-pc-dmo-postcode-insert"
+	make docker-run-terraform DIR="$(TERRAFORM_DIR)/$(STACK)" CMD="import aws_lambda_permission.allow_cloudwatch_to_call_extract_postcode uec-sf-pc-dmo-postcode-extract:AllowExecutionFromCloudWatch"
+	make docker-run-terraform DIR="$(TERRAFORM_DIR)/$(STACK)" CMD="import aws_lambda_permission.allow_cloudwatch_to_call_extract_postcode uec-sf-pc-dmo-postcode-extract:AllowExecutionFromCloudWatch"
+	make docker-run-terraform DIR="$(TERRAFORM_DIR)/$(STACK)" CMD="import aws_cloudwatch_log_group.postcode_insert_log_group /aws/lambda/uec-sf-pc-dmo-postcode-insert"
 
 _terraform-stacks: ### Set up infrastructure for a given list of stacks - mandatory: STACK|STACKS|INFRASTRUCTURE_STACKS=[comma-separated names],CMD=[Terraform command]; optional: PROFILE=[name]
 	# set up
