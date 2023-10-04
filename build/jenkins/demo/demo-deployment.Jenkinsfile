@@ -46,27 +46,27 @@ pipeline {
         }
       }
     }
-    // stage('Import Infrastructure') {
-    //   steps {
-    //     script {
-    //       sh "make terraform-import-stack PROFILE=${env.PROFILE} STACK=${env.STACK}"
-    //     }
-    //   }
-    // }
-    // stage('Plan Infrastructure') {
-    //   steps {
-    //     script {
-    //       sh "make plan PROFILE=${env.PROFILE}"
-    //     }
-    //   }
-    // }
-    // stage('Provision Infrastructure') {
-    //   steps {
-    //     script {
-    //       sh "make provision PROFILE=${env.PROFILE}"
-    //     }
-    //   }
-    // }
+    stage('Import Infrastructure') {
+      steps {
+        script {
+          sh "make terraform-import-stack PROFILE=${env.PROFILE} STACK=${env.STACK}"
+        }
+      }
+    }
+    stage('Plan Infrastructure') {
+      steps {
+        script {
+          sh "make plan PROFILE=${env.PROFILE}"
+        }
+      }
+    }
+    stage('Provision Infrastructure') {
+      steps {
+        script {
+          sh "make provision PROFILE=${env.PROFILE}"
+        }
+      }
+    }
     stage('Deploy API') {
       steps {
         script {
