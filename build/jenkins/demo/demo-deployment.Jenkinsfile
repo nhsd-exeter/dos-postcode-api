@@ -14,7 +14,7 @@ pipeline {
 
   environment {
     PROFILE = 'dmo'
-    STACK = 'postcode_etl'
+    STACK = 'firewall'
   }
 
   parameters {
