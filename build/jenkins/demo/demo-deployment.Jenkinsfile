@@ -53,20 +53,20 @@ pipeline {
     //     }
     //   }
     // }
-    stage('Plan Infrastructure') {
-      steps {
-        script {
-          sh "make plan PROFILE=${env.PROFILE}"
-        }
-      }
-    }
-    stage('Provision Infrastructure') {
-      steps {
-        script {
-          sh "make provision PROFILE=${env.PROFILE}"
-        }
-      }
-    }
+    // stage('Plan Infrastructure') {
+    //   steps {
+    //     script {
+    //       sh "make plan PROFILE=${env.PROFILE}"
+    //     }
+    //   }
+    // }
+    // stage('Provision Infrastructure') {
+    //   steps {
+    //     script {
+    //       sh "make provision PROFILE=${env.PROFILE}"
+    //     }
+    //   }
+    // }
     stage('Deploy API') {
       steps {
         script {
