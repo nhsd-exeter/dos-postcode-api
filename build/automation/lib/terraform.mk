@@ -160,9 +160,9 @@ terraform-import-stack:
 		make _terraform-reinitialise DIR="$(TERRAFORM_DIR)" STACK="$(STACK)"
 	fi
 
-	STACK=datastore
-
-	make docker-run-terraform DIR="$(TERRAFORM_DIR)/$$STACK" CMD="import module.dynamodb_table_postcode.aws_dynamodb_table.this[0] uec-sf-pc-pd-postcode-location-mapping"
+	make docker-run-terraform DIR="$(TERRAFORM_DIR)/$(STACK)" CMD="import aws_s3_bucket.postcode_etl_s3 uec-sf-pc-pd-application-resources"
+	make docker-run-terraform DIR="$(TERRAFORM_DIR)/$(STACK)" CMD="import aws_iam_role.iam_host_role uec-sf-pc-pd-role"
+	make docker-run-terraform DIR="$(TERRAFORM_DIR)/$(STACK)" CMD="import aws_iam_policy.service_account_policy $(PROJECT_GROUP_NAME_SHORT)-$(PROFILE)-policy"
 
 
 

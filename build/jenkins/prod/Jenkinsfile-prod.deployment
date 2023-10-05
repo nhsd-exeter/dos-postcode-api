@@ -14,7 +14,7 @@ pipeline {
 
   environment {
     PROFILE = "pd"
-    STACK = "datastore"
+    STACK = "postcode_etl"
   }
 
 parameters {
