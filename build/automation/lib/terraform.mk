@@ -160,9 +160,7 @@ terraform-import-stack:
 		make _terraform-reinitialise DIR="$(TERRAFORM_DIR)" STACK="$(STACK)"
 	fi
 
-	make docker-run-terraform DIR="$(TERRAFORM_DIR)/$(STACK)" CMD="import aws_s3_bucket.postcode_etl_s3 uec-sf-pc-pd-application-resources"
-	make docker-run-terraform DIR="$(TERRAFORM_DIR)/$(STACK)" CMD="import aws_iam_role.iam_host_role uec-sf-pc-pd-role"
-	make docker-run-terraform DIR="$(TERRAFORM_DIR)/$(STACK)" CMD="import aws_iam_policy.service_account_policy $(PROJECT_GROUP_NAME_SHORT)-$(PROFILE)-policy"
+	make docker-run-terraform DIR="$(TERRAFORM_DIR)/$(STACK)" CMD="import aws_iam_policy.service_account_policy arn:aws:iam::$(AWS_ACCOUNT_ID):policy/$(PROJECT_GROUP_NAME_SHORT)-$(PROFILE)-policy"
 
 
 
