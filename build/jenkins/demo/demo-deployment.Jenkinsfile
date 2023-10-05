@@ -14,7 +14,6 @@ pipeline {
 
   environment {
     PROFILE = 'dmo'
-    STACK = 'firewall'
   }
 
   parameters {
@@ -49,7 +48,7 @@ pipeline {
     stage('Import Infrastructure') {
       steps {
         script {
-          sh "make terraform-import-stack PROFILE=${env.PROFILE} STACK=${env.STACK}"
+          sh "make terraform-import-stack PROFILE=${env.PROFILE}"
         }
       }
     }
@@ -110,10 +109,10 @@ pipeline {
       }
     }
   }
-  post {
-    always { script {
-        sh 'make clean'
+    post {
+      always { script {
+          sh 'make clean'
+      }
     }
   }
-}
 }
