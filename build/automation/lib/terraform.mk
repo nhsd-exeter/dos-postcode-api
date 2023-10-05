@@ -145,7 +145,6 @@ terraform-export-variables-from-json: ### Convert JSON to Terraform input export
 # ==============================================================================
 
 terraform-import-stack:
-
 	# set up
 	eval "$$(make aws-assume-role-export-variables)"
 	eval "$$(make terraform-export-variables)"
@@ -160,8 +159,10 @@ terraform-import-stack:
 		make _terraform-reinitialise DIR="$(TERRAFORM_DIR)" STACK="$(STACK)"
 	fi
 
-	# make docker-run-terraform DIR="$(TERRAFORM_DIR)/$(STACK)" CMD="import aws_iam_policy.service_account_policy arn:aws:iam::$(AWS_ACCOUNT_ID):policy/$(PROJECT_GROUP_NAME_SHORT)-$(PROFILE)-policy"
-
+	make docker-run-terraform DIR="$(TERRAFORM_DIR)/$(STACK)" CMD="import aws_security_group.extract_lambda_sg sg-0288fa08b7c9284ce"
+	make docker-run-terraform DIR="$(TERRAFORM_DIR)/$(STACK)" CMD="import aws_security_group.insert_lambda_sg sg-092c5ef65959f9f63"
+	make docker-run-terraform DIR="$(TERRAFORM_DIR)/$(STACK)" CMD="import aws_iam_role.postcode_extract_lambda_role arn:aws:iam::$(AWS_ACCOUNT_ID):role/uec-sf-pc-pd-postcode-extract-lambda"
+	make docker-run-terraform DIR="$(TERRAFORM_DIR)/$(STACK)" CMD="import aws_iam_role.postcode_insert_lambda_role arn:aws:iam::$(AWS_ACCOUNT_ID):role/uec-sf-pc-pd-postcode-insert-lambda"
 
 
 _terraform-stacks: ### Set up infrastructure for a given list of stacks - mandatory: STACK|STACKS|INFRASTRUCTURE_STACKS=[comma-separated names],CMD=[Terraform command]; optional: PROFILE=[name]
