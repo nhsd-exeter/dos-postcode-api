@@ -162,7 +162,7 @@ terraform-import-stack:
 
 	STACK=postcode_etl
 
-	make docker-run-terraform DIR="$(TERRAFORM_DIR)/$(STACK)" CMD="import aws_dynamodb_table.this uec-sf-pc-pd-postcode-location-mapping"
+	make docker-run-terraform DIR="$(TERRAFORM_DIR)/$$STACK" CMD="import aws_dynamodb_table.this uec-sf-pc-pd-postcode-location-mapping"
 
 
 _terraform-stacks: ### Set up infrastructure for a given list of stacks - mandatory: STACK|STACKS|INFRASTRUCTURE_STACKS=[comma-separated names],CMD=[Terraform command]; optional: PROFILE=[name]
