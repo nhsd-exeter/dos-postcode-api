@@ -58,7 +58,7 @@ TF_VAR_dos_read_replica_secret_name := service-finder/deployment
 TF_VAR_dos_read_replica_key := DB_SF_READONLY_PASSWORD
 TF_VAR_postcode_etl_db_user := dos_sf_readonly
 TF_VAR_postcode_etl_source_db := pathwaysdos
-TF_VAR_sf_read_replica_db  := uec-core-dos-put-db-replica-sf.dos-db-put
+TF_VAR_sf_read_replica_db  := uec-core-dos-live-db-replica-sf.dos-db-sync-rds
 
 
 CERTIFICATE_DOMAIN := certificate
