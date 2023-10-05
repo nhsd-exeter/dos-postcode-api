@@ -17,3 +17,16 @@ module "dynamodb_table_postcode" {
 
   tags = local.standard_tags
 }
+
+# resource "aws_dynamodb_table" "dynamodb_table_postcode" {
+#   name         = var.postcode_mapping_dynamo_name
+#   hash_key     = "postcode"
+#   billing_mode = "PAY_PER_REQUEST"
+
+#   attribute {
+#     name = "postcode"
+#     type = "S"
+#   }
+#   tags = local.standard_tags
+
+# }
