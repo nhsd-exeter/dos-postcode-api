@@ -159,8 +159,6 @@ terraform-import-stack:
 		make _terraform-reinitialise DIR="$(TERRAFORM_DIR)" STACK="$(STACK)"
 	fi
 
-	make docker-run-terraform DIR="$(TERRAFORM_DIR)/$(STACK)" CMD="import aws_security_group.extract_lambda_sg sg-0288fa08b7c9284ce"
-	make docker-run-terraform DIR="$(TERRAFORM_DIR)/$(STACK)" CMD="import aws_security_group.insert_lambda_sg sg-092c5ef65959f9f63"
 	make docker-run-terraform DIR="$(TERRAFORM_DIR)/$(STACK)" CMD="import aws_iam_role.postcode_extract_lambda_role arn:aws:iam::$(AWS_ACCOUNT_ID):role/uec-sf-pc-pd-postcode-extract-lambda"
 	make docker-run-terraform DIR="$(TERRAFORM_DIR)/$(STACK)" CMD="import aws_iam_role.postcode_insert_lambda_role arn:aws:iam::$(AWS_ACCOUNT_ID):role/uec-sf-pc-pd-postcode-insert-lambda"
 
