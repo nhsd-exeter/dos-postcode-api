@@ -9,7 +9,7 @@ PROFILE := dmo
 ENVIRONMENT := $(PROFILE)
 SPRING_PROFILES_ACTIVE := $(PROFILE)
 
-SLEEP_AFTER_PLAN := 240s
+SLEEP_AFTER_PLAN := 30s
 
 DEPLOYMENT_STACKS := application
 SNS_INFRASTRUCTURE_STACKS := postcode_etl_sns
@@ -53,13 +53,12 @@ TF_VAR_core_dos_python_libs := core-dos-python-libs
 # TF_VAR_postcode_etl_source_db := pathwaysdos_ut
 
 # TF_VAR_sf_read_replica_db  := uec-core-dos-live-db-replica-sf.dos-db-sync-rds
-# TF_VAR_sf_read_replica_db_sg := uec-core-dos-live-db-12-replica-sf-sg
-TF_VAR_dos_read_replica_secret_name := core-dos/deployment
+TF_VAR_sf_read_replica_db_sg := uec-core-dos-live-db-12-replica-sf-sg
+TF_VAR_dos_read_replica_secret_name := service-finder/deployment
 TF_VAR_dos_read_replica_key := DB_SF_READONLY_PASSWORD
 TF_VAR_postcode_etl_db_user := dos_sf_readonly
 TF_VAR_postcode_etl_source_db := pathwaysdos
-TF_VAR_sf_read_replica_db  := uec-core-dos-put-db-replica-sf.dos-db-put
-TF_VAR_service_finder_replica_sg := uec-core-dos-put-db-12-replica-sf-sg
+TF_VAR_sf_read_replica_db  := uec-core-dos-live-db-replica-sf.dos-db-sync-rds
 
 
 CERTIFICATE_DOMAIN := certificate
@@ -80,4 +79,3 @@ TF_VAR_ip_reputation_list_metric_name = $(SERVICE_PREFIX)-waf-aws-ip-reputation-
 TF_VAR_common_rule_set_metric_name = $(SERVICE_PREFIX)-waf-aws-common-rule-set-metric
 TF_VAR_sql_injection_rules_metric = $(SERVICE_PREFIX)-waf-aws-bad-inputs-rule-set-metric
 TF_VAR_bad_input_metric_name = $(SERVICE_PREFIX)-waf-aws-bad-inputs-rule-set-metric
-

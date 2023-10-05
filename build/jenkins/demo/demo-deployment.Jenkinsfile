@@ -45,6 +45,13 @@ pipeline {
         }
       }
     }
+    stage('Import Infrastructure') {
+      steps {
+        script {
+          sh "make terraform-import-stack PROFILE=${env.PROFILE}"
+        }
+      }
+    }
     stage('Plan Infrastructure') {
       steps {
         script {
@@ -102,10 +109,10 @@ pipeline {
       }
     }
   }
-  post {
-    always { script {
-        sh 'make clean'
+    post {
+      always { script {
+          sh 'make clean'
+      }
     }
   }
-}
 }
