@@ -5,7 +5,7 @@ pipeline {
    */
 
   agent {
-    label "jenkins-slave"
+label any
   }
 
   options {
