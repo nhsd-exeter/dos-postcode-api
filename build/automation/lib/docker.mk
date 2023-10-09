@@ -715,7 +715,6 @@ docker-run-tools: ### Run tools (Python) container - mandatory: CMD; optional: S
 			--volume $(HOME)/bin:/tmp/bin \
 			--volume $(HOME)/etc:/tmp/etc \
 			--volume $(HOME)/usr:/tmp/usr \
-			--volume $(HOME)/.aws:/tmp/.aws \
 			--volume /var/run/secrets/eks.amazonaws.com/serviceaccount/token:/var/run/secrets/eks.amazonaws.com/serviceaccount/token \
 			$$lib_volume_mount \
 			--network $(DOCKER_NETWORK) \
@@ -740,7 +739,7 @@ docker-run-tools: ### Run tools (Python) container - mandatory: CMD; optional: S
 			--volume $(HOME)/bin:/tmp/bin \
 			--volume $(HOME)/etc:/tmp/etc \
 			--volume $(HOME)/usr:/tmp/usr \
-			$$aws_access_dir \
+			--volume /var/run/secrets/eks.amazonaws.com/serviceaccount/token:/var/run/secrets/eks.amazonaws.com/serviceaccount/token \
 			$$lib_volume_mount \
 			--network $(DOCKER_NETWORK) \
 			--workdir /project/$(shell echo $(abspath $(DIR)) | sed "s;$(PROJECT_DIR);;g") \
