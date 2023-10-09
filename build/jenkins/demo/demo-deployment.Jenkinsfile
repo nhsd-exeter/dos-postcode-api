@@ -109,9 +109,15 @@ agent any
       }
     }
   }
-    post {
-      always { script {
-          sh 'make clean'
+  post {
+    failure {
+      script {
+        sh 'make terraform-remove-state-lock'
+      }
+    }
+    always {
+      script {
+        sh 'make clean'
       }
     }
   }
