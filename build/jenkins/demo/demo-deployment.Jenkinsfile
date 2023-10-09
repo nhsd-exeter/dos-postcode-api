@@ -3,7 +3,7 @@ pipeline {
     Description: Deployment pipeline for the Demo environment
    */
 
-  agent { label 'jenkins-slave' }
+agent any
 
   options {
     buildDiscarder(logRotator(daysToKeepStr: '7', numToKeepStr: '13'))
@@ -17,18 +17,23 @@ pipeline {
   }
 
   parameters {
-        string(
-            description: 'Enter image tag to deploy, e.g. 202103111417-e362c87',
-            name: 'IMAGE_TAG',
-            defaultValue: ''
-        )
+    string(
+      description: 'Enter image tag to deploy, e.g. 202103111417-e362c87',
+      name: 'IMAGE_TAG',
+      defaultValue: ''
+    )
   }
-
   stages {
+    stage('Pipeline Prepare') {
+      steps {
+        script {
+          sh 'make pipeline-prepare'
+        }
+      }
+    }
     stage('Show Variables') {
       steps {
         script {
-
           sh 'make devops-print-variables'
         }
       }
@@ -40,24 +45,17 @@ pipeline {
         }
       }
     }
-    stage('Plan Infrastructure') {
+    stage('Import Infrastructure') {
       steps {
         script {
-          sh "make provision-plan PROFILE=${env.PROFILE}"
+          sh "make terraform-import-stack PROFILE=${env.PROFILE}"
         }
       }
     }
-        stage('Plan ETL Infrastructure') {
+    stage('Plan Infrastructure') {
       steps {
         script {
-          sh "make plan-etl PROFILE=${env.PROFILE}"
-        }
-      }
-        }
-    stage('Provision ETL Infrastructure') {
-      steps {
-        script {
-          sh "make provision-etl PROFILE=${env.PROFILE}"
+          sh "make plan PROFILE=${env.PROFILE}"
         }
       }
     }
@@ -65,20 +63,6 @@ pipeline {
       steps {
         script {
           sh "make provision PROFILE=${env.PROFILE}"
-        }
-      }
-    }
-    stage('Plan SNS Infrastructure') {
-      steps {
-        script {
-          sh "make provision-sns-plan PROFILE=${env.PROFILE}"
-        }
-      }
-    }
-    stage('Provision SNS Infrastructure') {
-      steps {
-        script {
-          sh "make provision-sns PROFILE=${env.PROFILE}"
         }
       }
     }
@@ -110,13 +94,6 @@ pipeline {
         }
       }
     }
-    stage('Perform File Generator Lambda function') {
-      steps {
-        script {
-          sh "make file-generator-etl PROFILE=${env.PROFILE}"
-        }
-      }
-    }
     stage('Perform Insert Lambda function') {
       steps {
         script {
@@ -124,7 +101,6 @@ pipeline {
         }
       }
     }
-
     stage('Smoke Tests') {
       steps {
         script {
@@ -133,19 +109,10 @@ pipeline {
       }
     }
   }
-  post {
-    always {
-      script {
-        try {
+    post {
+      always { script {
           sh 'make clean'
-        } catch (error) {
-          println 'Error happened while tearing down profile infrastructure, continuing'
-        }
       }
-    }
-    success { sh 'make pipeline-on-success' }
-    failure {
-      sh 'make pipeline-on-failure'
     }
   }
 }

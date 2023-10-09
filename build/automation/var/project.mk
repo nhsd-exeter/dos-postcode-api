@@ -1,7 +1,7 @@
 ORG_NAME = nhsd-exeter
 PROGRAMME = uec
 PROJECT_GROUP = uec/dos-api
-PROJECT_GROUP_SHORT = uec-dos-api
+PROJECT_GROUP_SHORT = uec-sf
 PROJECT_NAME = dos-postcode-api
 PROJECT_NAME_SHORT = pc
 PROJECT_DISPLAY_NAME = DoS Postcode API
@@ -15,15 +15,16 @@ SERVICE_TAG = $(PROJECT_GROUP_SHORT)
 SERVICE_TAG_COMMON = texas
 SERVICE_DEVELOPER_ROLE = texas:uecdosapi-service-developer
 
+JENKINS_MOM_URL = https://$(PROJECT_GROUP_SHORT)-jenkins-ddc-jenkins-master.mgmt.texasplatform.uk/
 PROJECT_TECH_STACK_LIST = java,terraform
 
 DOCKER_REPOSITORIES =
 SSL_DOMAINS_PROD =
 DEPLOYMENT_SECRETS = $(PROJECT_ID)-$(PROFILE)/deployment
 
-AUTHENTICATION_ENDPOINT = https://uec-dos-api-sfsa-$(PROFILE)-uec-dos-api-sfs-service.$(TEXAS_HOSTED_ZONE)/authentication/login
+AUTHENTICATION_ENDPOINT = https://$(PROJECT_GROUP_SHORT)-sfsa-$(PROFILE)-$(PROJECT_GROUP_SHORT)-sfs-service.$(TEXAS_HOSTED_ZONE)/authentication/login
 POSTCODE_USER = fuzzy-search-api@nhs.net
-POSTCODE_DOMAIN = $(PROJECT_ID)-$(PROFILE)-uec-dos-api-pc-ingress.$(TEXAS_HOSTED_ZONE)
+POSTCODE_DOMAIN = $(PROJECT_ID)-$(PROFILE)-$(PROJECT_GROUP_SHORT)-pc-ingress.$(TEXAS_HOSTED_ZONE)
 POSTCODE_ENDPOINT = https://$(POSTCODE_DOMAIN)
 
 APPLICATION_SA_NAME := $(PROJECT_ID)-service-account

@@ -16,10 +16,13 @@ locals {
   postcode_etl_insert_alarm_name = "${var.service_prefix}-postcode-insert-alarm"
 
   standard_tags = {
-    "Programme"   = "uec"
-    "Service"     = "service-finder"
-    "Product"     = "service-finder"
-    "Environment" = var.profile
+    "Programme"        = "uec"
+    "Service"          = "service-finder"
+    "Product"          = "service-finder"
+    "service_prefixes" = "uec-sf"
+    "tag"              = "uec-sf"
+    "uc_name"          = "UECSF"
+    "Environment"      = var.profile
   }
 
 }

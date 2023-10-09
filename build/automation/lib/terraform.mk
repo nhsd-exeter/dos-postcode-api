@@ -2,7 +2,8 @@ TERRAFORM_DIR = $(INFRASTRUCTURE_DIR)/stacks
 TERRAFORM_DIR_REL = $(shell echo $(TERRAFORM_DIR) | sed "s;$(PROJECT_DIR);;g")
 TERRAFORM_STATE_STORE = $(or $(TEXAS_TERRAFORM_STATE_STORE), state-store-$(AWS_ACCOUNT_NAME))
 TERRAFORM_STATE_LOCK = $(or $(TEXAS_TERRAFORM_STATE_LOCK), state-lock-$(AWS_ACCOUNT_NAME))
-TERRAFORM_STATE_KEY = $(PROJECT_GROUP_SHORT)-$(PROJECT_NAME_SHORT)/$(ENVIRONMENT)
+TERRAFORM_STATE_KEY = $(PROJECT_GROUP_SHORT)/$(PROJECT_NAME_SHORT)/$(ENVIRONMENT)
+# TERRAFORM_STATE_KEY = $(PROJECT_GROUP_SHORT)-$(PROJECT_NAME_SHORT)/$(ENVIRONMENT)
 TERRAFORM_STATE_KEY_SHARED = texas
 TERRAFORM_VERSION = $(or $(TEXAS_TERRAFORM_VERSION), 0.13.6)
 
@@ -143,6 +144,39 @@ terraform-export-variables-from-json: ### Convert JSON to Terraform input export
 
 # ==============================================================================
 
+terraform-import-stack:
+
+	# set up
+	eval "$$(make aws-assume-role-export-variables)"
+	eval "$$(make terraform-export-variables)"
+	if [ -f $(TERRAFORM_DIR)/$(STACK)/terraform.tf ]; then
+		if [ "$(TERRAFORM_USE_STATE_STORE)" == false ]; then
+				sed -i 's/  backend "s3"/  #backend "s3"/g' $(TERRAFORM_DIR)/$(STACK)/terraform.tf
+		else
+				sed -i 's/  #backend "s3"/  backend "s3"/g' $(TERRAFORM_DIR)/$(STACK)/terraform.tf
+		fi
+	fi
+	if [[ ! "$(TERRAFORM_REINIT)" =~ ^(false|no|n|off|0|FALSE|NO|N|OFF)$$ ]] || [ ! -f $(TERRAFORM_DIR)/$(STACK)/terraform.tfstate ]; then
+		make _terraform-reinitialise DIR="$(TERRAFORM_DIR)" STACK="$(STACK)"
+	fi
+	# make docker-run-terraform DIR="$(TERRAFORM_DIR)/$(STACK)" CMD="import aws_lambda_permission.allow_cloudwatch_to_call_insert_postcode uec-sf-pc-dmo-postcode-insert:AllowExecutionFromCloudWatch"
+	# make docker-run-terraform DIR="$(TERRAFORM_DIR)/$(STACK)" CMD="import aws_lambda_permission.allow_cloudwatch_to_call_extract_postcode uec-sf-pc-dmo-postcode-extract:AllowExecutionFromCloudWatch"
+	# make docker-run-terraform DIR="$(TERRAFORM_DIR)/$(STACK)" CMD="import aws_cloudwatch_log_group.postcode_insert_log_group /aws/lambda/uec-sf-pc-dmo-postcode-insert"
+	#
+	# STACK postcode_etl
+	#
+	# make docker-run-terraform DIR="$(TERRAFORM_DIR)/$(STACK)" CMD="import aws_lambda_permission.allow_cloudwatch_to_call_extract_postcode uec-sf-pc-dmo-postcode-extract/AllowExecutionFromCloudWatch"
+	# make docker-run-terraform DIR="$(TERRAFORM_DIR)/$(STACK)" CMD="import aws_lambda_permission.allow_cloudwatch_to_call_insert_postcode uec-sf-pc-dmo-postcode-insert/AllowExecutionFromCloudWatch"
+	# make docker-run-terraform DIR="$(TERRAFORM_DIR)/$(STACK)" CMD="import aws_cloudwatch_log_group.postcode_insert_log_group /aws/lambda/uec-sf-pc-dmo-postcode-insert"
+	#
+	# STACK firewall
+	#
+	# make docker-run-terraform DIR="$(TERRAFORM_DIR)/$(STACK)" CMD="import aws_iam_role.cw_to_subscription_filter_role uec-sf-pc-dmo_CWLtoSubscriptionFilterRole"
+	# make docker-run-terraform DIR="$(TERRAFORM_DIR)/$(STACK)" CMD="import aws_iam_policy.central_cw_subscription_iam_policy arn:aws:iam::950573124017:policy/uec-sf-pc-dmo_central_cw_subscription"
+	# make docker-run-terraform DIR="$(TERRAFORM_DIR)/$(STACK)" CMD="import aws_wafv2_web_acl.waf_acl c873f01f-560a-4cb3-843a-daf72f601171/uec-sf-pc-dmo-waf-acl/REGIONAL"
+	# make docker-run-terraform DIR="$(TERRAFORM_DIR)/$(STACK)" CMD="import aws_cloudwatch_log_group.waf_logs aws-waf-logs-uec-sf-pc-dmo"
+
+
 _terraform-stacks: ### Set up infrastructure for a given list of stacks - mandatory: STACK|STACKS|INFRASTRUCTURE_STACKS=[comma-separated names],CMD=[Terraform command]; optional: PROFILE=[name]
 	# set up
 	eval "$$(make aws-assume-role-export-variables)"
@@ -163,6 +197,7 @@ _terraform-stack: ### Set up infrastructure for a single stack - mandatory: STAC
 	if [[ ! "$(TERRAFORM_REINIT)" =~ ^(false|no|n|off|0|FALSE|NO|N|OFF)$$ ]] || [ ! -f $(TERRAFORM_DIR)/$(STACK)/terraform.tfstate ]; then
 		make _terraform-reinitialise DIR="$(TERRAFORM_DIR)" STACK="$(STACK)"
 	fi
+	make docker-run-terraform DIR="$(TERRAFORM_DIR)/$(STACK)" CMD="refresh"
 	make docker-run-terraform DIR="$(TERRAFORM_DIR)/$(STACK)" CMD="$(CMD)"
 
 _terraform-reinitialise: ### Reinitialise infrastructure state - mandatory: STACK=[name]; optional: TERRAFORM_DO_NOT_REMOVE_STATE_FILE=true,PROFILE=[name]

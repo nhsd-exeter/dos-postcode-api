@@ -2,22 +2,27 @@ pipeline {
   /*
     Description: Development pipeline to build test push and deploy to nonprod
    */
-  agent { label "jenkins-slave" }
+agent any
 
   environment {
-    PROFILE = "dev"
+    PROFILE = 'dev'
   }
 
   options {
-    buildDiscarder(logRotator(daysToKeepStr: "7", numToKeepStr: "13"))
+    buildDiscarder(logRotator(daysToKeepStr: '7', numToKeepStr: '13'))
     disableConcurrentBuilds()
     parallelsAlwaysFailFast()
-    timeout(time: 30, unit: "MINUTES")
+    timeout(time: 30, unit: 'MINUTES')
   }
 
-  triggers { pollSCM("* * * * *") }
+  triggers { pollSCM('* * * * *') }
 
   stages {
+    stage('Prepare') {
+        steps {
+            sh 'make prepare'
+        }
+    }
     stage('Show Variables') {
       steps {
         script {
@@ -39,10 +44,10 @@ pipeline {
         }
       }
     }
-    stage('Scan Dependencies'){
+    stage('Scan Dependencies') {
       steps {
         script {
-          sh "make scan"
+          sh 'make scan'
         }
         archiveArtifacts artifacts: 'reports/**'
       }
@@ -57,14 +62,14 @@ pipeline {
     stage('Unit Test') {
       steps {
         script {
-          sh "make unit-test"
+          sh 'make unit-test'
         }
       }
     }
     stage('Run Contract Tests') {
       steps {
         script {
-          sh "make run-contract-test"
+          sh 'make run-contract-test'
         }
       }
     }
@@ -75,15 +80,15 @@ pipeline {
         }
       }
     }
-    stage('Image Build Tag'){
-      steps{
-        script{
+    stage('Image Build Tag') {
+      steps {
+        script {
           sh "echo 'Image Build Tag: '${env.PROJECT_BUILD_TAG}"
         }
       }
     }
   }
   post {
-    always { sh "make clean" }
+    always { sh 'make clean' }
   }
 }

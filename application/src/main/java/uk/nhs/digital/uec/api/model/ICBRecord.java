@@ -21,6 +21,10 @@ public class ICBRecord implements Comparable<ICBRecord>{
   @CsvBindByName(column = "nhs_icb")
   public String nhsIcb;
 
+  @CsvBindByName(column = "nhs_ccg")
+  public String nhsCcg;
+
+
   @CsvBindByName(column = "email")
   public String email;
 

@@ -2,7 +2,7 @@ pipeline {
   /*
     Description: Deployment pipeline
    */
-  agent { label 'jenkins-slave' }
+agent any
 
   options {
     buildDiscarder(logRotator(daysToKeepStr: '7', numToKeepStr: '13'))
@@ -22,6 +22,13 @@ pipeline {
         )
   }
   stages {
+    stage('Pipeline Prepare') {
+      steps {
+        script {
+          sh 'make pipeline-prepare'
+        }
+      }
+    }
     stage('Show Variables') {
       steps {
         script {
@@ -29,7 +36,7 @@ pipeline {
         }
       }
     }
-  stage('Check Py Lib Folder') {
+    stage('Check Py Lib Folder') {
       steps {
         script {
           sh 'make create-lambda-deploy-dir'

@@ -29,7 +29,7 @@ project-config: ### Configure project environment
 	fi
 
 project-start: ### Start Docker Compose
-	make docker-compose-start
+	make docker-compose-start local-dynamodb-scripts
 
 project-stop: ### Stop Docker Compose
 	make docker-compose-stop

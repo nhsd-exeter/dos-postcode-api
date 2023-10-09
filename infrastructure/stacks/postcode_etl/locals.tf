@@ -103,10 +103,13 @@ locals {
   step_function_cloudwatch_event_target          = "states"
   step_function_cloudwatch_event_cron_expression = "cron(0 */1 * * ? *)"
   standard_tags = {
-    "Programme"   = "uec"
-    "Service"     = "service-finder"
-    "Product"     = "service-finder"
-    "Environment" = var.profile
+    "Programme"        = "uec"
+    "Service"          = "service-finder"
+    "Product"          = "service-finder"
+    "service_prefixes" = "uec-sf"
+    "tag"              = "uec-sf"
+    "uc_name"          = "UECSF"
+    "Environment"      = var.profile
   }
 
 }

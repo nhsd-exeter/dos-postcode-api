@@ -8,18 +8,25 @@ include $(abspath $(PROJECT_DIR)/test/jmeter/jMeter.mk)
 prepare: ## Prepare environment
 	make \
 		git-config \
-		docker-config
+		docker-config \
+		pipeline-prepare
+
+pipeline-prepare:
+	sh $(PROJECT_DIR)scripts/assume_role.sh $(JENKINS_ENV) $(JENKINS_SERVICE_TEAM)
 
 compile:
 	make docker-run-mvn \
 		DIR="application" \
 		CMD="compile"
 
+fetch-project-variables:
+	eval "$$(make aws-assume-role-export-variables)"
+	export TEXAS_WAF_ACL_ID=$$(make -s aws-waf-get WAF_NAME=$(WAF_NAME))
+
 build: project-config
 	cp \
 		$(PROJECT_DIR)/build/automation/etc/certificate/* \
 		$(PROJECT_DIR)/application/src/main/resources/certificate
-
 	if [ $(PROFILE) == 'local' ]
 	then
 		make docker-run-mvn \
@@ -37,7 +44,7 @@ build: project-config
 		-Dsonar.login='$$(make secret-fetch NAME=service-finder-sonar-pass | jq .SONAR_HOST_TOKEN | tr -d '"' || exit 1)' \
 		-Dsonar.sourceEncoding='UTF-8' \
 		-Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco \
-		-Dsonar.exclusions='src/main/java/**/config/*.*,src/main/java/**/domain/*.*,src/main/java/**/exception/*.*,src/test/**/*.*,src/main/java/**/filter/*.*,src/main/java/**/PostcodeMappingApplication.*' \
+		-Dsonar.exclusions='src/main/java/**/config/*.*,src/main/java/**/model/*.*,src/main/java/**/exception/*.*,src/main/java/**/constants/*.*,src/main/java/**/interceptor/*.*,src/test/**/*.*,src/main/java/**/filter/*.*,src/main/java/**/PostcodeMappingApplication.*' \
 		sonar:sonar"
 	fi
 
@@ -61,13 +68,6 @@ scan:
 
 
 start: project-start	# Start project
-	make local-dynamodb-scripts
-
-local-dynamodb-scripts:
-	cd $(PROJECT_DIR)/data/dynamo/test
-	chmod +x *.sh
-	./00-postcode-location-mapping-table.sh > /dev/null
-	./01-postcode-location-mapping-table.sh
 
 stop: project-stop # Stop project
 
@@ -129,6 +129,9 @@ tag-release: # Create the release tag - mandatory DEV_TAG RELEASE_TAG
 	docker push $(DOCKER_REGISTRY_LIVE)/api:$(RELEASE_TAG)
 
 deploy: # Deploy artefacts - mandatory: PROFILE=[name]
+	eval "$$(make aws-assume-role-export-variables)"
+	export AWS_WAF_ACL_ARN=$$(make -s aws-waf-get WAF_NAME=$(WAF_NAME))
+	echo $$AWS_WAF_ACL_ARN
 	make project-deploy STACK=application PROFILE=$(PROFILE)
 
 plan-etl: # Plan environment - mandatory: PROFILE=[name]
@@ -251,8 +254,7 @@ prepare-lambda-deployment-postcode-insert: # Downloads the required libraries fo
 			-r requirements.txt \
 			-t $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-postcode-insert/deploy \
 			--upgrade \
-			--no-deps \
-			--system
+			--no-deps
 	fi
 	cd $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-postcode-insert/deploy
 	rm -rf ./bin
@@ -277,8 +279,7 @@ prepare-lambda-deployment-postcode-extract: # Downloads the required libraries f
 			-r requirements.txt \
 			-t $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-postcode-extract/deploy \
 			--upgrade \
-			--no-deps \
-			--system
+			--no-deps
 	fi
 	cd $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-postcode-extract/deploy
 	rm -rf ./bin
@@ -387,11 +388,19 @@ k8s-check-deployment-of-replica-sets:
 	echo "Conditional Success: The deployment has not completed within the timescales, but carrying on anyway"
 	exit 0
 
+local-dynamodb-scripts:
+	cd $(PROJECT_DIR)/data/dynamo/test
+	chmod +x *.sh
+	./00-postcode-location-mapping-table.sh > /dev/null
+	./01-postcode-location-mapping-table.sh
 
 run-contract:
 	make stop
 	make start PROFILE=local
 	sleep 20
+	make docker-compose-log DO_NOT_FOLLOW=true
+	echo "list docker processes"
+	docker ps -a
 	make docker-run-postman \
 		DIR="$(APPLICATION_TEST_DIR)/contract" \
 		CMD=" \
@@ -409,9 +418,6 @@ run-smoke:
 	if [ $(PROFILE) == pd ] || [ $(PROFILE) == dmo ] || [ $(PROFILE) == stg ]
 	then
 	echo "Profile: $(PROFILE). Executing real token test"
-	echo "Auth_EndPoint: $(AUTHENTICATION_ENDPOINT)"
-	echo "EmailAddress: $(POSTCODE_USER)"
-	echo "Password: $(COGNITO_USER_PASS)"
 	TOKEN=$$(curl -X POST -H "Content-Type: application/json" $(AUTHENTICATION_ENDPOINT) -d "{\"emailAddress\":\"$(POSTCODE_USER)\", \"password\":\"$(COGNITO_USER_PASS)\"}" | jq .accessToken | tr -d '"')
 	echo $$TOKEN
 	sed -i -e "s/MOCK_POSTCODE_API_ACCESS_TOKEN/$$TOKEN/g" $(APPLICATION_TEST_DIR)/contract/environment/postcode_smoke.postman_environment.json
@@ -500,7 +506,7 @@ pipeline-create-resources: ## Create all the pipeline deployment supporting reso
 
 pipeline-secret-scan:
 	make -s git-secrets-load
-	result=$$(make git-secrets-scan-repo-files)
+	result=$$(make -s git-secrets-scan-repo-files)
 	if [ -z result ]; then
 		echo "Secrets found: $$result"
 		exit 1

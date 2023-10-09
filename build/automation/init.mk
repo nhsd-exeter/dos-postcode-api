@@ -306,7 +306,7 @@ _devops-project-update-variables: ### Set up project variables - mandatory: DIR=
 	pns=$$(cat $$file | grep "PROJECT_NAME_SHORT = " | sed "s/PROJECT_NAME_SHORT = //")
 	pdn=$$(cat $$file | grep "PROJECT_DISPLAY_NAME = " | sed "s/PROJECT_DISPLAY_NAME = //")
 	if [[ ! "$(ALWAYS_ASK)" =~ ^(true|yes|y|on|1|TRUE|YES|Y|ON)$$ ]]; then
-		if [ "$$pg" != '[uec/dos-api]' ] && [ "$$pgs" != '[uec-dos-api]' ] && [ "$$pn" != '[project-name]' ] && [ "$$pns" != '[pns]' ] && [ "$$pdn" != '[Project Name]' ]; then
+		if [ "$$pg" != '[uec/dos-api]' ] && [ "$$pgs" != '[uec-sf]' ] && [ "$$pn" != '[project-name]' ] && [ "$$pns" != '[pns]' ] && [ "$$pdn" != '[Project Name]' ]; then
 			exit 0
 		fi
 	fi
@@ -637,7 +637,9 @@ PATH_SYSTEM := /usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin
 .ONESHELL:
 .PHONY: *
 MAKEFLAGS := --no-print-director
-PATH := $(PATH_DEVOPS):$(PATH_HOMEBREW):$(PATH_SYSTEM)
+PATH_PYENV = /.pyenv/versions/jenkins/bin
+PATH := $(PATH_PYENV):$(PATH_DEVOPS):$(PATH_HOMEBREW):$(PATH_SYSTEM)
+
 SHELL := /bin/bash
 ifeq (true, $(shell [[ "$(DEBUG)" =~ ^(true|yes|y|on|1|TRUE|YES|Y|ON)$$ ]] && echo true))
 	.SHELLFLAGS := -cex
@@ -761,13 +763,13 @@ $(info Run $(shell tput setaf 4; echo '/bin/bash -c "$$(curl -fsSL https://raw.g
 $(info )
 $(error $(shell tput setaf 202; echo "WARNING: Please, before proceeding install the brew package manager. Copy and paste in your terminal the above command and execute it. If it fails to install try setting your DNS server to 8.8.8.8. Then, run the \`curl\` installation command"; tput sgr0))
 endif
-# macOS: GNU Make
-ifeq (true, $(shell [ ! -f /usr/local/opt/make/libexec/gnubin/make ] && [ ! -f /opt/homebrew/opt/make/libexec/gnubin/make ] && echo true))
-$(info )
-$(info Run $(shell tput setaf 4; echo "brew install make"; tput sgr0))
-$(info )
-$(error $(shell tput setaf 202; echo "WARNING: Please, before proceeding install the GNU make tool. Copy and paste in your terminal the above command and execute it. Then, run the \`curl\` installation command"; tput sgr0))
-endif
+# # macOS: GNU Make
+# ifeq (true, $(shell [ ! -f /usr/local/opt/make/libexec/gnubin/make ] && [ ! -f /opt/homebrew/opt/make/libexec/gnubin/make ] && echo true))
+# $(info )
+# $(info Run $(shell tput setaf 4; echo "brew install make"; tput sgr0))
+# $(info )
+# $(error $(shell tput setaf 202; echo "WARNING: Please, before proceeding install the GNU make tool. Copy and paste in your terminal the above command and execute it. Then, run the \`curl\` installation command"; tput sgr0))
+# endif
 ifeq (, $(findstring oneshell, $(.FEATURES)))
 $(info )
 $(info Run $(shell tput setaf 4; echo "export PATH=$(PATH)"; tput sgr0))

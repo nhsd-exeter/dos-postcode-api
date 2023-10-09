@@ -1,7 +1,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: uec-dos-api-pc-ingress
+  name: uec-sf-pc-ingress
   namespace: K8S_APP_NAMESPACE_TO_REPLACE
   annotations:
     kubernetes.io/ingress.class: alb
@@ -10,12 +10,12 @@ metadata:
     alb.ingress.kubernetes.io/backend-protocol: HTTPS
     alb.ingress.kubernetes.io/listen-port: '[{"HTTPS":443}]'
     alb.ingress.kubernetes.io/ssl-policy: AWS_ALB_SSL_TLS_POLICY_TO_REPLACE
-    alb.ingress.kubernetes.io/waf-acl-id: TEXAS_WAF_ACL_ID_TO_REPLACE
+    alb.ingress.kubernetes.io/wafv2-acl-arn: AWS_WAF_ACL_ARN_TO_REPLACE
     alb.ingress.kubernetes.io/certificate-arn: AWS_CERTIFICATE_TO_REPLACE
     alb.ingress.kubernetes.io/target-type: ip
     alb.ingress.kubernetes.io/tags: Service=service-finder
   labels:
-    app: uec-dos-api-pc
+    app: uec-sf-pc
 
 spec:
   rules:
@@ -25,6 +25,6 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: uec-dos-api-pc-service
+                name: uec-sf-pc-service
                 port:
                   number: 443
