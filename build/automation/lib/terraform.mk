@@ -159,8 +159,9 @@ terraform-import-stack:
 		make _terraform-reinitialise DIR="$(TERRAFORM_DIR)" STACK="$(STACK)"
 	fi
 
-	make docker-run-terraform DIR="$(TERRAFORM_DIR)/$(STACK)" CMD="import aws_iam_role.postcode_extract_lambda_role uec-sf-pc-pd-postcode-extract-lambda"
-	make docker-run-terraform DIR="$(TERRAFORM_DIR)/$(STACK)" CMD="import aws_iam_role.postcode_insert_lambda_role uec-sf-pc-pd-postcode-insert-lambda"
+	make docker-run-terraform DIR="$(TERRAFORM_DIR)/$(STACK)" CMD="import aws_lambda_function.postcode_extract_lambda uec-sf-pc-pd-postcode-extract"
+	make docker-run-terraform DIR="$(TERRAFORM_DIR)/$(STACK)" CMD="import aws_lambda_function.postcode_insert_lambda uec-sf-pc-pd-postcode-insert"
+
 
 
 _terraform-stacks: ### Set up infrastructure for a given list of stacks - mandatory: STACK|STACKS|INFRASTRUCTURE_STACKS=[comma-separated names],CMD=[Terraform command]; optional: PROFILE=[name]
