@@ -2,9 +2,7 @@ pipeline {
   /*
     Description: Development pipeline to build test push and deploy to nonprod
    */
-  agent {
-label any
-  }
+agent any
 
   environment {
     PROFILE = 'dev'
