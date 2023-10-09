@@ -159,8 +159,10 @@ terraform-import-stack:
 		make _terraform-reinitialise DIR="$(TERRAFORM_DIR)" STACK="$(STACK)"
 	fi
 
-	make docker-run-terraform DIR="$(TERRAFORM_DIR)/$(STACK)" CMD="import aws_wafv2_web_acl.waf_acl 70b41dd7-7c93-49f4-b9a1-4e7d0c6f4a3a/uec-sf-pc-pd-waf-acl/REGIONAL"
-	make docker-run-terraform DIR="$(TERRAFORM_DIR)/$(STACK)" CMD="import aws_cloudwatch_log_group.waf_logs /aws-waf-logs-uec-sf-pc-pd"
+	# make docker-run-terraform DIR="$(TERRAFORM_DIR)/$(STACK)" CMD="import aws_iam_policy.central_cw_subscription_iam_policy arn:aws:iam::$(AWS_ACCOUNT_ID):policy/uec-sf-pc-pd_central_cw_subscription"
+	# make docker-run-terraform DIR="$(TERRAFORM_DIR)/$(STACK)" CMD="import aws_wafv2_web_acl.waf_acl 70b41dd7-7c93-49f4-b9a1-4e7d0c6f4a3a/uec-sf-pc-pd-waf-acl/REGIONAL"
+	make docker-run-terraform DIR="$(TERRAFORM_DIR)/$(STACK)" CMD="import aws_cloudwatch_log_group.waf_logs aws-waf-logs-uec-sf-pc-pd"
+
 
 
 	# make docker-run-terraform DIR="$(TERRAFORM_DIR)/$(STACK)" CMD="import aws_security_group_rule.extract_lambda_sg_egress sg-0288fa08b7c9284ce_egress_tcp_5432_5432_sg-001d6f147cc56a0b3"
