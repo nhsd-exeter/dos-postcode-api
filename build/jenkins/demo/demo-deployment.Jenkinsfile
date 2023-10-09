@@ -3,9 +3,7 @@ pipeline {
     Description: Deployment pipeline for the Demo environment
    */
 
-  agent {
-label any
-  }
+agent any
 
   options {
     buildDiscarder(logRotator(daysToKeepStr: '7', numToKeepStr: '13'))
