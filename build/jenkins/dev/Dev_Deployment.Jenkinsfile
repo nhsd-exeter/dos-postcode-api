@@ -3,7 +3,7 @@ pipeline {
     Description: Deployment pipeline
    */
   agent {
-    label "jenkins-slave"
+label any
   }
 
   options {
