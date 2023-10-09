@@ -159,8 +159,12 @@ terraform-import-stack:
 		make _terraform-reinitialise DIR="$(TERRAFORM_DIR)" STACK="$(STACK)"
 	fi
 
-	# make docker-run-terraform DIR="$(TERRAFORM_DIR)/$(STACK)" CMD="import aws_cloudwatch_log_group.postcode_extract_log_group /aws/lambda/uec-sf-pc-pd-postcode-extract"
-	# make docker-run-terraform DIR="$(TERRAFORM_DIR)/$(STACK)" CMD="import aws_lambda_permission.allow_cloudwatch_to_call_extract_postcode uec-sf-pc-pd-postcode-extract/AllowExecutionFromCloudWatch"
+	# make docker-run-terraform DIR="$(TERRAFORM_DIR)/$(STACK)" CMD="import aws_security_group_rule.extract_lambda_sg_egress sg-0288fa08b7c9284ce_outbound_tcp_5432_5432_sg-001d6f147cc56a0b3"
+	# make docker-run-terraform DIR="$(TERRAFORM_DIR)/$(STACK)" CMD="import aws_security_group_rule.sf_replica_db_sg_ingress sg-001d6f147cc56a0b3_inbound_tcp_5432_5432_sg-0288fa08b7c9284ce"
+	# make docker-run-terraform DIR="$(TERRAFORM_DIR)/$(STACK)" CMD="import aws_security_group_rule.sf_replica_db_sg_egress sg-001d6f147cc56a0b3_outbound_tcp_5432_5432_sg-0288fa08b7c9284ce"
+	# make docker-run-terraform DIR="$(TERRAFORM_DIR)/$(STACK)" CMD="import aws_security_group_rule.extract_lambda_sg_ingress sg-0288fa08b7c9284ce_inbound_tcp_5432_5432_sg-001d6f147cc56a0b3"
+	# make docker-run-terraform DIR="$(TERRAFORM_DIR)/$(STACK)" CMD="import aws_security_group_rule.extract_lambda_egress_443 sg-0288fa08b7c9284ce_outbound_tcp_443_443_0.0.0.0/0"
+	# make docker-run-terraform DIR="$(TERRAFORM_DIR)/$(STACK)" CMD="import aws_security_group_rule.insert_lambda_egress_443 sg-092c5ef65959f9f63_outbound_tcp_443_443_0.0.0.0/0"
 
 
 # 	make docker-run-terraform DIR="$(TERRAFORM_DIR)/$(STACK)" CMD="import aws_lambda_function.postcode_extract_lambda uec-sf-pc-pd-postcode-extract"
