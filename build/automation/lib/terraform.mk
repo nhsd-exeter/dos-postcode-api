@@ -160,7 +160,7 @@ terraform-import-stack:
 	fi
 
 	# make docker-run-terraform DIR="$(TERRAFORM_DIR)/$(STACK)" CMD="import aws_cloudwatch_log_group.postcode_extract_log_group /aws/lambda/uec-sf-pc-pd-postcode-extract"
-	make docker-run-terraform DIR="$(TERRAFORM_DIR)/$(STACK)" CMD="import aws_lambda_permission.allow_cloudwatch_to_call_extract_postcode uec-sf-pc-pd-postcode-extract/AllowExecutionFromCloudWatch"
+	# make docker-run-terraform DIR="$(TERRAFORM_DIR)/$(STACK)" CMD="import aws_lambda_permission.allow_cloudwatch_to_call_extract_postcode uec-sf-pc-pd-postcode-extract/AllowExecutionFromCloudWatch"
 
 
 # 	make docker-run-terraform DIR="$(TERRAFORM_DIR)/$(STACK)" CMD="import aws_lambda_function.postcode_extract_lambda uec-sf-pc-pd-postcode-extract"
@@ -190,7 +190,7 @@ _terraform-stack: ### Set up infrastructure for a single stack - mandatory: STAC
 	if [[ ! "$(TERRAFORM_REINIT)" =~ ^(false|no|n|off|0|FALSE|NO|N|OFF)$$ ]] || [ ! -f $(TERRAFORM_DIR)/$(STACK)/terraform.tfstate ]; then
 		make _terraform-reinitialise DIR="$(TERRAFORM_DIR)" STACK="$(STACK)"
 	fi
-	make docker-run-terraform DIR="$(TERRAFORM_DIR)/$(STACK)" CMD="refresh"
+	# make docker-run-terraform DIR="$(TERRAFORM_DIR)/$(STACK)" CMD="refresh"
 	make docker-run-terraform DIR="$(TERRAFORM_DIR)/$(STACK)" CMD="$(CMD)"
 
 _terraform-reinitialise: ### Reinitialise infrastructure state - mandatory: STACK=[name]; optional: TERRAFORM_DO_NOT_REMOVE_STATE_FILE=true,PROFILE=[name]
