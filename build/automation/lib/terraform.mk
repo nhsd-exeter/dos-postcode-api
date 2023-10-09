@@ -163,7 +163,6 @@ terraform-import-stack:
 	make docker-run-terraform DIR="$(TERRAFORM_DIR)/$(STACK)" CMD="import aws_cloudwatch_log_group.waf_logs /aws-waf-logs-uec-sf-pc-pd"
 
 
-
 	# make docker-run-terraform DIR="$(TERRAFORM_DIR)/$(STACK)" CMD="import aws_security_group_rule.extract_lambda_sg_egress sg-0288fa08b7c9284ce_egress_tcp_5432_5432_sg-001d6f147cc56a0b3"
 	# make docker-run-terraform DIR="$(TERRAFORM_DIR)/$(STACK)" CMD="import aws_security_group_rule.sf_replica_db_sg_ingress sg-001d6f147cc56a0b3_ingress_tcp_5432_5432_sg-0288fa08b7c9284ce"
 	# make docker-run-terraform DIR="$(TERRAFORM_DIR)/$(STACK)" CMD="import aws_security_group_rule.sf_replica_db_sg_egress sg-001d6f147cc56a0b3_egress_tcp_5432_5432_sg-0288fa08b7c9284ce"
