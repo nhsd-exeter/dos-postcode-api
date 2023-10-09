@@ -3,7 +3,7 @@ pipeline {
     Description: Development pipeline to build test push and deploy to nonprod
    */
   agent {
-label any
+    label "jenkins-slave"
   }
 
   environment {
