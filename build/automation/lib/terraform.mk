@@ -38,10 +38,8 @@ terraform-remove-state-lock: ### Delete the Terraform state - mandatory: STACK|S
 	# set up
 	eval "$$(make aws-assume-role-export-variables)"
 	# delete state
-	echo "Called terraform-remove-state-lock"
 	for stack in $$(echo $(or $(STACK), $(or $(STACKS), $(INFRASTRUCTURE_STACKS))) | tr "," "\n"); do
 		key='{"LockID": {"S": "$(TERRAFORM_STATE_STORE)/$(TERRAFORM_STATE_KEY)/'$$stack'/terraform.state"}}'
-		@echo "Key $$key"
 		response=$$(make -s docker-run-tools ARGS="$$(echo $(AWSCLI) | grep awslocal > /dev/null 2>&1 && echo '--env LOCALSTACK_HOST=$(LOCALSTACK_HOST)' ||:)" CMD=" \
 			$(AWSCLI) dynamodb get-item \
 				--table-name $(TERRAFORM_STATE_LOCK) \
@@ -57,7 +55,6 @@ terraform-remove-state-lock: ### Delete the Terraform state - mandatory: STACK|S
 		       @echo "Removed the lock successfully $$response"
 		   fi
 	done
-
 
 # ==============================================================================
 
