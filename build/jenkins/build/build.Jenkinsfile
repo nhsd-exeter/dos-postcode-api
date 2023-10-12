@@ -2,7 +2,7 @@ pipeline {
   /*
     Description: Development pipeline to build test push and deploy to nonprod
    */
-agent any
+  agent { label 'jenkins-slave' }
 
   environment {
     PROFILE = 'dev'
@@ -20,6 +20,7 @@ agent any
   stages {
     stage('Prepare') {
         steps {
+            sh 'make pipeline-slave-prepare' //wait for docker daemon to be ready
             sh 'make prepare'
         }
     }
