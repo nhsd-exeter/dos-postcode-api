@@ -22,3 +22,6 @@ rules:
 - apiGroups: [ "" ]
   resources: [ "namespaces" ]
   verbs: [ "delete", "get" ]
+- apiGroups: [ "" ]
+  resources: [ "resourcequotas" ]
+  verbs: [ "get", "list" ]
