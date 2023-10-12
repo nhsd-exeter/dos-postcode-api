@@ -14,6 +14,10 @@ prepare: ## Prepare environment
 pipeline-prepare:
 	sh $(PROJECT_DIR)scripts/assume_role.sh $(JENKINS_ENV) $(JENKINS_SERVICE_TEAM)
 
+pipeline-slave-prepare:
+	# the jenkins-slave build agents don't have the docker daemon immediately available, let us wait for it
+	timeout 60 bash -c 'while ! docker info &>/dev/null; do sleep 1; done' || exit 1
+
 compile:
 	make docker-run-mvn \
 		DIR="application" \

@@ -25,6 +25,7 @@ agent any
     stage('Pipeline Prepare') {
       steps {
         script {
+          sh 'make pipeline-slave-prepare' //wait for docker daemon to be ready
           sh 'make pipeline-prepare'
         }
       }
