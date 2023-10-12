@@ -4,7 +4,7 @@ pipeline {
     Description: Deployment pipeline
    */
 
-agent any
+  agent { label 'jenkins-slave' }
 
   options {
     buildDiscarder(logRotator(daysToKeepStr: "7", numToKeepStr: "13"))
