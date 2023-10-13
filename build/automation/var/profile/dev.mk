@@ -32,7 +32,7 @@ JMETER_SLAVE_IMAGE := jmeter-slave:5.4.1-log4j2-patch
 POSTCODE_LOCATION_DYNAMO_URL := https://dynamodb.$(AWS_REGION).amazonaws.com
 DYNAMODB_POSTCODE_LOC_MAP_TABLE := $(SERVICE_PREFIX)-postcode-location-mapping
 
-TTL := 2d
+TTL := $(TTL)
 SPLUNK_INDEX := eks_logs_service_finder_nonprod
 
 TF_VAR_service_prefix := $(PROJECT_GROUP_NAME_SHORT)-$(PROFILE)
