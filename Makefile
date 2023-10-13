@@ -22,7 +22,6 @@ compile:
 fetch-project-variables:
 	eval "$$(make aws-assume-role-export-variables)"
 	export TEXAS_WAF_ACL_ID=$$(make -s aws-waf-get WAF_NAME=$(WAF_NAME))
-	export TTL=$$(make -s k8s-get-namespace-ttl)
 
 build: project-config
 	cp \
