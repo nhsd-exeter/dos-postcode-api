@@ -26,7 +26,6 @@ POSTCODE_LOCATION_DYNAMO_URL := https://dynamodb.$(AWS_REGION).amazonaws.com
 DYNAMODB_POSTCODE_LOC_MAP_TABLE := $(PROJECT_GROUP_NAME_SHORT)-$(PROFILE)-postcode-location-mapping
 
 REPLICAS := 3
-TTL := 1d
 CERTIFICATE_DOMAIN := certificate
 ALLOWED_ORIGINS := *
 SPLUNK_INDEX := eks_logs_service_finder_prod
