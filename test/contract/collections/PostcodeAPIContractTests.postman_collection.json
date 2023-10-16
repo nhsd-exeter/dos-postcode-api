@@ -1,350 +1,419 @@
 {
-  "info": {
-    "_postman_id": "08731b0e-92b4-4f62-9c64-424e41548c54",
-    "name": "PostcodeAPIContractTests",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
-  },
-  "item": [
-    {
-      "name": "GET Visit Home Endpoint",
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "pm.test(\"Home endpoint returns success status code\", function() {",
-              "  pm.response.to.have.status(200);",
-              "});"
-            ],
-            "type": "text/javascript"
-          }
-        }
-      ],
-      "request": {
-        "auth": {
-          "type": "bearer",
-          "bearer": [
-            {
-              "key": "token",
-              "value": "{{ACCESS_TOKEN}}",
-              "type": "string"
-            }
-          ]
-        },
-        "method": "GET",
-        "header": [],
-        "url": {
-          "raw": "https://{{HOST}}:{{PORT}}/api/home",
-          "protocol": "https",
-          "host": ["{{HOST}}"],
-          "port": "{{PORT}}",
-          "path": ["api", "home"]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "GET-PCA-Blank Postcode and Name",
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "console.log(pm.response.json())",
-              "pm.test(\"Blank postcode and name query parameters should respond with validation code VAL-001\", function() {",
-              "  pm.response.to.have.status(400);",
-              "});"
-            ],
-            "type": "text/javascript"
-          }
-        }
-      ],
-      "request": {
-        "auth": {
-          "type": "bearer",
-          "bearer": [
-            {
-              "key": "token",
-              "value": "{{ACCESS_TOKEN}}",
-              "type": "string"
-            }
-          ]
-        },
-        "method": "GET",
-        "header": [],
-        "url": {
-          "raw": "https://{{HOST}}:{{PORT}}/{{POSTCODE_ENDPOINT}}",
-          "protocol": "https",
-          "host": ["{{HOST}}"],
-          "port": "{{PORT}}",
-          "path": ["{{POSTCODE_ENDPOINT}}"]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "GET-PCA-Invalid Postcode",
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "console.log(pm.response.json())",
-              "pm.test(\"Invalid Postcode and should respond with validation code VAL-001\", function() {",
-              "  pm.response.to.have.status(400);",
-              "});"
-            ],
-            "type": "text/javascript"
-          }
-        }
-      ],
-      "request": {
-        "auth": {
-          "type": "bearer",
-          "bearer": [
-            {
-              "key": "token",
-              "value": "{{ACCESS_TOKEN}}",
-              "type": "string"
-            }
-          ]
-        },
-        "method": "GET",
-        "header": [],
-        "url": {
-          "raw": "https://{{HOST}}:{{PORT}}/{{POSTCODE_ENDPOINT}}?postcodes=PLG5HW&name=xyz",
-          "protocol": "https",
-          "host": ["{{HOST}}"],
-          "port": "{{PORT}}",
-          "path": ["{{POSTCODE_ENDPOINT}}"],
-          "query": [
-            {
-              "key": "postcodes",
-              "value": "PLG5HW"
-            },
-            {
-              "key": "name",
-              "value": "xyz"
-            }
-          ]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "GET-PCA-Valid But No Location Found",
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "console.log(pm.response.json())",
-              "pm.test(\"No location details found for the given name or postcode\", function() {",
-              "  pm.response.to.have.status(404);",
-              "});"
-            ],
-            "type": "text/javascript"
-          }
-        }
-      ],
-      "request": {
-        "auth": {
-          "type": "bearer",
-          "bearer": [
-            {
-              "key": "token",
-              "value": "{{ACCESS_TOKEN}}",
-              "type": "string"
-            }
-          ]
-        },
-        "method": "GET",
-        "header": [],
-        "url": {
-          "raw": "https://{{HOST}}:{{PORT}}/{{POSTCODE_ENDPOINT}}?postcodes=SL65HW&name=xyz",
-          "protocol": "https",
-          "host": ["{{HOST}}"],
-          "port": "{{PORT}}",
-          "path": ["{{POSTCODE_ENDPOINT}}"],
-          "query": [
-            {
-              "key": "postcodes",
-              "value": "SL65HW"
-            },
-            {
-              "key": "name",
-              "value": "xyz"
-            }
-          ]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "GET-Region Without Location",
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "console.log(pm.response.json())",
-              "pm.test(\"Regions endpoint return okay status\", function() {",
-              "  pm.response.to.have.status(200);",
-              "});"
-            ],
-            "type": "text/javascript"
-          }
-        }
-      ],
-      "request": {
-        "auth": {
-          "type": "bearer",
-          "bearer": [
-            {
-              "key": "token",
-              "value": "{{ACCESS_TOKEN}}",
-              "type": "string"
-            }
-          ]
-        },
-        "method": "GET",
-        "header": [],
-        "url": {
-          "raw": "https://{{HOST}}:{{PORT}}/{{REGION_ENDPOINT}}",
-          "protocol": "https",
-          "host": ["{{HOST}}"],
-          "port": "{{PORT}}",
-          "path": ["api/regions"]
-        }
-      },
-      "response": []
-    },
-
-    {
-      "name": "GET-Region With Location",
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "console.log(pm.response.json())",
-              "pm.test(\"Location details found for the given name or postcode\", function() {",
-              "  pm.response.to.have.status(200);",
-              "});"
-            ],
-            "type": "text/javascript"
-          }
-        }
-      ],
-      "request": {
-        "auth": {
-          "type": "bearer",
-          "bearer": [
-            {
-              "key": "token",
-              "value": "{{ACCESS_TOKEN}}",
-              "type": "string"
-            }
-          ]
-        },
-        "method": "GET",
-        "header": [],
-        "url": {
-          "raw": "https://{{HOST}}:{{PORT}}/{{REGION_ENDPOINT}}?postcodes=SL65HW",
-          "protocol": "https",
-          "host": ["{{HOST}}"],
-          "port": "{{PORT}}",
-          "path": ["api/regions"],
-          "query": [
-            {
-              "key": "postcodes",
-              "value": "SL65HW"
-            }
-          ]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "Request GET Postcode Mapping Success Response",
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "console.log(pm.response.json())",
-              "pm.test(\"Search returns success status code\", function() {",
-              "  pm.response.to.have.status(200);",
-              "});"
-            ],
-            "type": "text/javascript"
-          }
-        }
-      ],
-      "request": {
-        "auth": {
-          "type": "bearer",
-          "bearer": [
-            {
-              "key": "token",
-              "value": "{{ACCESS_TOKEN}}",
-              "type": "string"
-            }
-          ]
-        },
-        "method": "GET",
-        "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json;charset=UTF-8",
-            "type": "text"
-          }
-        ],
-        "url": {
-          "raw": "https://{{HOST}}:{{PORT}}/{{POSTCODE_ENDPOINT}}?postcodes=EX11SR&name=NHS Devon Clinical Commissioning Group (CCG)",
-          "protocol": "https",
-          "host": ["{{HOST}}"],
-          "port": "{{PORT}}",
-          "path": ["{{POSTCODE_ENDPOINT}}"],
-          "query": [
-            {
-              "key": "postcodes",
-              "value": "EX11SR"
-            },
-            {
-              "key": "name",
-              "value": "NHS Devon Clinical Commissioning Group (CCG)"
-            }
-          ]
-        }
-      },
-      "response": []
-    }
-  ],
-  "auth": {
-    "type": "bearer",
-    "bearer": [
-      {
-        "key": "token",
-        "value": "{{ACCESS_TOKEN}}",
-        "type": "string"
-      }
-    ]
-  },
-  "event": [
-    {
-      "listen": "prerequest",
-      "script": {
-        "type": "text/javascript",
-        "exec": [""]
-      }
-    },
-    {
-      "listen": "test",
-      "script": {
-        "type": "text/javascript",
-        "exec": [""]
-      }
-    }
-  ]
+	"info": {
+		"_postman_id": "c19626d0-6806-40b5-933a-5f6602152459",
+		"name": "PostcodeAPIContractTests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "6705784"
+	},
+	"item": [
+		{
+			"name": "GET Visit Home Endpoint",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Home endpoint returns success status code\", function() {",
+							"  pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{ACCESS_TOKEN}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://{{HOST}}:{{PORT}}/api/home",
+					"protocol": "https",
+					"host": ["{{HOST}}"],
+					"port": "{{PORT}}",
+					"path": ["api", "home"]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET-PCA-Blank Postcode and Name",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"console.log(pm.response.json())",
+							"pm.test(\"Blank postcode and name query parameters should respond with validation code 400\", function() {",
+							"  pm.response.to.have.status(400);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{ACCESS_TOKEN}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://{{HOST}}:{{PORT}}/{{POSTCODE_ENDPOINT}}",
+					"protocol": "https",
+					"host": ["{{HOST}}"],
+					"port": "{{PORT}}",
+					"path": ["{{POSTCODE_ENDPOINT}}"]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET-PCA-Invalid Postcode",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"console.log(pm.response.json())",
+							"pm.test(\"Invalid Postcode and should respond with validation code 400\", function() {",
+							"  pm.response.to.have.status(400);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{ACCESS_TOKEN}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://{{HOST}}:{{PORT}}/{{POSTCODE_ENDPOINT}}?postcodes=PLG5HW&name=xyz",
+					"protocol": "https",
+					"host": ["{{HOST}}"],
+					"port": "{{PORT}}",
+					"path": ["{{POSTCODE_ENDPOINT}}"],
+					"query": [
+						{
+							"key": "postcodes",
+							"value": "PLG5HW"
+						},
+						{
+							"key": "name",
+							"value": "xyz"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET-PCA-Valid But No Location Found",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"console.log(pm.response.json())",
+							"pm.test(\"No location details found for the given name or postcode\", function() {",
+							"  pm.response.to.have.status(404);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{ACCESS_TOKEN}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://{{HOST}}:{{PORT}}/{{POSTCODE_ENDPOINT}}?postcodes=SL65HW&name=xyz",
+					"protocol": "https",
+					"host": ["{{HOST}}"],
+					"port": "{{PORT}}",
+					"path": ["{{POSTCODE_ENDPOINT}}"],
+					"query": [
+						{
+							"key": "postcodes",
+							"value": "SL65HW"
+						},
+						{
+							"key": "name",
+							"value": "xyz"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Request GET Postcode Mapping Success Response",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"console.log(pm.response.json())",
+							"pm.test(\"Search returns success status code\", function() {",
+							"  pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{ACCESS_TOKEN}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json;charset=UTF-8",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://{{HOST}}:{{PORT}}/{{POSTCODE_ENDPOINT}}?postcodes=EX11SR&name=NHS Devon Clinical Commissioning Group (CCG)",
+					"protocol": "https",
+					"host": ["{{HOST}}"],
+					"port": "{{PORT}}",
+					"path": ["{{POSTCODE_ENDPOINT}}"],
+					"query": [
+						{
+							"key": "postcodes",
+							"value": "EX11SR"
+						},
+						{
+							"key": "name",
+							"value": "NHS Devon Clinical Commissioning Group (CCG)"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET-Region Without Location",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonText = pm.response.text();",
+							"",
+							"console.log(pm.response.json())",
+							"pm.test(\"Regions endpoint return okay status\", function() {",
+							"  pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Expected regions are available\", function() {",
+							"    pm.expect(jsonText).to.include(\"East of England\");",
+							"    pm.expect(jsonText).to.include(\"North West\");",
+							"    pm.expect(jsonText).to.include(\"South East\");",
+							"    pm.expect(jsonText).to.include(\"Wales\");",
+							"    pm.expect(jsonText).to.include(\"Scotland\");",
+							"    pm.expect(jsonText).to.include(\"West Midlands\");",
+							"    pm.expect(jsonText).to.include(\"Northern Ireland\");",
+							"    pm.expect(jsonText).to.include(\"Yorkshire and The Humber\");",
+							"    pm.expect(jsonText).to.include(\"London\");",
+							"    pm.expect(jsonText).to.include(\"North East\");",
+							"    pm.expect(jsonText).to.include(\"East Midlands\");",
+							"    pm.expect(jsonText).to.include(\"South West\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{ACCESS_TOKEN}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://{{HOST}}:{{PORT}}/{{REGION_ENDPOINT}}",
+					"protocol": "https",
+					"host": ["{{HOST}}"],
+					"port": "{{PORT}}",
+					"path": ["{{REGION_ENDPOINT}}"]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET-Region With Location",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"console.log(pm.response.json())",
+							"pm.test(\"Location details found for the given name or postcode\", function() {",
+							"  pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{ACCESS_TOKEN}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://{{HOST}}:{{PORT}}/{{REGION_ENDPOINT}}?postcodes=SL65HW",
+					"protocol": "https",
+					"host": ["{{HOST}}"],
+					"port": "{{PORT}}",
+					"path": ["{{REGION_ENDPOINT}}"],
+					"query": [
+						{
+							"key": "postcodes",
+							"value": "SL65HW"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET-Region With Invalid Location",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"console.log(pm.response.json())",
+							"",
+							"var jsonData = pm.response.json();",
+							"pm.test(\"Location details found for the given name or postcode\", function() {",
+							"  pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"No region is returned with invalid postcode\", function() {",
+							"    pm.expect(jsonData.nhs_region).to.be.null;",
+							"    pm.expect(jsonData.region).to.be.null;    ",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{ACCESS_TOKEN}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://{{HOST}}:{{PORT}}/{{REGION_ENDPOINT}}?postcodes=SLS65H",
+					"protocol": "https",
+					"host": ["{{HOST}}"],
+					"port": "{{PORT}}",
+					"path": ["{{REGION_ENDPOINT}}"],
+					"query": [
+						{
+							"key": "postcodes",
+							"value": "SLS65H"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{ACCESS_TOKEN}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [""]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [""]
+			}
+		}
+	]
 }
