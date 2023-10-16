@@ -181,6 +181,91 @@
       "response": []
     },
     {
+      "name": "GET-Region Without Location",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "console.log(pm.response.json())",
+              "pm.test(\"Regions endpoint return okay status\", function() {",
+              "  pm.response.to.have.status(200);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{ACCESS_TOKEN}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://{{HOST}}:{{PORT}}/{{REGION_ENDPOINT}}",
+          "protocol": "https",
+          "host": ["{{HOST}}"],
+          "port": "{{PORT}}",
+          "path": ["api/regions"]
+        }
+      },
+      "response": []
+    },
+
+    {
+      "name": "GET-Region With Location",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "console.log(pm.response.json())",
+              "pm.test(\"Location details found for the given name or postcode\", function() {",
+              "  pm.response.to.have.status(200);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{ACCESS_TOKEN}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://{{HOST}}:{{PORT}}/{{REGION_ENDPOINT}}?postcodes=SL65HW",
+          "protocol": "https",
+          "host": ["{{HOST}}"],
+          "port": "{{PORT}}",
+          "path": ["api/regions"],
+          "query": [
+            {
+              "key": "postcodes",
+              "value": "SL65HW"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
       "name": "Request GET Postcode Mapping Success Response",
       "event": [
         {

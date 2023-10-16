@@ -406,6 +406,7 @@ run-contract:
 		CMD=" \
 			run collections/PostcodeAPIContractTests.postman_collection.json -e \
 			environment/postcode_contract.postman_environment.json --verbose --insecure \
+			-r htmlextra,cli --reporter-htmlextra-export ./reports/PostcodeAPIContractTests.html
 		"
 	make project-stop
 
