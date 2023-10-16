@@ -27,7 +27,6 @@ DYNAMODB_POSTCODE_LOC_MAP_TABLE := $(PROJECT_GROUP_NAME_SHORT)-$(PROFILE)-postco
 
 
 REPLICAS := 3
-TTL := 1d
 CERTIFICATE_DOMAIN := certificate
 ALLOWED_ORIGINS := *
 SPLUNK_INDEX := eks_logs_service_finder_prod
