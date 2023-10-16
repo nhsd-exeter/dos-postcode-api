@@ -9,6 +9,7 @@ prepare: ## Prepare environment
 	make \
 		git-config \
 		docker-config \
+		git-secrets-scan-repo-files \
 		pipeline-prepare
 
 pipeline-prepare:
