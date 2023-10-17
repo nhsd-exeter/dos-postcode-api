@@ -70,6 +70,14 @@ agent any
       steps {
         script {
           sh 'make run-contract-test'
+          publishHTML([allowMissing: false,
+            alwaysLinkToLastBuild: false,
+            keepAll: true,
+            reportDir: 'test/contract/reports/',
+            reportFiles: 'PostcodeAPIContractTests.html',
+            reportName: 'Postcode API Contract Report',
+            reportTitles: 'Postcode API Contract Report'
+          ])
         }
       }
     }

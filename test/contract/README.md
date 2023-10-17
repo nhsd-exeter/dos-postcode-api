@@ -18,7 +18,7 @@ This can be run locally or as part of the build pipeline. To run the contract te
 
 ## Smoke Test
 
-The purpose of the smoke test is to ensure deployment readiness of the deployed image. The tests are configured to run with different levels of authenticaton depending on the environment.
+The purpose of the smoke test is to ensure deployment readiness of the deployed image. The tests are configured to run with different levels of authentication depending on the environment.
 
 Environments:
   - Dev (Non-production)
@@ -29,7 +29,7 @@ Environments:
 
 To run the smoke test, use the following command:
 
-    make run-smoke-tests
+    make run-smoke-test
 
 In the *Dev*, *Test* and *Perf* environments the smoke tests are configured to use the mock token `MOCK_POSTCODE_API_ACCESS_TOKEN`
 
