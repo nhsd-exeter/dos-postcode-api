@@ -425,6 +425,7 @@ run-smoke:
 		DIR="$(APPLICATION_TEST_DIR)/contract" \
 		CMD=" \
 			run collections/PostcodeAPISmokeTests.postman_collection.json -e environment/postcode_smoke.postman_environment.json --verbose \
+			-r htmlextra,cli --reporter-htmlextra-export ./reports/PostcodeAPISmokeTests.html
 		"
 
 	make project-stop
