@@ -9,6 +9,7 @@ DOCKER_NETWORK = $(PROJECT_GROUP_SHORT)/$(PROJECT_NAME_SHORT)/$(BUILD_ID)
 DOCKER_REGISTRY = $(AWS_ECR)/$(PROJECT_GROUP_SHORT)/$(PROJECT_NAME_SHORT)
 DOCKER_REGISTRY_LIVE = $(DOCKER_REGISTRY)/prod
 DOCKER_LIBRARY_REGISTRY = nhsd
+DOCKER_HUB_PROXY = ddc-nexus-mgmt-nexus-docker.mgmt.texasplatform.uk
 
 DOCKER_ALPINE_VERSION = 3.14.2
 DOCKER_COMPOSER_VERSION = 2.0.13
@@ -388,7 +389,7 @@ docker-run-composer: ### Run composer container - mandatory: CMD; optional: DIR,
 	make docker-config > /dev/null 2>&1
 	mkdir -p $(TMP_DIR)/.composer
 	lib_volume_mount=$$(([ $(BUILD_ID) -eq 0 ] || [ "$(LIB_VOLUME_MOUNT)" == true ]) && echo "--volume $(TMP_DIR)/.composer:/tmp" ||:)
-	image=$$([ -n "$(IMAGE)" ] && echo $(IMAGE) || echo composer:$(DOCKER_COMPOSER_VERSION))
+	image=$$([ -n "$(DOCKER_HUB_PROXY)" ] && echo $(DOCKER_HUB_PROXY)/ || echo "")$$([ -n "$(IMAGE)" ] && echo $(IMAGE) || echo composer:$(DOCKER_COMPOSER_VERSION))
 	container=$$([ -n "$(CONTAINER)" ] && echo $(CONTAINER) || echo composer-$(BUILD_COMMIT_HASH)-$(BUILD_ID)-$$(date --date=$$(date -u +"%Y-%m-%dT%H:%M:%S%z") -u +"%Y%m%d%H%M%S" 2> /dev/null)-$$(make secret-random LENGTH=8))
 	docker run --interactive $(_TTY) --rm \
 		--name $$container \
@@ -428,7 +429,7 @@ docker-run-gradle: ### Run gradle container - mandatory: CMD; optional: DIR,ARGS
 	make docker-config > /dev/null 2>&1
 	mkdir -p $(TMP_DIR)/.gradle
 	lib_volume_mount=$$(([ $(BUILD_ID) -eq 0 ] || [ "$(LIB_VOLUME_MOUNT)" == true ]) && echo "--volume $(TMP_DIR)/.gradle:/home/gradle/.gradle" ||:)
-	image=$$([ -n "$(IMAGE)" ] && echo $(IMAGE) || echo gradle:$(DOCKER_GRADLE_VERSION))
+	image=$$([ -n "$(DOCKER_HUB_PROXY)" ] && echo $(DOCKER_HUB_PROXY)/ || echo "")$$([ -n "$(IMAGE)" ] && echo $(IMAGE) || echo gradle:$(DOCKER_GRADLE_VERSION))
 	container=$$([ -n "$(CONTAINER)" ] && echo $(CONTAINER) || echo gradle-$(BUILD_COMMIT_HASH)-$(BUILD_ID)-$$(date --date=$$(date -u +"%Y-%m-%dT%H:%M:%S%z") -u +"%Y%m%d%H%M%S" 2> /dev/null)-$$(make secret-random LENGTH=8))
 	docker run --interactive $(_TTY) --rm \
 		--name $$container \
@@ -450,7 +451,7 @@ docker-run-mvn: ### Run maven container - mandatory: CMD; optional: DIR,ARGS=[Do
 	make docker-config > /dev/null 2>&1
 	mkdir -p $(TMP_DIR)/.m2
 	lib_volume_mount=$$(([ $(BUILD_ID) -eq 0 ] || [ "$(LIB_VOLUME_MOUNT)" == true ]) && echo "--volume $(TMP_DIR)/.m2:/tmp/.m2" ||:)
-	image=$$([ -n "$(IMAGE)" ] && echo $(IMAGE) || echo maven:$(DOCKER_MAVEN_VERSION))
+	image=$$([ -n "$(DOCKER_HUB_PROXY)" ] && echo $(DOCKER_HUB_PROXY)/ || echo "")$$([ -n "$(IMAGE)" ] && echo $(IMAGE) || echo maven:$(DOCKER_MAVEN_VERSION))
 	container=$$([ -n "$(CONTAINER)" ] && echo $(CONTAINER) || echo mvn-$(BUILD_COMMIT_HASH)-$(BUILD_ID)-$$(date --date=$$(date -u +"%Y-%m-%dT%H:%M:%S%z") -u +"%Y%m%d%H%M%S" 2> /dev/null)-$$(make secret-random LENGTH=8))
 	keystore=
 	if [ -f $(ETC_DIR)/keystore.jks ]; then
@@ -483,7 +484,7 @@ docker-run-node: ### Run node container - mandatory: CMD; optional: DIR,ARGS=[Do
 	touch $(TMP_DIR)/.npmrc
 	touch $(TMP_DIR)/.yarnrc
 	lib_volume_mount=$$(([ $(BUILD_ID) -eq 0 ] || [ "$(LIB_VOLUME_MOUNT)" == true ]) && echo "--volume $(TMP_DIR)/.cache:/home/default/.cache" ||:)
-	image=$$([ -n "$(IMAGE)" ] && echo $(IMAGE) || echo node:$(DOCKER_NODE_VERSION))
+	image=$$([ -n "$(DOCKER_HUB_PROXY)" ] && echo $(DOCKER_HUB_PROXY)/ || echo "")$$([ -n "$(IMAGE)" ] && echo $(IMAGE) || echo node:$(DOCKER_NODE_VERSION))
 	container=$$([ -n "$(CONTAINER)" ] && echo $(CONTAINER) || echo node-$(BUILD_COMMIT_HASH)-$(BUILD_ID)-$$(date --date=$$(date -u +"%Y-%m-%dT%H:%M:%S%z") -u +"%Y%m%d%H%M%S" 2> /dev/null)-$$(make secret-random LENGTH=8))
 	docker run --interactive $(_TTY) --rm \
 		--name $$container \
@@ -508,7 +509,7 @@ docker-run-node: ### Run node container - mandatory: CMD; optional: DIR,ARGS=[Do
 
 docker-run-postman: ### Run postman (newman) container - mandatory: DIR,CMD
 	make docker-config > /dev/null 2>&1
-	make docker-run IMAGE=dannydainton/htmlextra \
+	make docker-run IMAGE=$$([ -n "$(DOCKER_HUB_PROXY)" ] && echo $(DOCKER_HUB_PROXY)/ || echo "")dannydainton/htmlextra \
 		ARGS="--volume $(DIR):/etc/newman" \
 		DIR="$(DIR)" \
 		CMD="$(CMD)"
@@ -517,7 +518,7 @@ docker-run-python: ### Run python container - mandatory: CMD; optional: SH=true,
 	make docker-config > /dev/null 2>&1
 	mkdir -p $(TMP_DIR)/.python/pip/{cache,packages}
 	lib_volume_mount=$$(([ $(BUILD_ID) -eq 0 ] || [ "$(LIB_VOLUME_MOUNT)" == true ]) && echo "--volume $(TMP_DIR)/.python/pip/cache:/tmp/.cache/pip --volume $(TMP_DIR)/.python/pip/packages:/tmp/.packages" ||:)
-	image=$$([ -n "$(IMAGE)" ] && echo $(IMAGE) || echo python:$(DOCKER_PYTHON_VERSION))
+	image=$$([ -n "$(DOCKER_HUB_PROXY)" ] && echo $(DOCKER_HUB_PROXY)/ || echo "")$$([ -n "$(IMAGE)" ] && echo $(IMAGE) || echo python:$(DOCKER_PYTHON_VERSION))
 	container=$$([ -n "$(CONTAINER)" ] && echo $(CONTAINER) || echo python-$(BUILD_COMMIT_HASH)-$(BUILD_ID)-$$(date --date=$$(date -u +"%Y-%m-%dT%H:%M:%S%z") -u +"%Y%m%d%H%M%S" 2> /dev/null)-$$(make secret-random LENGTH=8))
 	if [[ ! "$(SH)" =~ ^(true|yes|y|on|1|TRUE|YES|Y|ON)$$ ]]; then
 		docker run --interactive $(_TTY) --rm \
@@ -562,7 +563,7 @@ docker-run-python: ### Run python container - mandatory: CMD; optional: SH=true,
 docker-run-sonar-scanner-cli: ### Run sonar-scanner-cli container - mandatory: CMD; optional: SH=true,DIR,ARGS=[Docker args],VARS_FILE=[Makefile vars file],IMAGE=[image name],CONTAINER=[container name]
 	make docker-config > /dev/null 2>&1
 	mkdir -p $(TMP_DIR)/.sonar/cache
-	image=$$([ -n "$(IMAGE)" ] && echo $(IMAGE) || echo sonarsource/sonar-scanner-cli:$(DOCKER_SONAR_SCANNER_CLI_VERSION))
+	image=$$([ -n "$(DOCKER_HUB_PROXY)" ] && echo $(DOCKER_HUB_PROXY)/ || echo "")$$([ -n "$(IMAGE)" ] && echo $(IMAGE) || echo sonarsource/sonar-scanner-cli:$(DOCKER_SONAR_SCANNER_CLI_VERSION))
 	container=$$([ -n "$(CONTAINER)" ] && echo $(CONTAINER) || echo node-$(BUILD_COMMIT_HASH)-$(BUILD_ID)-$$(date --date=$$(date -u +"%Y-%m-%dT%H:%M:%S%z") -u +"%Y%m%d%H%M%S" 2> /dev/null)-$$(make secret-random LENGTH=8))
 	docker run --interactive $(_TTY) --rm \
 		--name $$container \
@@ -581,7 +582,7 @@ docker-run-sonar-scanner-cli: ### Run sonar-scanner-cli container - mandatory: C
 
 docker-run-terraform: ### Run terraform container - mandatory: CMD; optional: DIR,ARGS=[Docker args],VARS_FILE=[Makefile vars file],IMAGE=[image name],CONTAINER=[container name]
 	make docker-config > /dev/null 2>&1
-	image=$$([ -n "$(IMAGE)" ] && echo $(IMAGE) || echo hashicorp/terraform:$(DOCKER_TERRAFORM_VERSION))
+	image=$$([ -n "$(DOCKER_HUB_PROXY)" ] && echo $(DOCKER_HUB_PROXY)/ || echo "")$$([ -n "$(IMAGE)" ] && echo $(IMAGE) || echo hashicorp/terraform:$(DOCKER_TERRAFORM_VERSION))
 	container=$$([ -n "$(CONTAINER)" ] && echo $(CONTAINER) || echo terraform-$(BUILD_COMMIT_HASH)-$(BUILD_ID)-$$(date --date=$$(date -u +"%Y-%m-%dT%H:%M:%S%z") -u +"%Y%m%d%H%M%S" 2> /dev/null)-$$(make secret-random LENGTH=8))
 	docker run --interactive $(_TTY) --rm \
 		--name $$container \
@@ -600,7 +601,7 @@ docker-run-terraform: ### Run terraform container - mandatory: CMD; optional: DI
 
 docker-run-terraform-tfsec: ### Run terraform tfsec container - optional: DIR,ARGS=[Docker args],VARS_FILE=[Makefile vars file],IMAGE=[image name],CONTAINER=[container name]; SEE: https://github.com/tfsec/tfsec
 	make docker-config > /dev/null 2>&1
-	image=$$([ -n "$(IMAGE)" ] && echo $(IMAGE) || echo tfsec/tfsec:$(DOCKER_TERRAFORM_TFSEC_VERSION))
+	image=$$([ -n "$(DOCKER_HUB_PROXY)" ] && echo $(DOCKER_HUB_PROXY)/ || echo "")$$([ -n "$(IMAGE)" ] && echo $(IMAGE) || echo tfsec/tfsec:$(DOCKER_TERRAFORM_TFSEC_VERSION))
 	container=$$([ -n "$(CONTAINER)" ] && echo $(CONTAINER) || echo tfsec-$(BUILD_COMMIT_HASH)-$(BUILD_ID)-$$(date --date=$$(date -u +"%Y-%m-%dT%H:%M:%S%z") -u +"%Y%m%d%H%M%S" 2> /dev/null)-$$(make secret-random LENGTH=8))
 	docker run --interactive $(_TTY) --rm \
 		--name $$container \
@@ -619,7 +620,7 @@ docker-run-terraform-tfsec: ### Run terraform tfsec container - optional: DIR,AR
 
 docker-run-terraform-checkov: ### Run terraform checkov container - optional: DIR,ARGS=[Docker args],VARS_FILE=[Makefile vars file],IMAGE=[image name],CONTAINER=[container name]; SEE: https://github.com/bridgecrewio/checkov
 	make docker-config > /dev/null 2>&1
-	image=$$([ -n "$(IMAGE)" ] && echo $(IMAGE) || echo bridgecrew/checkov:$(DOCKER_TERRAFORM_CHECKOV_VERSION))
+	image=$$([ -n "$(DOCKER_HUB_PROXY)" ] && echo $(DOCKER_HUB_PROXY)/ || echo "")$$([ -n "$(IMAGE)" ] && echo $(IMAGE) || echo bridgecrew/checkov:$(DOCKER_TERRAFORM_CHECKOV_VERSION))
 	container=$$([ -n "$(CONTAINER)" ] && echo $(CONTAINER) || echo tfsec-$(BUILD_COMMIT_HASH)-$(BUILD_ID)-$$(date --date=$$(date -u +"%Y-%m-%dT%H:%M:%S%z") -u +"%Y%m%d%H%M%S" 2> /dev/null)-$$(make secret-random LENGTH=8))
 	docker run --interactive $(_TTY) --rm \
 		--name $$container \
@@ -638,7 +639,7 @@ docker-run-terraform-checkov: ### Run terraform checkov container - optional: DI
 
 docker-run-terraform-compliance: ### Run terraform compliance container - mandatory: CMD=[-p file -f repo]; optional: DIR,ARGS=[Docker args],VARS_FILE=[Makefile vars file],IMAGE=[image name],CONTAINER=[container name]; SEE: https://github.com/terraform-compliance/cli
 	make docker-config > /dev/null 2>&1
-	image=$$([ -n "$(IMAGE)" ] && echo $(IMAGE) || echo eerkunt/terraform-compliance:$(DOCKER_TERRAFORM_COMPLIANCE_VERSION))
+	image=$$([ -n "$(DOCKER_HUB_PROXY)" ] && echo $(DOCKER_HUB_PROXY)/ || echo "")$$([ -n "$(IMAGE)" ] && echo $(IMAGE) || echo eerkunt/terraform-compliance:$(DOCKER_TERRAFORM_COMPLIANCE_VERSION))
 	container=$$([ -n "$(CONTAINER)" ] && echo $(CONTAINER) || echo tfsec-$(BUILD_COMMIT_HASH)-$(BUILD_ID)-$$(date --date=$$(date -u +"%Y-%m-%dT%H:%M:%S%z") -u +"%Y%m%d%H%M%S" 2> /dev/null)-$$(make secret-random LENGTH=8))
 	docker run --interactive $(_TTY) --rm \
 		--name $$container \
@@ -657,7 +658,7 @@ docker-run-terraform-compliance: ### Run terraform compliance container - mandat
 
 docker-run-config-lint: ### Run config lint container - mandatory: CMD; optional: DIR,ARGS=[Docker args],IMAGE=[image name],CONTAINER=[container name]; SEE: https://github.com/stelligent/config-lint
 	make docker-config > /dev/null 2>&1
-	image=$$([ -n "$(IMAGE)" ] && echo $(IMAGE) || echo stelligent/config-lint:$(DOCKER_CONFIG_LINT_VERSION))
+	image=$$([ -n "$(DOCKER_HUB_PROXY)" ] && echo $(DOCKER_HUB_PROXY)/ || echo "")$$([ -n "$(IMAGE)" ] && echo $(IMAGE) || echo stelligent/config-lint:$(DOCKER_CONFIG_LINT_VERSION))
 	container=$$([ -n "$(CONTAINER)" ] && echo $(CONTAINER) || echo tfsec-$(BUILD_COMMIT_HASH)-$(BUILD_ID)-$$(date --date=$$(date -u +"%Y-%m-%dT%H:%M:%S%z") -u +"%Y%m%d%H%M%S" 2> /dev/null)-$$(make secret-random LENGTH=8))
 	docker run --interactive $(_TTY) --rm \
 		--name $$container \
