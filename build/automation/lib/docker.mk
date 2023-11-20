@@ -693,19 +693,16 @@ docker-run-postgres: ### Run postgres container - mandatory: CMD; optional: DIR,
 
 docker-run-tools: ### Run tools (Python) container - mandatory: CMD; optional: SH=true,DIR,ARGS=[Docker args],LIB_VOLUME_MOUNT=true,VARS_FILE=[Makefile vars file],IMAGE=[image name],CONTAINER=[container name]
 	make docker-config > /dev/null 2>&1
+	AWS_DIRECTORY=$${JENKINS_AGENT_WORKDIR:-$${HOME}}/.aws
+	mkdir -p $$AWS_DIRECTORY
 	mkdir -p $(TMP_DIR)/.python/pip/{cache,packages}
-	if [ $(HUDSON_URL) == $(JENKINS_MOM_URL)  ]; then
-		mkdir -p $(HOME)/.aws
-		aws_access_dir=$$(echo "--volume $(HOME)/.aws:/tmp/.aws")
-	else
-		aws_access_dir=$$(echo "--volume /var/run/secrets/eks.amazonaws.com/serviceaccount/token:/var/run/secrets/eks.amazonaws.com/serviceaccount/token")
-	fi
 	lib_volume_mount=$$(([ $(BUILD_ID) -eq 0 ] || [ "$(LIB_VOLUME_MOUNT)" == true ]) && echo "--volume $(TMP_DIR)/.python/pip/cache:/tmp/.cache/pip --volume $(TMP_DIR)/.python/pip/packages:/tmp/.packages" ||:)
 	image=$$([ -n "$(IMAGE)" ] && echo $(IMAGE) || echo $(DOCKER_LIBRARY_REGISTRY)/tools:$(DOCKER_LIBRARY_TOOLS_VERSION))
 	container=$$([ -n "$(CONTAINER)" ] && echo $(CONTAINER) || echo tools-$(BUILD_COMMIT_HASH)-$(BUILD_ID)-$$(date --date=$$(date -u +"%Y-%m-%dT%H:%M:%S%z") -u +"%Y%m%d%H%M%S" 2> /dev/null)-$$(make secret-random LENGTH=8))
 	make docker-image-pull-or-build NAME=tools VERSION=$(DOCKER_LIBRARY_TOOLS_VERSION) >&2
 	if [[ ! "$(SH)" =~ ^(true|yes|y|on|1|TRUE|YES|Y|ON)$$ ]]; then
 		docker run --interactive $(_TTY) --rm \
+		  --platform linux/amd64 \
 			--name $$container \
 			--user $$(id -u):$$(id -g) \
 			--env-file <(make _list-variables PATTERN="^(AWS|TX|TEXAS|NHSD|TERRAFORM)") \
@@ -717,11 +714,11 @@ docker-run-tools: ### Run tools (Python) container - mandatory: CMD; optional: S
 			--env PYTHONPATH=/tmp/.packages \
 			--env XDG_CACHE_HOME=/tmp/.cache \
 			--volume $(PROJECT_DIR):/project \
-			--volume $(HOME)/.aws:/tmp/.aws \
+			--mount type=bind,source=$$AWS_DIRECTORY,destination=/tmp/.aws \
 			--volume $(HOME)/bin:/tmp/bin \
 			--volume $(HOME)/etc:/tmp/etc \
 			--volume $(HOME)/usr:/tmp/usr \
-			$$aws_access_dir \
+			--volume /var/run/secrets/eks.amazonaws.com/serviceaccount/token:/var/run/secrets/eks.amazonaws.com/serviceaccount/token \
 			$$lib_volume_mount \
 			--network $(DOCKER_NETWORK) \
 			--workdir /project/$(shell echo $(abspath $(DIR)) | sed "s;$(PROJECT_DIR);;g") \
@@ -730,6 +727,7 @@ docker-run-tools: ### Run tools (Python) container - mandatory: CMD; optional: S
 				$(CMD)
 	else
 		docker run --interactive $(_TTY) --rm \
+			--platform linux/amd64 \
 			--name $$container \
 			--user $$(id -u):$$(id -g) \
 			--env-file <(make _list-variables PATTERN="^(AWS|TX|TEXAS|NHSD|TERRAFORM)") \
@@ -741,11 +739,11 @@ docker-run-tools: ### Run tools (Python) container - mandatory: CMD; optional: S
 			--env PYTHONPATH=/tmp/.packages \
 			--env XDG_CACHE_HOME=/tmp/.cache \
 			--volume $(PROJECT_DIR):/project \
-			--volume $(HOME)/.aws:/tmp/.aws \
+			--mount type=bind,source=$$AWS_DIRECTORY,destination=/tmp/.aws \
 			--volume $(HOME)/bin:/tmp/bin \
 			--volume $(HOME)/etc:/tmp/etc \
 			--volume $(HOME)/usr:/tmp/usr \
-			$$aws_access_dir \
+			--volume /var/run/secrets/eks.amazonaws.com/serviceaccount/token:/var/run/secrets/eks.amazonaws.com/serviceaccount/token \
 			$$lib_volume_mount \
 			--network $(DOCKER_NETWORK) \
 			--workdir /project/$(shell echo $(abspath $(DIR)) | sed "s;$(PROJECT_DIR);;g") \
