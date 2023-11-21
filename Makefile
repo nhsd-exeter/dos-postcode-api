@@ -182,6 +182,7 @@ clean: # Clean up project
 
 run-smoke-test:
 	eval "$$(make aws-assume-role-export-variables)"
+	make docker-login
 	make run-smoke COGNITO_USER_PASS=$$(make aws-secret-get NAME=$(PROJECT_GROUP_SHORT)-sfsa-${PROFILE}-cognito-passwords | jq .POSTCODE_PASSWORD | tr -d '"')
 
 run-contract-test:
