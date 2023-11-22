@@ -2,7 +2,9 @@ pipeline {
   /*
     Description: Development pipeline to build test push and deploy to nonprod
    */
-agent any
+  agent {
+    label 'jenkins-slave'
+  }
 
   environment {
     PROFILE = 'dev'
@@ -18,6 +20,13 @@ agent any
   triggers { pollSCM('* * * * *') }
 
   stages {
+    stage('Prepare for jenkins-slave run') {
+      steps {
+        script {
+          sh "make pipeline-slave-prepare"
+        }
+      }
+    }
     stage('Prepare') {
         steps {
             sh 'make prepare'
