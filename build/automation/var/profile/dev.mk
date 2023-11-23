@@ -55,7 +55,7 @@ TF_VAR_sf_read_replica_db_sg := uec-core-dos-performance-datastore-sf-sg
 TF_VAR_dos_read_replica_secret_name := service-finder/deployment
 TF_VAR_dos_read_replica_key := DB_SF_READONLY_PASSWORD
 TF_VAR_postcode_etl_db_user := dos_sf_readonly
-TF_VAR_postcode_etl_source_db := pathwaysdos_performance
+TF_VAR_postcode_etl_source_db := pathwaysdos
 TF_VAR_core_dos_python_libs := core-dos-python-libs
 
 TF_VAR_texas_vpc_name = lk8s-$(AWS_ACCOUNT_NAME).texasplatform.uk
