@@ -7,9 +7,9 @@
   <modelVersion>4.0.0</modelVersion>
 
   <properties>
-    <dependency-check-maven.version>9.0.7</dependency-check-maven.version>
+    <dependency-check-maven.version>8.4.3</dependency-check-maven.version>
     <mockito.version>5.8.0</mockito.version>
-    <aws-java-sdk-dynamodb.version>1.12.555</aws-java-sdk-dynamodb.version>
+    <aws-java-sdk-dynamodb.version>1.12.626</aws-java-sdk-dynamodb.version>
     <aws-java-sdk-sts.version>1.12.234</aws-java-sdk-sts.version>
     <spring-data-dynamodb.version>5.2.5</spring-data-dynamodb.version>
     <amazon.awssdk.sts.version>2.10.40</amazon.awssdk.sts.version>
@@ -22,15 +22,14 @@
     <log4j2.version>2.16.0</log4j2.version>    <!-- Springboot does not use Log4J, this is here to force
     other
     dependencies to use the latest version -->
-    <spring-security-oauth2-autoconfigure.version>2.1.4.RELEASE</spring-security-oauth2-autoconfigure.version>
+    <spring-security-oauth2-autoconfigure.version>2.6.8</spring-security-oauth2-autoconfigure.version>
     <java-jwt.version>3.18.1</java-jwt.version>
     <commons-io.version>2.15.1</commons-io.version>
     <springfox-boot-starter.version>3.0.0</springfox-boot-starter.version>
     <springfox-swagger2.version>3.0.0</springfox-swagger2.version>
     <springfox-swagger-ui.version>3.0.0</springfox-swagger-ui.version>
-    <jacoco-maven-plugin.version>0.8.6</jacoco-maven-plugin.version>
+    <jacoco-maven-plugin.version>0.8.11</jacoco-maven-plugin.version>
     <opencsv.version>4.1</opencsv.version>
-    <nvd-api-key>7399d65d-0490-426d-b145-29498d9ab351</nvd-api-key>
   </properties>
   <groupId>uec</groupId>
   <artifactId>dos-postcode-api</artifactId>
@@ -329,8 +328,6 @@
           </execution>
         </executions>
         <configuration>
-          <nvdUrl>https://services.nvd.nist.gov/rest/json</nvdUrl>
-          <apiKey>${nvd-api-key}</apiKey>
           <failBuildOnCVSS>10</failBuildOnCVSS>
           <cveStartYear>2022</cveStartYear>
         </configuration>

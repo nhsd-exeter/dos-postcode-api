@@ -3,78 +3,115 @@ updates:
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "daily"
-    target-branch: "dependencies"
-    open-pull-requests-limit: 5
+      interval: "monthly"
+    target-branch: "master"
+    open-pull-requests-limit: 2
     commit-message:
-      prefix: "github-actions "
+      prefix: "[Dependabot]"
 
   # Enable version updates for java
   - package-ecosystem: "maven"
     directory: "/application"
     # Check for updates once a day
     schedule:
-      interval: "daily"
-    target-branch: "dependencies"
-    open-pull-requests-limit: 5
+      interval: "weekly"
+    target-branch: "master"
+    open-pull-requests-limit: 10
     commit-message:
-      prefix: "mvn "
+      prefix: "[Dependabot]"
+    groups:
+      spring-boot:
+        patterns:
+          - "org.springframework.*"
+      apache:
+        patterns:
+          - "org.apache.*"
+      junit:
+        patterns:
+          - "*junit*"
+      mockito:
+        patterns:
+          - "*mockito*"
+      springfox:
+        patterns:
+          - "io.springfox"
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
 
   # Maintain dependencies for Python (Works recursively in application directories)
   - package-ecosystem: "pip"
-    directory: "/infrastructure/stacks/postcode-etl/functions/uec-sf-postcode-extract"
+    directory: "/infrastructure/stacks/postcode_etl/functions/uec-sf-postcode-extract"
     schedule:
       interval: "monthly"
-    target-branch: "dependencies"
+    target-branch: "master"
     open-pull-requests-limit: 5
     versioning-strategy: increase-if-necessary
     commit-message:
-      prefix: "pip "
+      prefix: "[Dependabot]"
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
 
   # Docker Dependencies
   - package-ecosystem: "docker"
     directory: "/build/docker/dos-postcode-api"
     schedule:
-      interval: "daily"
-    target-branch: "dependencies"
+      interval: "monthly"
+    target-branch: "master"
     open-pull-requests-limit: 0
     commit-message:
-      prefix: "docker "
+      prefix: "[Dependabot]"
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
 
   # Terraform Dependencies
   - package-ecosystem: "terraform"
     directory: "/infrastructure/stacks/datastore"
     schedule:
       interval: "monthly"
-    target-branch: "dependencies"
-    open-pull-requests-limit: 5
+    target-branch: "master"
+    open-pull-requests-limit: 0
     commit-message:
-      prefix: "terraform "
+      prefix: "[Dependabot]"
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
 
   - package-ecosystem: "terraform"
     directory: "/infrastructure/stacks/firewall"
     schedule:
       interval: "monthly"
-    target-branch: "dependencies"
-    open-pull-requests-limit: 5
+    target-branch: "master"
+    open-pull-requests-limit: 0
     commit-message:
       prefix: "terraform "
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
 
 
   - package-ecosystem: "terraform"
-    directory: "/infrastructure/stacks/postcode-etl"
+    directory: "/infrastructure/stacks/postcode_etl"
     schedule:
       interval: "monthly"
-    target-branch: "dependencies"
-    open-pull-requests-limit: 5
+    target-branch: "master"
+    open-pull-requests-limit: 0
     commit-message:
-      prefix: "terraform "
+      prefix: "[Dependabot]"
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
 
   - package-ecosystem: "terraform"
-    directory: "/infrastructure/stacks/postcode-etl-sns"
+    directory: "/infrastructure/stacks/postcode_etl_sns"
     schedule:
       interval: "monthly"
-    target-branch: "dependencies"
-    open-pull-requests-limit: 5
+    target-branch: "master"
+    open-pull-requests-limit: 0
     commit-message:
-      prefix: "terraform "
+      prefix: "[Dependabot]"
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
