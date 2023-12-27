@@ -37,7 +37,7 @@ updates:
     schedule:
       interval: "daily"
     target-branch: "dependencies"
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 0
     commit-message:
       prefix: "docker "
 
