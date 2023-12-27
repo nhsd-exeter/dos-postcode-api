@@ -1,0 +1,9 @@
+version: 2
+updates:
+  # Enable version updates for java
+  - package-ecosystem: "maven"
+    directory: "/application"
+    # Check for updates once a day
+    schedule:
+      interval: "daily"
+    target-branch: "dependencies"
