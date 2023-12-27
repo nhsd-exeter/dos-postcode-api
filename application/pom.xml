@@ -22,7 +22,7 @@
     <log4j2.version>2.16.0</log4j2.version>    <!-- Springboot does not use Log4J, this is here to force
     other
     dependencies to use the latest version -->
-    <spring-security-oauth2-autoconfigure.version>2.1.4.RELEASE</spring-security-oauth2-autoconfigure.version>
+    <spring-security-oauth2-autoconfigure.version>2.6.8</spring-security-oauth2-autoconfigure.version>
     <spring-boot-starter-test.version>2.4.3</spring-boot-starter-test.version>
     <java-jwt.version>3.18.1</java-jwt.version>
     <commons-io.version>2.11.0</commons-io.version>
