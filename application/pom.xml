@@ -16,7 +16,7 @@
     <aws-java-sdk-core.version>1.12.234</aws-java-sdk-core.version>
     <spring-data-jpa.version>2.7.0</spring-data-jpa.version>
     <mockito-junit-jupiter.version>2.23.4</mockito-junit-jupiter.version>
-    <commons-lang3.version>3.11</commons-lang3.version>
+    <commons-lang3.version>3.14.0</commons-lang3.version>
     <commons-collections4.version>4.4</commons-collections4.version>
     <springdoc-openapi-ui.version>1.5.2</springdoc-openapi-ui.version>
     <log4j2.version>2.16.0</log4j2.version>    <!-- Springboot does not use Log4J, this is here to force
