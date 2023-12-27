@@ -30,6 +30,7 @@
     <springfox-swagger-ui.version>3.0.0</springfox-swagger-ui.version>
     <jacoco-maven-plugin.version>0.8.6</jacoco-maven-plugin.version>
     <opencsv.version>4.1</opencsv.version>
+    <nvd-api-key>7399d65d-0490-426d-b145-29498d9ab351</nvd-api-key>
   </properties>
   <groupId>uec</groupId>
   <artifactId>dos-postcode-api</artifactId>
@@ -328,6 +329,8 @@
           </execution>
         </executions>
         <configuration>
+          <nvdUrl>https://services.nvd.nist.gov/rest/json</nvdUrl>
+          <apiKey>${nvd-api-key}</apiKey>
           <failBuildOnCVSS>10</failBuildOnCVSS>
           <cveStartYear>2022</cveStartYear>
         </configuration>
