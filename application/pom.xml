@@ -7,7 +7,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <properties>
-    <dependency-check-maven.version>8.2.1</dependency-check-maven.version>
+    <dependency-check-maven.version>9.0.7</dependency-check-maven.version>
     <mockito.version>4.6.1</mockito.version>
     <aws-java-sdk-dynamodb.version>1.12.555</aws-java-sdk-dynamodb.version>
     <aws-java-sdk-sts.version>1.12.234</aws-java-sdk-sts.version>
