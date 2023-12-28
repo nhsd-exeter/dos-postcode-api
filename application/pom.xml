@@ -15,7 +15,7 @@
     <amazon.awssdk.sts.version>2.10.40</amazon.awssdk.sts.version>
     <aws-java-sdk-core.version>1.12.234</aws-java-sdk-core.version>
     <spring-data-jpa.version>2.7.0</spring-data-jpa.version>
-    <mockito-junit-jupiter.version>2.23.4</mockito-junit-jupiter.version>
+    <mockito-junit-jupiter.version>2.28.2</mockito-junit-jupiter.version>
     <commons-lang3.version>3.14.0</commons-lang3.version>
     <commons-collections4.version>4.4</commons-collections4.version>
     <springdoc-openapi-ui.version>1.5.2</springdoc-openapi-ui.version>
