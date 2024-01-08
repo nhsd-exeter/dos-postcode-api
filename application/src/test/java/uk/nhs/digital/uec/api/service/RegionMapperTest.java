@@ -1,5 +1,7 @@
 package uk.nhs.digital.uec.api.service;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -13,6 +15,8 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
+
+import org.hamcrest.collection.IsEmptyCollection;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -113,6 +117,14 @@ public class RegionMapperTest {
         "south east"
       )
     );
+    regionRecords.add(
+      new RegionRecord(
+        "WV10",
+        "subregion10",
+        new String[] { "WV10", "WV11" },
+        "midlands"
+      )
+    );
 
     ccgList = new ArrayList<>();
     ccgList =
@@ -125,7 +137,9 @@ public class RegionMapperTest {
         getCCGRecordObject("JX78", "MJ4Y"),
         getCCGRecordObject("K86", "M1JY"),
         getCCGRecordObject("LX96", "1J4Y"),
-        getCCGRecordObject("XX99", "XXXXX")
+        getCCGRecordObject("XX99", "XXXXX"),
+        getCCGRecordObject("WV10", "05Q"),
+        getCCGRecordObject("WV10", "04Y")
         //IP14
       );
     icbRecordList = new ArrayList<>();
@@ -251,7 +265,7 @@ public class RegionMapperTest {
 
     //Then
     assertNotNull(regions);
-    assertEquals(8, regions.size());
+    assertEquals(9, regions.size());
   }
 
   @Test
@@ -290,13 +304,13 @@ public class RegionMapperTest {
     classUnderTest.init();
 
     // when
-    CCGRecord ccgRecord = classUnderTest.getCCGRecord("EX8 1NY", "yorkshire");
+    List<CCGRecord> ccgRecords = classUnderTest.getCCGRecord("EX8 1NY", "yorkshire");
 
     CCGRecord expected = getCCGRecordObject("EX8", "X2C4Y");
 
     // Then
-    assertNotNull(ccgRecord);
-    assertEquals(expected, ccgRecord);
+    assertThat(ccgRecords, not(IsEmptyCollection.empty()));
+    assertThat(ccgRecords, hasItem(expected));
   }
 
   @Test
@@ -309,9 +323,10 @@ public class RegionMapperTest {
     classUnderTest.init();
 
     // when
-    CCGRecord ccgRecord = classUnderTest.getCCGRecord("XX1 1XX", "Yorkshire");
+    List<CCGRecord> ccgRecords = classUnderTest.getCCGRecord("XX1 1XX", "Yorkshire");
+
     // Then
-    assertNull(ccgRecord);
+    assertThat(ccgRecords,IsEmptyCollection.empty());
   }
 
   @Test
@@ -324,13 +339,32 @@ public class RegionMapperTest {
     classUnderTest.init();
 
     // when
-    CCGRecord ccgRecord = classUnderTest.getCCGRecord("FX88 1XX", "XXXXXXXXXX");
+    List<CCGRecord> ccgRecords = classUnderTest.getCCGRecord("FX88 1XX", "XXXXXXXXXX");
 
     CCGRecord expected = getCCGRecordObject("FX88", "01H");
 
     // Then
-    assertNotNull(ccgRecord);
-    assertEquals(expected, ccgRecord);
+    assertThat(ccgRecords, not(IsEmptyCollection.empty()));
+    assertThat(ccgRecords,hasItem(expected));
+  }
+
+  @Test
+  public void getAllCCGRecordWithSamePartPostCode() throws ExecutionException, InterruptedException {
+    // Given
+    Future<List<CCGRecord>> fut = mock(Future.class);
+    when(executorService.submit(any(Callable.class))).thenReturn(fut);
+    when(fut.get()).thenReturn(ccgList);
+    classUnderTest.init();
+
+    // when
+    List<CCGRecord> ccgRecords = classUnderTest.getCCGRecord("WV10 05Q", "midlands");
+
+    CCGRecord ccgRecord1 = getCCGRecordObject("WV10", "05Q");
+    CCGRecord ccgRecord2 = getCCGRecordObject("WV10", "04Y");
+
+    // Then
+    assertThat(ccgRecords, not(IsEmptyCollection.empty()));
+    assertThat(ccgRecords, hasItems(ccgRecord1,ccgRecord2));
   }
 
   private static CCGRecord getCCGRecordObject(String postcode, String orgCode) {

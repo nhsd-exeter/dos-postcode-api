@@ -13,10 +13,7 @@ import uk.nhs.digital.uec.api.util.ICBUtil;
 import uk.nhs.digital.uec.api.util.RegionUtil;
 
 import javax.annotation.PostConstruct;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
@@ -183,105 +180,68 @@ public class RegionMapperImpl implements RegionMapper {
     return icbRecord;
   }
 
-  public CCGRecord getCCGRecord(String postcode, String district) {
-    CCGRecord ccgRecord = null;
+  @Override
+  public List<CCGRecord> getCCGRecord(String postcode, String district) {
     log.info("Searching {} in district {}", postcode, district);
-    String code;
-    if (postcode.length() == 5) {
-      code = postcode.substring(0, 2).trim();
-    } else if (postcode.length() == 6) {
-      code = postcode.substring(0, 3).trim();
-    } else {
-      code = postcode.substring(0, 4).trim();
-    }
+
+    String code = getCodeFromPostcode(postcode);
+
     try {
-      if (district.contains("Yorkshire")) {
-        ccgRecord =
-          ne_and_yorkshire.get(
-            binarySearchIndex(
-              ne_and_yorkshire.stream().map(CCGRecord::getPostcode).toArray(),
-              code
-            )
-          );
-      } else if (district.equalsIgnoreCase("london")) {
-        ccgRecord =
-          london.get(
-            binarySearchIndex(
-              london.stream().map(CCGRecord::getPostcode).toArray(),
-              code
-            )
-          );
-      } else if (district.equalsIgnoreCase("east of england")) {
-        ccgRecord =
-          eastEngland.get(
-            binarySearchIndex(
-              eastEngland.stream().map(CCGRecord::getPostcode).toArray(),
-              code
-            )
-          );
-      } else if (
-        district.equalsIgnoreCase("west midlands") ||
-        district.equalsIgnoreCase("east midlands")
-      ) {
-        ccgRecord =
-          midlands.get(
-            binarySearchIndex(
-              midlands.stream().map(CCGRecord::getPostcode).toArray(),
-              code
-            )
-          );
-      } else if (district.equalsIgnoreCase("north west")) {
-        ccgRecord =
-          northWest.get(
-            binarySearchIndex(
-              northWest.stream().map(CCGRecord::getPostcode).toArray(),
-              code
-            )
-          );
-      } else if (district.equalsIgnoreCase("south west")) {
-        ccgRecord =
-          southWest.get(
-            binarySearchIndex(
-              southWest.stream().map(CCGRecord::getPostcode).toArray(),
-              code
-            )
-          );
-      } else if (district.equalsIgnoreCase("south east")) {
-        ccgRecord =
-          southEast.get(
-            binarySearchIndex(
-              southEast.stream().map(CCGRecord::getPostcode).toArray(),
-              code
-            )
-          );
-      } else {
-        ccgRecord =
-          getAllCCGs()
-            .get(
-              binarySearchIndex(
-                getAllCCGs().stream().map(CCGRecord::getPostcode).toArray(),
-                code
-              )
-            );
-      }
-    } catch (IndexOutOfBoundsException e) {
-      log.error(
-        "An error with the binary search in getCCGRecord {}",
-        e.getMessage()
-      );
-      if (ccgRecord == null) {
-        int index = binarySearchIndex(
-          getAllCCGs().stream().map(CCGRecord::getPostcode).toArray(),
+      List<CCGRecord> ccgRecords = getCCGRecordsByDistrict(district);
+
+      if (!ccgRecords.isEmpty()) {
+        List<Integer> indexes = binarySearchIndexes(
+          ccgRecords.stream().map(CCGRecord::getPostcode).toArray(),
           code
         );
-        ccgRecord = index < 0 ? null : getAllCCGs().get(index);
+
+        return indexes.stream()
+          .map(ccgRecords::get)
+          .collect(Collectors.toList());
       }
+    } catch (IndexOutOfBoundsException e) {
+      log.error("An error with the binary search in getCCGRecord {}", e.getMessage());
     } catch (Exception e) {
       log.error("An error with the binary search {}", e.getMessage());
     }
 
-    log.info("Found CCG Records: {}",ccgRecord);
-    return ccgRecord;
+    log.info("CCG Record not found");
+    return Collections.emptyList();
+  }
+
+
+  private String getCodeFromPostcode(String postcode) {
+    int endIndex;
+    if (postcode.length() == 5) {
+      endIndex = 2;
+    } else if (postcode.length() == 6) {
+      endIndex = 3;
+    } else {
+      endIndex = 4;
+    }
+    return postcode.substring(0, endIndex).trim();
+  }
+
+  private List<CCGRecord> getCCGRecordsByDistrict(String district) {
+    switch (district.toLowerCase()) {
+      case "yorkshire":
+        return ne_and_yorkshire;
+      case "london":
+        return london;
+      case "east of england":
+        return eastEngland;
+      case "west midlands":
+      case "east midlands":
+        return midlands;
+      case "north west":
+        return northWest;
+      case "south west":
+        return southWest;
+      case "south east":
+        return southEast;
+      default:
+        return getAllCCGs();
+    }
   }
 
   private int binarySearchIndex(Object[] records, String target) {
@@ -300,5 +260,49 @@ public class RegionMapperImpl implements RegionMapper {
       }
     }
     return -1;
+  }
+
+  /**
+   * This method is written extend the possibility  of "binarySearchIndex" method - use it in scenarios as explained in
+   * jira ticket SFD-5564
+   * All it does is, performing a binary search on an array of postcodes to find all occurrences of a target postcode.
+   * @param records The array of postcodes to search within.
+   * @param target  The postcode to search for.
+   * @return A list of indexes where the target postcode is found. If no occurrences are found, the list is empty.
+   */
+  private static List<Integer> binarySearchIndexes(Object[] records, String target) {
+    List<Integer> indexes = new ArrayList<>();
+    int low = 0;
+    int high = records.length - 1;
+
+    while (low <= high) {
+      int middle = low + ((high - low) / 2);
+      String s = records[middle].toString();
+      int result = target.compareTo(s);
+
+      if (result == 0) {
+        indexes.add(middle);
+
+        int leftIndex = middle - 1;
+        while (leftIndex >= 0 && records[leftIndex].toString().equals(target)) {
+          indexes.add(leftIndex);
+          leftIndex--;
+        }
+
+        int rightIndex = middle + 1;
+        while (rightIndex < records.length && records[rightIndex].toString().equals(target)) {
+          indexes.add(rightIndex);
+          rightIndex++;
+        }
+
+        return indexes;
+      } else if (result > 0) {
+        low = middle + 1;
+      } else {
+        high = middle - 1;
+      }
+    }
+
+    return indexes;
   }
 }

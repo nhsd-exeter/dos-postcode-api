@@ -14,5 +14,7 @@ public interface RegionMapper {
 
   Map<String, List<String>> getAllRegions();
 
-  CCGRecord getCCGRecord(String postCode, String region);
+  //CCGRecord getCCGRecord(String postCode, String region);
+
+  public List<CCGRecord> getCCGRecord(String postcode, String district);
 }
