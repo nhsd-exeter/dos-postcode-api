@@ -14,7 +14,7 @@ updates:
     directory: "/application"
     # Check for updates once a day
     schedule:
-      interval: "weekly"
+      interval: "monthly"
     target-branch: "master"
     open-pull-requests-limit: 10
     commit-message:
