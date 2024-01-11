@@ -1,8 +1,6 @@
 package uk.nhs.digital.uec.api.service.impl;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,65 +26,53 @@ import uk.nhs.digital.uec.api.service.ValidationService;
 @Slf4j
 public class PostcodeMappingServiceImpl implements PostcodeMappingService {
 
-  @Autowired
-  private PostcodeMappingRepository postcodeMappingRepository;
+  @Autowired private PostcodeMappingRepository postcodeMappingRepository;
 
-  @Autowired
-  private ValidationService validationService;
+  @Autowired private ValidationService validationService;
 
-  @Autowired
-  private RegionMapper regionMapper;
+  @Autowired private RegionMapper regionMapper;
 
   @Override
   public List<PostcodeMapping> getByPostCodes(List<String> postCodes)
-    throws InvalidPostcodeException, NotFoundException {
+      throws InvalidPostcodeException, NotFoundException {
     log.info("Validating postcode input");
-    List<String> validPostcodes = validationService.validatePostCodes(
-      postCodes
-    );
-    List<PostcodeMapping> location = validPostcodes
-      .stream()
-      .map(this::getByPostcode)
-      .filter(Objects::nonNull)
-      .map(this::mapPostCodeToRegion)
-      .collect(Collectors.toList());
+    List<String> validPostcodes = validationService.validatePostCodes(postCodes);
+    List<PostcodeMapping> location =
+        validPostcodes.stream()
+            .map(this::getByPostcode)
+            .filter(Objects::nonNull)
+            .flatMap(postcode -> mapPostCodeToRegion(postcode).stream())
+            .collect(Collectors.toList());
     log.info("Validating response, returning locations");
     return validationService.validateAndReturn(location);
   }
 
   @Override
   public List<PostcodeMapping> getByName(String name)
-    throws InvalidParameterException, NotFoundException {
+      throws InvalidParameterException, NotFoundException {
     log.info("Attempting to get postcode mapping from database - getByName");
-    List<PostcodeMapping> location = postcodeMappingRepository
-      .findByName(name)
-      .stream()
-      .filter(Optional::isPresent)
-      .map(Optional::get)
-      .map(this::mapPostCodeToRegion)
-      .collect(Collectors.toList());
+    List<PostcodeMapping> location =
+        postcodeMappingRepository.findByName(name).stream()
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .flatMap(postcode -> mapPostCodeToRegion(postcode).stream())
+            .collect(Collectors.toList());
     log.info("Validating response, returning locations");
     return validationService.validateAndReturn(location);
   }
 
   @Override
-  public List<PostcodeMapping> getByPostCodesAndName(
-    List<String> postCodes,
-    String name
-  ) throws InvalidPostcodeException, NotFoundException {
+  public List<PostcodeMapping> getByPostCodesAndName(List<String> postCodes, String name)
+      throws InvalidPostcodeException, NotFoundException {
     log.info("Validating postcode input");
-    List<String> validPostcodes = validationService.validatePostCodes(
-      postCodes
-    );
-    log.info(
-      "Attempting to get postcode mapping from database - getByPostcodeAndName"
-    );
-    List<PostcodeMapping> location = validPostcodes
-      .stream()
-      .map(t -> getByPostcodeAndName(t, name))
-      .filter(Objects::nonNull)
-      .map(this::mapPostCodeToRegion)
-      .collect(Collectors.toList());
+    List<String> validPostcodes = validationService.validatePostCodes(postCodes);
+    log.info("Attempting to get postcode mapping from database - getByPostcodeAndName");
+    List<PostcodeMapping> location =
+        validPostcodes.stream()
+            .map(t -> getByPostcodeAndName(t, name))
+            .filter(Objects::nonNull)
+            .flatMap(postcode -> mapPostCodeToRegion(postcode).stream())
+            .collect(Collectors.toList());
     log.info("Validating response, returning locations");
     return validationService.validateAndReturn(location);
   }
@@ -94,9 +80,8 @@ public class PostcodeMappingServiceImpl implements PostcodeMappingService {
   private PostcodeMapping getByPostcode(String postcode) {
     PostcodeMapping mapping;
     log.info("Finding mapping by postcode {}", postcode);
-    Optional<PostcodeMapping> findByPostCodeOptional = postcodeMappingRepository.findByPostcode(
-      postcode
-    );
+    Optional<PostcodeMapping> findByPostCodeOptional =
+        postcodeMappingRepository.findByPostcode(postcode);
     mapping = findByPostCodeOptional.orElse(null);
     log.info("Mapping for {} is {}", postcode, mapping);
     return mapping;
@@ -105,42 +90,44 @@ public class PostcodeMappingServiceImpl implements PostcodeMappingService {
   private PostcodeMapping getByPostcodeAndName(String postcode, String name) {
     PostcodeMapping mapping;
     log.info("Finding mapping by postcode and name");
-    Optional<PostcodeMapping> findByPostCodeAndNameOptional = postcodeMappingRepository.findByPostcodeAndName(
-      postcode,
-      name
-    );
+    Optional<PostcodeMapping> findByPostCodeAndNameOptional =
+        postcodeMappingRepository.findByPostcodeAndName(postcode, name);
     mapping = findByPostCodeAndNameOptional.orElse(null);
     log.info("Mapping for {} is {}", postcode, mapping);
     return mapping;
   }
 
-  private PostcodeMapping mapPostCodeToRegion(PostcodeMapping postcodeMapping) {
+  private List<PostcodeMapping> mapPostCodeToRegion(PostcodeMapping postcodeMapping) {
     log.info("Finding region details for {}", postcodeMapping.getPostcode());
-    RegionRecord regionRecord = regionMapper.getRegionRecord(
-      postcodeMapping.getPostcode()
-    );
+
+    RegionRecord regionRecord = regionMapper.getRegionRecord(postcodeMapping.getPostcode());
+
     if (Objects.isNull(regionRecord)) {
-      return postcodeMapping;
+      return List.of(postcodeMapping);
+    } else {
+      postcodeMapping.setRegion(Region.getRegionEnum(regionRecord.getRegion()));
+      postcodeMapping.setSubRegion(regionRecord.getSubRegion());
     }
-    postcodeMapping.setRegion(Region.getRegionEnum(regionRecord.getRegion()));
-    postcodeMapping.setSubRegion(regionRecord.getSubRegion());
-    CCGRecord ccgRecord = regionMapper.getCCGRecord(
-      postcodeMapping.getPostcode(),
-      regionRecord.getRegion()
-    );
-    if (Objects.isNull(ccgRecord)) {
-      return postcodeMapping;
+
+    Optional<CCGRecord> ccgRecord =
+        regionMapper.getCCGRecord(postcodeMapping.getPostcode(), regionRecord.getRegion());
+
+    if (ccgRecord.isEmpty()) {
+      return List.of(postcodeMapping);
+    } else {
+      // for (CCGRecord ccgRecord : ccgRecords) {
+      postcodeMapping.setOrganisationCode(ccgRecord.get().getOrgCode());
+      ICBRecord icbRecord = regionMapper.getICBRecord(ccgRecord.get().getOrgCode());
+      if (Objects.isNull(icbRecord)) {
+        return List.of(postcodeMapping);
+      }
+      postcodeMapping.setIcb(icbRecord.getNhsIcb());
+      postcodeMapping.setNhs_region(icbRecord.getNhsRegion());
+      postcodeMapping.setEmail(icbRecord.getEmail());
+      postcodeMapping.setCcg(icbRecord.getNhsCcg());
+      //  }
     }
-    String orgCode = ccgRecord.getOrgCode();
-    postcodeMapping.setOrganisationCode(orgCode);
-    ICBRecord icbRecord = regionMapper.getICBRecord(orgCode);
-    if (Objects.isNull(icbRecord)) {
-      return postcodeMapping;
-    }
-    postcodeMapping.setIcb(icbRecord.getNhsIcb());
-    postcodeMapping.setNhs_region(icbRecord.getNhsRegion());
-    postcodeMapping.setEmail(icbRecord.getEmail());
-    postcodeMapping.setCcg(icbRecord.getNhsCcg());
-    return postcodeMapping;
+
+    return List.of(postcodeMapping);
   }
 }
