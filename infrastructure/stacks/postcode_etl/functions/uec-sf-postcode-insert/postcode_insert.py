@@ -83,6 +83,8 @@ def readCsvFileData(postcode_location_csv_file):
             record["easting"] = int(postcode_location_attributes[1])
             record["northing"] = int(postcode_location_attributes[2])
             record["name"] = postcode_location_attributes[3] if postcode_location_attributes[3] != "" else " "
+            record["orgcode"] = postcode_location_attributes[4] if postcode_location_attributes[4] != "" else " "
+
 
             postcode_location_records.append(record)
 
@@ -111,6 +113,8 @@ def insert_bulk_data(postcode_location_records):
                     "easting": postcode_location["easting"],
                     "northing": postcode_location["northing"],
                     "name": postcode_location["name"],
+                    "orgcode": postcode_location["orgcode"],
+
                 }
             )
         print("inserted {} records into table {}".format(len(postcode_location_records), DYNAMODB_DESTINATION_TABLE))

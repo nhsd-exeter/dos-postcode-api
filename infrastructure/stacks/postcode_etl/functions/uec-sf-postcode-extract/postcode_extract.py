@@ -110,19 +110,20 @@ def extract_postcodes():
                             pl.postcode,
                             pl.easting,
                             pl.northing,
-                            pl.org_name
+                            pl.org_name,
+                            pl.orgcode
                         from
                             (select l.postcode as postcode,
                                 l.easting as easting,
                                 l.northing as northing,
                                 org."name" as org_name,
+                                org.code as orgcode,
                                 org.organisationtypeid as organisationtypeid
                             from pathwaysdos.locations l
                                 left outer join pathwaysdos.odspostcodes o on l.postcode = o.postcode
                                 left outer join pathwaysdos.organisations org on org.code = o.orgcode
                             where o.deletedtime is null) as pl
                         where (pl.organisationtypeid = 1 or pl.org_name is null)"""
-
     logger.info("Open connection")
     conn = connect()
     logger.info("Connection opened")
