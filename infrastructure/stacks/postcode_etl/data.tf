@@ -1,9 +1,9 @@
 # Lambda
-# data "archive_file" "postcode_insert_function" {
-#   type        = "zip"
-#   source_dir  = "${path.module}/functions/uec-sf-postcode-insert"
-#   output_path = "${path.module}/functions_zip/${local.postcode_insert_function_name}.zip"
-# }
+data "archive_file" "postcode_insert_function" {
+  type        = "zip"
+  source_dir  = "${path.module}/functions/uec-sf-postcode-insert"
+  output_path = "${path.module}/functions_zip/${local.postcode_insert_function_name}.zip"
+}
 
 data "archive_file" "postcode_extract_function" {
   type        = "zip"
