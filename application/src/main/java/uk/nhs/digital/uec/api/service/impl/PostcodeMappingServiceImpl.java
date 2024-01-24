@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import uk.nhs.digital.uec.api.exception.InvalidParameterException;
 import uk.nhs.digital.uec.api.exception.InvalidPostcodeException;
 import uk.nhs.digital.uec.api.exception.NotFoundException;
-import uk.nhs.digital.uec.api.model.CCGRecord;
 import uk.nhs.digital.uec.api.model.ICBRecord;
 import uk.nhs.digital.uec.api.model.PostcodeMapping;
 import uk.nhs.digital.uec.api.model.Region;
@@ -109,24 +108,24 @@ public class PostcodeMappingServiceImpl implements PostcodeMappingService {
       postcodeMapping.setSubRegion(regionRecord.getSubRegion());
     }
 
-    Optional<CCGRecord> ccgRecord =
-        regionMapper.getCCGRecord(postcodeMapping.getPostcode(), regionRecord.getRegion());
+    // Optional<CCGRecord> ccgRecord =
+    //    regionMapper.getCCGRecord(postcodeMapping.getPostcode(), regionRecord.getRegion());
 
-    if (ccgRecord.isEmpty()) {
+    // if (ccgRecord.isEmpty()) {
+    //   return List.of(postcodeMapping);
+    //  } else {
+    // for (CCGRecord ccgRecord : ccgRecords) {
+    // postcodeMapping.setOrganisationCode(ccgRecord.get().getOrgCode());
+    ICBRecord icbRecord = regionMapper.getICBRecord(postcodeMapping.getOrganisationCode());
+    if (Objects.isNull(icbRecord)) {
       return List.of(postcodeMapping);
-    } else {
-      // for (CCGRecord ccgRecord : ccgRecords) {
-      postcodeMapping.setOrganisationCode(ccgRecord.get().getOrgCode());
-      ICBRecord icbRecord = regionMapper.getICBRecord(ccgRecord.get().getOrgCode());
-      if (Objects.isNull(icbRecord)) {
-        return List.of(postcodeMapping);
-      }
-      postcodeMapping.setIcb(icbRecord.getNhsIcb());
-      postcodeMapping.setNhs_region(icbRecord.getNhsRegion());
-      postcodeMapping.setEmail(icbRecord.getEmail());
-      postcodeMapping.setCcg(icbRecord.getNhsCcg());
-      //  }
     }
+    postcodeMapping.setIcb(icbRecord.getNhsIcb());
+    postcodeMapping.setNhs_region(icbRecord.getNhsRegion());
+    postcodeMapping.setEmail(icbRecord.getEmail());
+    postcodeMapping.setCcg(icbRecord.getNhsCcg());
+    //  }
+    // }
 
     return List.of(postcodeMapping);
   }

@@ -50,8 +50,8 @@ CHECK_DEPLOYMENT_POLL_INTERVAL := 10
 
 # Connection to DoS Read Replica for extraction Lambdas
 
-TF_VAR_sf_read_replica_db := uec-core-dos-dev-db-replica-di.dos-db-rds
-TF_VAR_sf_read_replica_db_sg := live-lk8s-nonprod-uec-sf-core-dos-sf-replica-sg
+TF_VAR_sf_read_replica_db := uec-core-dos-performance-sf-ro.dos-datastore-performance
+TF_VAR_sf_read_replica_db_sg := uec-core-dos-performance-datastore-sf-sg
 TF_VAR_dos_read_replica_secret_name := service-finder/deployment
 TF_VAR_dos_read_replica_key := DB_SF_READONLY_PASSWORD
 TF_VAR_postcode_etl_db_user := dos_sf_readonly

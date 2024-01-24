@@ -10,10 +10,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
-import uk.nhs.digital.uec.api.model.PostcodeMapping;
 import uk.nhs.digital.uec.api.exception.ErrorMessageEnum;
 import uk.nhs.digital.uec.api.exception.InvalidPostcodeException;
 import uk.nhs.digital.uec.api.exception.NotFoundException;
+import uk.nhs.digital.uec.api.model.PostcodeMapping;
 import uk.nhs.digital.uec.api.service.ValidationService;
 
 @Component
@@ -39,7 +39,10 @@ public class ValidationServiceImpl implements ValidationService {
     if (CollectionUtils.isNotEmpty(postCodes) && CollectionUtils.isEmpty(validPostcodes)) {
       log.error(
           "Invalid postcode/s entered : " + postCodes.stream().collect(Collectors.joining(",")));
-      throw new InvalidPostcodeException(String.format("%s: %s",ErrorMessageEnum.INVALID_POSTCODE.getMessage(),String.join(",",postCodes)));
+      throw new InvalidPostcodeException(
+          String.format(
+              "%s: %s",
+              ErrorMessageEnum.INVALID_POSTCODE.getMessage(), String.join(",", postCodes)));
     }
     return validPostcodes;
   }
