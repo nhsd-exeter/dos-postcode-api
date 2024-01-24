@@ -2,8 +2,6 @@ from __future__ import print_function
 import boto3
 import base64
 from botocore.exceptions import ClientError
-import io
-import csv
 import psycopg2
 import psycopg2.extras
 import os
@@ -11,9 +9,8 @@ import json
 import logging
 
 s3 = boto3.resource(u"s3")
-SOURCE_BUCKET = os.environ.get("SOURCE_BUCKET")
-SOURCE_FOLDER = os.environ.get("SOURCE_FOLDER")
-FILE_PREFIX = os.environ.get("FILE_PREFIX")
+dynamodb = boto3.resource("dynamodb")
+
 USR = os.environ.get("USR")
 SOURCE_DB = os.environ.get("SOURCE_DB")
 ENDPOINT = os.environ.get("ENDPOINT").split(":")[0]
@@ -23,6 +20,11 @@ BATCH_SIZE = int(os.environ.get("BATCH_SIZE"))
 SECRET_NAME = os.environ.get("SECRET_NAME")
 DOS_READ_ONLY_USER = os.environ.get("DOS_READ_ONLY_USER")
 LOGGING_LEVEL = os.environ.get("LOGGING_LEVEL")
+DYNAMODB_DESTINATION_TABLE = os.environ.get("DYNAMODB_DESTINATION_TABLE")
+
+
+
+
 
 logging.basicConfig(level=LOGGING_LEVEL)
 logger=logging.getLogger(__name__)
@@ -95,7 +97,7 @@ def getCursor(conn):
         cur = conn.cursor("sf-postcode-extract-odspostcodes")
         cur.itersize = BATCH_SIZE
         cur.arraysize = BATCH_SIZE
-        print("Created cur")
+        print("Created cur {}".format(cur))
         return cur
     except Exception as e:
         logger.error("unable to retrieve cursor due to {}".format(e))
@@ -136,8 +138,8 @@ def extract_postcodes():
             count = count + 1
             if not records:
                 break
-
-            save_to_csv(records, count)
+            insert_bulk_data(records)
+            # save_to_csv(records, count)
         return count
     except Exception as e:
         logger.error("Extract postcode failed due to {}".format(e))
@@ -147,31 +149,48 @@ def extract_postcodes():
         logger.info("PostgreSQL connection is closed")
 
 
-def save_to_csv(query_results, count):
-    strCount = str(count)
-    fileName = SOURCE_FOLDER + FILE_PREFIX + strCount + ".csv"
-    try:
-        csv_buffer = io.StringIO()
-        writer = csv.writer(csv_buffer)
+# def save_to_csv(query_results, count):
+#     strCount = str(count)
+#     fileName = SOURCE_FOLDER + FILE_PREFIX + strCount + ".csv"
+#     try:
+#         csv_buffer = io.StringIO()
+#         writer = csv.writer(csv_buffer)
 
-        counter = 0
-        for row in query_results:
-            writer.writerow(row)
-            counter = counter + 1
-            if counter == len(query_results):
-                break
+#         counter = 0
+#         for row in query_results:
+#             writer.writerow(row)
+#             counter = counter + 1
+#             if counter == len(query_results):
+#                 break
 
-        # Prepare buffer and transform to binary
-        csv_buffer_to_binary = io.BytesIO(csv_buffer.getvalue().encode("utf-8"))
+#         # Prepare buffer and transform to binary
+#         csv_buffer_to_binary = io.BytesIO(csv_buffer.getvalue().encode("utf-8"))
 
-        # save to s3 bucket
-        logger.info("Saving file to: " + fileName)
-        bucket = s3.Bucket(SOURCE_BUCKET)
-        bucket.put_object(Key=fileName, Body=csv_buffer_to_binary)
-    except Exception as e:
-        logger.error("Failed to create file in s3 bucket due to {}".format(e))
-        raise e
+#         # save to s3 bucket
+#         logger.info("Saving file to: " + fileName)
+#         bucket = s3.Bucket(SOURCE_BUCKET)
+#         bucket.put_object(Key=fileName, Body=csv_buffer_to_binary)
+#     except Exception as e:
+#         logger.error("Failed to create file in s3 bucket due to {}".format(e))
+#         raise e
 
+def insert_bulk_data(postcode_location_records):
+    table = dynamodb.Table(DYNAMODB_DESTINATION_TABLE)
+
+    with table.batch_writer(overwrite_by_pkeys=["postcode", "name"]) as batch:
+        for i in range(len(postcode_location_records)):
+            postcode_location = postcode_location_records[i]
+            batch.put_item(
+                Item={
+                    "postcode": postcode_location["postcode"].replace(" ", ""),
+                    "easting": postcode_location["easting"],
+                    "northing": postcode_location["northing"],
+                    "name": postcode_location["name"],
+                    "orgcode": postcode_location["orgcode"],
+
+                }
+            )
+        print("inserted {} records into table {}".format(len(postcode_location_records), DYNAMODB_DESTINATION_TABLE))
 
 # This is the entry point for the Lambda function
 def lambda_handler(event, context):
