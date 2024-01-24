@@ -1,6 +1,6 @@
 locals {
 
-  postcode_insert_function_name  = "${var.service_prefix}-postcode-insert"
+  # postcode_insert_function_name  = "${var.service_prefix}-postcode-insert"
   postcode_extract_function_name = "${var.service_prefix}-postcode-extract"
 
   postcode_etl_sns_name                         = "${var.service_prefix}-postcode-etl-sns"
@@ -13,7 +13,7 @@ locals {
 
   postcode_etl_extract_alarm_name = "${var.service_prefix}-postcode-extract-alarm"
 
-  postcode_etl_insert_alarm_name = "${var.service_prefix}-postcode-insert-alarm"
+  # postcode_etl_insert_alarm_name = "${var.service_prefix}-postcode-insert-alarm"
 
   standard_tags = {
     "Programme"        = "uec"

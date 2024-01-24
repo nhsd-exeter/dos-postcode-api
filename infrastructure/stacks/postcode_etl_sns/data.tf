@@ -46,9 +46,9 @@ data "aws_cloudwatch_log_groups" "extract_log_groups" {
   log_group_name_prefix = "/aws/lambda/${local.postcode_extract_function_name}"
 }
 
-data "aws_cloudwatch_log_groups" "insert_log_groups" {
-  log_group_name_prefix = "/aws/lambda/${local.postcode_insert_function_name}"
-}
+# data "aws_cloudwatch_log_groups" "insert_log_groups" {
+#   log_group_name_prefix = "/aws/lambda/${local.postcode_insert_function_name}"
+# }
 
 # This may not exist at the time of evaluation due to it being created by another terraform root/stack
 # So we search for it first in aws.cloudwatch_log_groups.extract_log_groups and only count it if it exists
@@ -59,7 +59,7 @@ data "aws_cloudwatch_log_group" "postcode_etl_extract_log_group" {
 
 # This may not exist at the time of evaluation due to it being created by another terraform root/stack
 # So we search for it first in aws.cloudwatch_log_groups.extract_log_groups and only count it if it exists
-data "aws_cloudwatch_log_group" "postcode_etl_insert_log_group" {
-  count = length(data.aws_cloudwatch_log_groups.insert_log_groups) > 0 ? 1 : 0
-  name  = "/aws/lambda/${local.postcode_insert_function_name}"
-}
+# data "aws_cloudwatch_log_group" "postcode_etl_insert_log_group" {
+#   count = length(data.aws_cloudwatch_log_groups.insert_log_groups) > 0 ? 1 : 0
+#   name  = "/aws/lambda/${local.postcode_insert_function_name}"
+# }

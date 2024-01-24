@@ -30,6 +30,7 @@
     <springfox-swagger-ui.version>3.0.0</springfox-swagger-ui.version>
     <jacoco-maven-plugin.version>0.8.11</jacoco-maven-plugin.version>
     <opencsv.version>4.6</opencsv.version>
+    <java.version>17</java.version>
   </properties>
   <groupId>uec</groupId>
   <artifactId>dos-postcode-api</artifactId>
