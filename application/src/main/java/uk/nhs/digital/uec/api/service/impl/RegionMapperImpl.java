@@ -61,11 +61,14 @@ public class RegionMapperImpl implements RegionMapper {
   }
 
   public RegionRecord getRegionRecord(String postcode) {
-    List<RegionRecord> regionRecordList =
+    final List<RegionRecord> regionRecordList =
         recordsList.stream()
             .filter(regionRecord -> postcode.startsWith(regionRecord.getPartPostcode()))
             .collect(Collectors.toList());
-    RegionRecord regionRecord = null;
+    if (regionRecordList.isEmpty()) {
+      log.info("No Region record found for a given postcode {}", postcode);
+    }
+    RegionRecord regionRecord = new RegionRecord();
     String partPostCode = "";
     if (regionRecordList.size() == 1) {
       regionRecord = regionRecordList.stream().findFirst().orElse(null);
@@ -85,7 +88,9 @@ public class RegionMapperImpl implements RegionMapper {
       int index =
           binarySearchIndex(
               regionRecordList.stream().map(RegionRecord::getPartPostcode).toArray(), partPostCode);
-      regionRecord = regionRecordList.get(index);
+      if (index != -1) {
+        regionRecord = regionRecordList.get(index);
+      }
     }
     if (regionRecord.getRegion().equals("North East")) {
       regionRecord.setRegion("Yorkshire and The Humber");
@@ -94,6 +99,7 @@ public class RegionMapperImpl implements RegionMapper {
           postcode,
           regionRecord);
     }
+    log.info("RegionRecord: {}", regionRecord);
     return regionRecord;
   }
 
@@ -122,10 +128,14 @@ public class RegionMapperImpl implements RegionMapper {
   }
 
   public ICBRecord getICBRecord(String orgCode) {
-    ICBRecord icbRecord = null;
+    ICBRecord icbRecord = new ICBRecord();
     int index =
         binarySearchIndex(icbRecordList.stream().map(ICBRecord::getOrgCode).toArray(), orgCode);
-    icbRecord = icbRecordList.get(index);
+    if (index != -1) {
+      icbRecord = icbRecordList.get(index);
+    }
+    log.info("ICBRecord: {}", icbRecord);
+
     return icbRecord;
   }
 

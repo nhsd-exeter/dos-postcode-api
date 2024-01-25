@@ -51,13 +51,23 @@ public class RegionController {
       log.info("Preparing response {}ms", System.currentTimeMillis() - start);
       return new ResponseEntity(postcodeMappingList, HttpStatus.OK);
     } catch (InvalidParameterException ex) {
-      log.error("InvalidParamException happened while fetching postcode: {}", ex.getMessage());
+      log.error(
+          "InvalidParamException happened while fetching postcode in getRegionDetailsByPostCodes:"
+              + " {}",
+          ex.getMessage());
     } catch (NotFoundException ex) {
-      log.error("NotFoundException happened while fetching postcode: {}", ex.getMessage());
+      log.error(
+          "NotFoundException happened while fetching postcode in getRegionDetailsByPostCodes: {}",
+          ex.getMessage());
     } catch (InvalidPostcodeException ex) {
-      log.error("InvalidPostCodeException happened while fetching postcode: {}", ex.getMessage());
+      log.error(
+          "InvalidPostCodeException happened while fetching postcode in"
+              + " getRegionDetailsByPostCodes: {}",
+          ex.getMessage());
     } catch (Exception ex) {
-      log.error("Exception happened while fetching postcode: {}", ex.getMessage());
+      log.error(
+          "Exception happened while fetching postcode in getRegionDetailsByPostCodes: {}",
+          ex.getMessage());
     }
     return new ResponseEntity(new PostcodeMapping(), HttpStatus.OK);
   }
@@ -76,13 +86,22 @@ public class RegionController {
       return new ResponseEntity(postcodeMapping, HttpStatus.OK);
     } catch (InvalidParameterException ex) {
       log.error(
-          "Error in InvalidParamException happened while fetching postcode: {}", ex.getMessage());
+          "Error in InvalidParamException happened while fetching postcode in"
+              + " getRegionDetailsByPostCode: {}",
+          ex.getMessage());
     } catch (NotFoundException ex) {
-      log.error("NotFoundException happened while fetching postcode: {}", ex.getMessage());
+      log.error(
+          "NotFoundException happened while fetching postcode in getRegionDetailsByPostCode: {}",
+          ex.getMessage());
     } catch (InvalidPostcodeException ex) {
-      log.error("InvalidPostCodeException happened while fetching postcode: {}", ex.getMessage());
+      log.error(
+          "InvalidPostCodeException happened while fetching postcode in getRegionDetailsByPostCode:"
+              + " {}",
+          ex.getMessage());
     } catch (Exception ex) {
-      log.error("Exception happened while fetching postcode: {}", ex.getMessage());
+      log.error(
+          "Exception happened while fetching postcode in getRegionDetailsByPostCode: {}",
+          ex.getMessage());
     }
     return new ResponseEntity(postcodeMapping, HttpStatus.OK);
   }

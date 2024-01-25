@@ -82,17 +82,17 @@ public class PostcodeMappingServiceImpl implements PostcodeMappingService {
     Optional<PostcodeMapping> findByPostCodeOptional =
         postcodeMappingRepository.findByPostcode(postcode);
     mapping = findByPostCodeOptional.orElse(null);
-    log.info("Mapping for {} is {}", postcode, mapping);
+    log.info("Found postcode details in dynamodb for {} : {}", postcode, mapping);
     return mapping;
   }
 
   private PostcodeMapping getByPostcodeAndName(String postcode, String name) {
     PostcodeMapping mapping;
-    log.info("Finding mapping by postcode and name");
+    log.info("Finding mapping by postcode and name {}, {}", postcode, name);
     Optional<PostcodeMapping> findByPostCodeAndNameOptional =
         postcodeMappingRepository.findByPostcodeAndName(postcode, name);
     mapping = findByPostCodeAndNameOptional.orElse(null);
-    log.info("Mapping for {} is {}", postcode, mapping);
+    log.info("Found postcode details in dynamodb {} is {}", postcode, mapping);
     return mapping;
   }
 
@@ -100,6 +100,8 @@ public class PostcodeMappingServiceImpl implements PostcodeMappingService {
     log.info("Finding region details for {}", postcodeMapping.getPostcode());
 
     RegionRecord regionRecord = regionMapper.getRegionRecord(postcodeMapping.getPostcode());
+
+    log.info("RegionRecord: {}", regionRecord);
 
     if (Objects.isNull(regionRecord)) {
       return List.of(postcodeMapping);
@@ -116,7 +118,10 @@ public class PostcodeMappingServiceImpl implements PostcodeMappingService {
     //  } else {
     // for (CCGRecord ccgRecord : ccgRecords) {
     // postcodeMapping.setOrganisationCode(ccgRecord.get().getOrgCode());
+    log.info("5");
     ICBRecord icbRecord = regionMapper.getICBRecord(postcodeMapping.getOrganisationCode());
+    log.info("6");
+
     if (Objects.isNull(icbRecord)) {
       return List.of(postcodeMapping);
     }
