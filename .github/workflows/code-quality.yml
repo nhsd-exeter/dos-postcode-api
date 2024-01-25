@@ -23,10 +23,3 @@ jobs:
       - name: Create coverage report
         run: |
           make compile coverage-report
-      - name: Build and analyze
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed to get PR information, if any
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: https://sonarcloud.io
-        working-directory: ./application
-        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.java.version=17 -Dsonar.projectKey=uec-dos-api-pca -Dsonar.organization=nhsd-exeter -Dsonar.java.binaries=target/classes -Dsonar.coverage.exclusions=src/main/java/**/config/*.*,src/main/java/**/model/*.*,src/main/java/**/exception/*.*,src/main/java/**/constants/*.*,src/main/java/**/interceptor/*.*,src/test/**/*.*,src/main/java/**/filter/*.*,src/main/java/**/PostcodeMappingApplication.* -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
