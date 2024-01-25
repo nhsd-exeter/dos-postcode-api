@@ -8,6 +8,7 @@ sonar-scanner-cli: ### Run Sonar scanner CLI- mandatory: SONAR_HOST_TOKEN; optio
 		-D sonar.organization='$(ORG_NAME)' \
 		-D sonar.projectKey='uec-dos-api-pca' \
 		-D sonar.projectName='$(PROJECT_DISPLAY_NAME)' \
+		-D sonar.java.version=17
 		-D sonar.sourceEncoding='UTF-8' \
 		-D sonar.exclusions='$(shell [ $(PROJECT_NAME) != $(DEVOPS_PROJECT_NAME) ] && echo build/automation/**),$(SONAR_EXCLUSIONS)' \
 		$(SONAR_ARGS) \
