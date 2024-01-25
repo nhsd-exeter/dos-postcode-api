@@ -26,8 +26,10 @@ DYNAMODB_DESTINATION_TABLE = os.environ.get("DYNAMODB_DESTINATION_TABLE")
 
 
 
-logging.basicConfig(level=LOGGING_LEVEL)
-logger=logging.getLogger(__name__)
+# logging.basicConfig(level=LOGGING_LEVEL)
+# logger=logging.getLogger(__name__)
+logger = logging.getLogger()
+logger.setLevel("INFO")
 
 def get_secret():
 
@@ -97,7 +99,7 @@ def getCursor(conn):
         cur = conn.cursor("sf-postcode-extract-odspostcodes")
         cur.itersize = BATCH_SIZE
         cur.arraysize = BATCH_SIZE
-        print("Created cur {}".format(cur))
+        print("Created cursor and set the batch size to  {}".format(BATCH_SIZE))
         return cur
     except Exception as e:
         logger.error("unable to retrieve cursor due to {}".format(e))
@@ -126,9 +128,9 @@ def extract_postcodes():
                                 left outer join pathwaysdos.organisations org on org.code = o.orgcode
                             where o.deletedtime is null) as pl
                         where (pl.organisationtypeid = 1 or pl.org_name is null)"""
-    logger.info("Open connection")
+    print("Open connection")
     conn = connect()
-    logger.info("Connection opened")
+    print("Connection opened")
     cur = getCursor(conn)
     try:
         cur.execute(selectStatement)
@@ -146,7 +148,7 @@ def extract_postcodes():
     finally:
         cur.close()
         conn.close()
-        logger.info("PostgreSQL connection is closed")
+        print("PostgreSQL connection is closed")
 
 
 # def save_to_csv(query_results, count):
@@ -178,15 +180,14 @@ def insert_bulk_data(postcode_location_records):
     table = dynamodb.Table(DYNAMODB_DESTINATION_TABLE)
 
     with table.batch_writer(overwrite_by_pkeys=["postcode", "name"]) as batch:
-        for i in range(len(postcode_location_records)):
-            postcode_location = postcode_location_records[i]
+        for postcode_location in postcode_location_records:
             batch.put_item(
                 Item={
-                    "postcode": postcode_location["postcode"].replace(" ", ""),
-                    "easting": postcode_location["easting"],
-                    "northing": postcode_location["northing"],
-                    "name": postcode_location["name"],
-                    "orgcode": postcode_location["orgcode"],
+                    "postcode": postcode_location[0].replace(" ", ""),
+                    "easting": postcode_location[1],
+                    "northing": postcode_location[2],
+                    "name": postcode_location[3],
+                    "orgcode": postcode_location[4],
 
                 }
             )
