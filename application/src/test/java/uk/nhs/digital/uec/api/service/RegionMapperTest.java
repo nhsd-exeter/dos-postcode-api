@@ -8,10 +8,8 @@ import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -181,42 +179,5 @@ public class RegionMapperTest {
     // Then
     assertNotNull(icbRecord);
     assertEquals(expected, icbRecord);
-  }
-
-  @Test
-  void getCCGRecord_whenPostcodeExists_returnsCCGRecord() {
-    String postcode = "EX8";
-    String region = "region1";
-
-    when(ccgUtil.call()).thenReturn(ccgList);
-
-    Optional<CCGRecord> result = classUnderTest.getCCGRecord(postcode, region);
-
-    assertTrue(result.isPresent());
-    assertEquals(postcode, result.get().getPostcode());
-  }
-
-  @Test
-  void getCCGRecord_whenPostcodeDoesNotExist_returnsEmpty() {
-    String postcode = "NonExistentPostcode";
-    String region = "region1";
-
-    when(ccgUtil.call()).thenReturn(ccgList);
-
-    Optional<CCGRecord> result = classUnderTest.getCCGRecord(postcode, region);
-
-    assertFalse(result.isPresent());
-  }
-
-  @Test
-  void getCCGRecord_whenCCGRecordsIsEmpty_returnsEmpty() {
-    String postcode = "EX8";
-    String region = "region1";
-
-    when(ccgUtil.call()).thenReturn(Arrays.asList());
-
-    Optional<CCGRecord> result = classUnderTest.getCCGRecord(postcode, region);
-
-    assertFalse(result.isPresent());
   }
 }

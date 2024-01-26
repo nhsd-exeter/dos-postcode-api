@@ -11,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
-import uk.nhs.digital.uec.api.model.CCGRecord;
 import uk.nhs.digital.uec.api.model.ICBRecord;
 import uk.nhs.digital.uec.api.model.RegionRecord;
 import uk.nhs.digital.uec.api.service.RegionMapper;
@@ -99,7 +98,7 @@ public class RegionMapperImpl implements RegionMapper {
           postcode,
           regionRecord);
     }
-    log.info("RegionRecord: {}", regionRecord);
+    log.info("RegionRecord details: {}", regionRecord);
     return regionRecord;
   }
 
@@ -134,26 +133,26 @@ public class RegionMapperImpl implements RegionMapper {
     if (index != -1) {
       icbRecord = icbRecordList.get(index);
     }
-    log.info("ICBRecord: {}", icbRecord);
+    log.info("ICBRecord details: {}", icbRecord);
 
     return icbRecord;
   }
 
-  @Override
-  public Optional<CCGRecord> getCCGRecord(String postcode, String region) {
-    log.info("Searching {} ", postcode);
+  // @Override
+  // public Optional<CCGRecord> getCCGRecord(String postcode, String region) {
+  //   log.info("Searching {} ", postcode);
 
-    ccgUtil.setFileName(postcode.substring(0, 1) + ".csv");
-    List<CCGRecord> ccgRecords = ccgUtil.call();
-    log.info("ccgRecords size {}", ccgRecords.size());
-    Integer index =
-        binarySearchIgnoringSpaces(
-            ccgRecords.stream().map(e -> e.getPostcode()).toArray(), postcode);
-    if (index == -1) {
-      return Optional.empty();
-    }
-    return Optional.ofNullable(ccgRecords.get(index));
-  }
+  //   ccgUtil.setFileName(postcode.substring(0, 1) + ".csv");
+  //   List<CCGRecord> ccgRecords = ccgUtil.call();
+  //   log.info("ccgRecords size {}", ccgRecords.size());
+  //   Integer index =
+  //       binarySearchIgnoringSpaces(
+  //           ccgRecords.stream().map(e -> e.getPostcode()).toArray(), postcode);
+  //   if (index == -1) {
+  //     return Optional.empty();
+  //   }
+  //   return Optional.ofNullable(ccgRecords.get(index));
+  // }
 
   private int binarySearchIndex(Object[] records, String target) {
     int low = 0;

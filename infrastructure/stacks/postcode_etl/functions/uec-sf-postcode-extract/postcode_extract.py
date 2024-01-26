@@ -24,12 +24,8 @@ DYNAMODB_DESTINATION_TABLE = os.environ.get("DYNAMODB_DESTINATION_TABLE")
 
 
 
-
-
-# logging.basicConfig(level=LOGGING_LEVEL)
-# logger=logging.getLogger(__name__)
 logger = logging.getLogger()
-logger.setLevel("INFO")
+logger.setLevel(LOGGING_LEVEL)
 
 def get_secret():
 
@@ -94,12 +90,12 @@ def connect():
 
 
 # Method to get cursor from db
-def getCursor(conn):
+def get_cursor(conn):
     try:
         cur = conn.cursor("sf-postcode-extract-odspostcodes")
         cur.itersize = BATCH_SIZE
         cur.arraysize = BATCH_SIZE
-        print("Created cursor and set the batch size to  {}".format(BATCH_SIZE))
+        logger.info("Created cursor and set the batch size to  {}".format(BATCH_SIZE))
         return cur
     except Exception as e:
         logger.error("unable to retrieve cursor due to {}".format(e))
@@ -110,7 +106,7 @@ def getCursor(conn):
 # Method to extract postcodes from db
 def extract_postcodes():
 
-    selectStatement = """select
+    select_statement = """select
                             pl.postcode,
                             pl.easting,
                             pl.northing,
@@ -127,54 +123,27 @@ def extract_postcodes():
                                 left outer join pathwaysdos.odspostcodes o on l.postcode = o.postcode
                                 left outer join pathwaysdos.organisations org on org.code = o.orgcode
                             where o.deletedtime is null) as pl
-                        where (pl.organisationtypeid = 1 or pl.org_name is null)"""
-    print("Open connection")
+                        where (pl.organisationtypeid = 1)"""
+    logger.info("Open connection")
     conn = connect()
-    print("Connection opened")
-    cur = getCursor(conn)
+    logger.info("Connection opened")
+    cur = get_cursor(conn)
     try:
-        cur.execute(selectStatement)
+        cur.execute(select_statement)
         count = 0
         while True:
             records = cur.fetchmany()
-            count = count + 1
+            count = count + len(records)
             if not records:
                 break
             insert_bulk_data(records)
-            # save_to_csv(records, count)
         return count
     except Exception as e:
         logger.error("Extract postcode failed due to {}".format(e))
     finally:
         cur.close()
         conn.close()
-        print("PostgreSQL connection is closed")
-
-
-# def save_to_csv(query_results, count):
-#     strCount = str(count)
-#     fileName = SOURCE_FOLDER + FILE_PREFIX + strCount + ".csv"
-#     try:
-#         csv_buffer = io.StringIO()
-#         writer = csv.writer(csv_buffer)
-
-#         counter = 0
-#         for row in query_results:
-#             writer.writerow(row)
-#             counter = counter + 1
-#             if counter == len(query_results):
-#                 break
-
-#         # Prepare buffer and transform to binary
-#         csv_buffer_to_binary = io.BytesIO(csv_buffer.getvalue().encode("utf-8"))
-
-#         # save to s3 bucket
-#         logger.info("Saving file to: " + fileName)
-#         bucket = s3.Bucket(SOURCE_BUCKET)
-#         bucket.put_object(Key=fileName, Body=csv_buffer_to_binary)
-#     except Exception as e:
-#         logger.error("Failed to create file in s3 bucket due to {}".format(e))
-#         raise e
+        logger.info("PostgreSQL connection is closed")
 
 def insert_bulk_data(postcode_location_records):
     table = dynamodb.Table(DYNAMODB_DESTINATION_TABLE)
@@ -191,12 +160,12 @@ def insert_bulk_data(postcode_location_records):
 
                 }
             )
-        print("inserted {} records into table {}".format(len(postcode_location_records), DYNAMODB_DESTINATION_TABLE))
+        logger.info("inserted {} records into table {}".format(len(postcode_location_records), DYNAMODB_DESTINATION_TABLE))
 
 # This is the entry point for the Lambda function
 def lambda_handler(event, context):
 
     logger.info("Start of postcode_extract")
-    fileCount = extract_postcodes()
+    records_count = extract_postcodes()
 
-    return {"statusCode": 200, "body": str(fileCount) + " file(s) created in s3 bucket"}
+    return {"statusCode": 200, "body": str(records_count) + " records updated successfully"}
