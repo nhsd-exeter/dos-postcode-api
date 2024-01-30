@@ -11,7 +11,7 @@ locals {
   postcode_extract_description   = "Service Finder function to extract postcode and postcode mapping from DoS database into csv files"
   postcode_extract_runtime       = "python3.8"
   postcode_extract_timeout       = 900
-  postcode_extract_memory_size   = 1024
+  postcode_extract_memory_size   = 10240
   # postcode_extract_core_dos_python_libs_arn = data.aws_lambda_layer_version.dos_python_libs.arn
 
   region_update_function_name = "${var.service_prefix}-region-update"

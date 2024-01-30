@@ -7,6 +7,9 @@ import psycopg2.extras
 import os
 import json
 import logging
+import pandas as pd
+import glob
+from pandas import DataFrame
 
 s3 = boto3.resource(u"s3")
 dynamodb = boto3.resource("dynamodb")
@@ -26,6 +29,7 @@ DYNAMODB_DESTINATION_TABLE = os.environ.get("DYNAMODB_DESTINATION_TABLE")
 
 logger = logging.getLogger()
 logger.setLevel(LOGGING_LEVEL)
+combined_df = DataFrame()
 
 def get_secret():
 
@@ -110,20 +114,19 @@ def extract_postcodes():
                             pl.postcode,
                             pl.easting,
                             pl.northing,
-                            pl.org_name,
-                            pl.orgcode
+                            pl.org_name
                         from
                             (select l.postcode as postcode,
                                 l.easting as easting,
                                 l.northing as northing,
                                 org."name" as org_name,
-                                org.code as orgcode,
                                 org.organisationtypeid as organisationtypeid
                             from pathwaysdos.locations l
                                 left outer join pathwaysdos.odspostcodes o on l.postcode = o.postcode
                                 left outer join pathwaysdos.organisations org on org.code = o.orgcode
                             where o.deletedtime is null) as pl
-                        where (pl.organisationtypeid = 1)"""
+                        where (pl.organisationtypeid = 1 or pl.org_name is null"""
+
     logger.info("Open connection")
     conn = connect()
     logger.info("Connection opened")
@@ -150,22 +153,30 @@ def insert_bulk_data(postcode_location_records):
 
     with table.batch_writer(overwrite_by_pkeys=["postcode", "name"]) as batch:
         for postcode_location in postcode_location_records:
+            postcode = postcode_location[0].replace(" ", "")
             batch.put_item(
                 Item={
-                    "postcode": postcode_location[0].replace(" ", ""),
+                    "postcode": postcode,
                     "easting": postcode_location[1],
                     "northing": postcode_location[2],
                     "name": postcode_location[3],
-                    "orgcode": postcode_location[4],
-
+                    "orgcode": combined_df[combined_df['postcode'] == postcode]['orgcode'].values[0]
                 }
             )
         logger.info("inserted {} records into table {}".format(len(postcode_location_records), DYNAMODB_DESTINATION_TABLE))
 
 # This is the entry point for the Lambda function
 def lambda_handler(event, context):
+    csv_files_path = "./data/pcodey*.csv"
+    csv_files = glob.glob(csv_files_path)
+    data_frames = []
+    for csv_file in csv_files:
+        df = pd.read_csv(csv_file, header=0)
+        data_frames.append(df)
 
-    logger.info("Start of postcode_extract")
+    combined_df = pd.concat(data_frames, ignore_index=True)
+    print(combined_df[combined_df['postcode'] == 'MK81AS'])
+    logger.info("loaded  csv files successfully.. Start of postcode_extract")
     records_count = extract_postcodes()
 
     return {"statusCode": 200, "body": str(records_count) + " records updated successfully"}
