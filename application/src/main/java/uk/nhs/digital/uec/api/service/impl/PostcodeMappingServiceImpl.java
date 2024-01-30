@@ -109,19 +109,7 @@ public class PostcodeMappingServiceImpl implements PostcodeMappingService {
       postcodeMapping.setRegion(Region.getRegionEnum(regionRecord.getRegion()));
       postcodeMapping.setSubRegion(regionRecord.getSubRegion());
     }
-
-    // Optional<CCGRecord> ccgRecord =
-    //    regionMapper.getCCGRecord(postcodeMapping.getPostcode(), regionRecord.getRegion());
-
-    // if (ccgRecord.isEmpty()) {
-    //   return List.of(postcodeMapping);
-    //  } else {
-    // for (CCGRecord ccgRecord : ccgRecords) {
-    // postcodeMapping.setOrganisationCode(ccgRecord.get().getOrgCode());
-    log.info("5");
     ICBRecord icbRecord = regionMapper.getICBRecord(postcodeMapping.getOrganisationCode());
-    log.info("6");
-
     if (Objects.isNull(icbRecord)) {
       return List.of(postcodeMapping);
     }
@@ -129,9 +117,6 @@ public class PostcodeMappingServiceImpl implements PostcodeMappingService {
     postcodeMapping.setNhs_region(icbRecord.getNhsRegion());
     postcodeMapping.setEmail(icbRecord.getEmail());
     postcodeMapping.setCcg(icbRecord.getNhsCcg());
-    //  }
-    // }
-
     return List.of(postcodeMapping);
   }
 }

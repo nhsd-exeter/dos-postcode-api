@@ -11,5 +11,4 @@ public interface RegionMapper {
   ICBRecord getICBRecord(String orgCode);
 
   Map<String, List<String>> getAllRegions();
-  // Optional<CCGRecord> getCCGRecord(String postcode, String region);
 }
