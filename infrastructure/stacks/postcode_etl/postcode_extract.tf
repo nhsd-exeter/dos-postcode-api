@@ -1,6 +1,7 @@
 resource "aws_lambda_function" "postcode_extract_lambda" {
   filename         = data.archive_file.postcode_extract_function.output_path
   function_name    = local.postcode_extract_function_name
+  layers           = [aws_lambda_layer_version.pandas_layer.arn, aws_lambda_layer_version.data_csv_layer.arn]
   description      = local.postcode_extract_description
   role             = aws_iam_role.postcode_extract_lambda_role.arn
   handler          = "postcode_extract.lambda_handler"
@@ -31,6 +32,28 @@ resource "aws_lambda_function" "postcode_extract_lambda" {
     security_group_ids = [aws_security_group.extract_lambda_sg.id]
   }
 }
+
+
+resource "aws_lambda_layer_version" "pandas_layer" {
+  layer_name  = "${var.service_prefix}-python38-pandas-layer"
+  description = "Pandas dependancy for  Lambda"
+
+  compatible_runtimes = ["python3.8"]
+
+  # Specify the source code for your Lambda layer
+  source_code_hash = filebase64("${path.module}/functions/layers/pandas134.zip")
+}
+
+resource "aws_lambda_layer_version" "data_csv_layer" {
+  layer_name  = "${var.service_prefix}-data-csv-layer"
+  description = "CSV files for orgcodes"
+
+  compatible_runtimes = ["python3.8"]
+
+  # Specify the source code for your Lambda layer
+  source_code_hash = filebase64("${path.module}/functions/layers/data.zip")
+}
+
 
 resource "aws_security_group" "extract_lambda_sg" {
   name        = "${var.service_prefix}-extract-lambda-sg"

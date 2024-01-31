@@ -172,7 +172,7 @@ def get_orgcode(postcode):
     return result.values[0]
 # This is the entry point for the Lambda function
 def lambda_handler(event, context):
-    csv_files_path = "./data/pcodey*.csv"
+    csv_files_path = "/opt/data/pcodey*.csv"
     csv_files = glob.glob(csv_files_path)
     data_frames = []
     for csv_file in csv_files:
