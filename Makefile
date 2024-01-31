@@ -295,6 +295,8 @@ prepare-lambda-deployment-postcode-extract: # Downloads the required libraries f
 		$(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-postcode-extract/deploy
 	cp -R $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-postcode-extract/psycopg2 \
 		$(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-postcode-extract/deploy
+	cp -R $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-postcode-extract/data \
+		$(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-postcode-extract/deploy
 
 create-lambda-deploy-dir:
 	if [ ! -d $(PROJECT_DIR)infrastructure/stacks/postcode_etl/functions/uec-sf-postcode-extract/deploy ]
