@@ -125,7 +125,7 @@ def extract_postcodes():
                                 left outer join pathwaysdos.odspostcodes o on l.postcode = o.postcode
                                 left outer join pathwaysdos.organisations org on org.code = o.orgcode
                             where o.deletedtime is null) as pl
-                        where (pl.organisationtypeid = 1 or pl.org_name is null"""
+                        where (pl.organisationtypeid = 1 or pl.org_name is null)"""
 
     logger.info("Open connection")
     conn = connect()
@@ -143,6 +143,7 @@ def extract_postcodes():
         return count
     except Exception as e:
         logger.error("Extract postcode failed due to {}".format(e))
+        raise e
     finally:
         cur.close()
         conn.close()
@@ -160,11 +161,15 @@ def insert_bulk_data(postcode_location_records):
                     "easting": postcode_location[1],
                     "northing": postcode_location[2],
                     "name": postcode_location[3],
-                    "orgcode": combined_df[combined_df['postcode'] == postcode]['orgcode'].values[0]
+                    "orgcode": get_orgcode(postcode)
                 }
             )
         logger.info("inserted {} records into table {}".format(len(postcode_location_records), DYNAMODB_DESTINATION_TABLE))
-
+def get_orgcode(postcode):
+    result = combined_df[combined_df['postcode'] == postcode]['orgcode']
+    if (result.empty):
+        return ""
+    return result.values[0]
 # This is the entry point for the Lambda function
 def lambda_handler(event, context):
     csv_files_path = "./data/pcodey*.csv"
@@ -173,10 +178,10 @@ def lambda_handler(event, context):
     for csv_file in csv_files:
         df = pd.read_csv(csv_file, header=0)
         data_frames.append(df)
-
     combined_df = pd.concat(data_frames, ignore_index=True)
-    print(combined_df[combined_df['postcode'] == 'MK81AS'])
     logger.info("loaded  csv files successfully.. Start of postcode_extract")
-    records_count = extract_postcodes()
-
-    return {"statusCode": 200, "body": str(records_count) + " records updated successfully"}
+    try:
+        records_count = extract_postcodes()
+        return {"statusCode": 200, "body": str(records_count) + " records updated successfully"}
+    except Exception as e:
+        return {"statusCode": 500, "body": "Failed to update records due to {}".format(e)}
