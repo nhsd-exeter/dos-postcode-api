@@ -95,10 +95,10 @@ resource "aws_iam_role_policy_attachment" "s3FullAccessInsert" {
   policy_arn = local.s3_full_access_policy_arn
 }
 
-# resource "aws_iam_role_policy_attachment" "dynamoDbFullAccessInsert" {
-#   role       = aws_iam_role.postcode_insert_lambda_role.name
-#   policy_arn = local.dynamoDb_full_access_policy_arn
-# }
+resource "aws_iam_role_policy_attachment" "dynamoDbFullAccessInsert" {
+  role       = aws_iam_role.postcode_insert_lambda_role.name
+  policy_arn = local.dynamoDb_full_access_policy_arn
+}
 
 resource "aws_cloudwatch_event_rule" "postcode_insert_cloudwatch_event" {
   name                = local.postcode_insert_cloudwatch_event_name

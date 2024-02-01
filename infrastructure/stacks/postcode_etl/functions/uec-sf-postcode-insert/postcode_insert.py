@@ -122,8 +122,10 @@ def insert_bulk_data(postcode_location_records):
         for i in range(len(postcode_location_records)):
             postcode_location = postcode_location_records[i]
             postcode = postcode_location["postcode"].replace(" ", "")
-            index = binary_search(data_frame, postcode_location["postcode"])
+            print("data_frame size in insert_bulk_data {}".format(data_frame.size))
+            index = binary_search(data_frame, postcode)
             orgcode = index["orgcode"] if index is not None else ""
+            print("inserting: " + postcode + " with orgcode: " + orgcode)
             batch.put_item(
                 Item={
                     "postcode": postcode,
@@ -143,6 +145,7 @@ def lambda_handler(event, context):
     logger.info("Reading csv file from data/combined.zip")
     tic = time.perf_counter()
     data_frame = pd.read_csv("./data/combined.zip", compression='zip', header=0, usecols=cols,dtype={'postcode': str, 'orgcode': str})
+    print("data_frame {}".format(data_frame.size))
     toc = time.perf_counter()
     logger.info(f"loaded into dataframe in  {toc - tic:0.4f} seconds")
     logger.info("Reading csv files from: " + SOURCE_BUCKET)

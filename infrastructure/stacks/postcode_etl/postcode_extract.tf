@@ -34,28 +34,6 @@ resource "aws_lambda_function" "postcode_extract_lambda" {
   }
 }
 
-
-# resource "aws_lambda_layer_version" "pandas_layer" {
-#   layer_name  = "${var.service_prefix}-python38-pandas-layer"
-#   description = "Pandas dependancy for  Lambda"
-
-#   compatible_runtimes = ["python3.8"]
-
-#   # Specify the source code for your Lambda layer
-#   source_code_hash = filebase64("${path.module}/functions/layers/pandas134.zip")
-# }
-
-# resource "aws_lambda_layer_version" "data_csv_layer" {
-#   layer_name  = "${var.service_prefix}-data-csv-layer"
-#   description = "CSV files for orgcodes"
-
-#   compatible_runtimes = ["python3.8"]
-
-#   # Specify the source code for your Lambda layer
-#   source_code_hash = filebase64("${path.module}/functions/layers/data.zip")
-# }
-
-
 resource "aws_security_group" "extract_lambda_sg" {
   name        = "${var.service_prefix}-extract-lambda-sg"
   description = "Security group for the extract lambda"
@@ -148,6 +126,11 @@ resource "aws_iam_role_policy" "uec-sf-postcode-dos-extract" {
         "secretsmanager:List*"
       ],
       "Resource": "${local.postcode_extract_db_secret_arn}"
+    },
+    {
+      "Effect": "Allow",
+      "Action": ["s3:PutObject*"],
+      "Resource": "${aws_s3_bucket.postcode_etl_s3.arn}/*"
     },
     {
       "Effect": "Allow",
