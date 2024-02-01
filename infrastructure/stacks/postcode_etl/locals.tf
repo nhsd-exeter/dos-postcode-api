@@ -5,26 +5,26 @@ locals {
   postcode_insert_description          = "Service Finder function to insert postcode and postcode mappings into DynamoDB"
   postcode_insert_runtime              = "python3.8"
   postcode_insert_timeout              = 900
-  postcode_insert_memory_size          = 10240
+  postcode_insert_memory_size          = 2048
 
   postcode_extract_function_name = "${var.service_prefix}-postcode-extract"
   postcode_extract_description   = "Service Finder function to extract postcode and postcode mapping from DoS database into csv files"
   postcode_extract_runtime       = "python3.8"
   postcode_extract_timeout       = 900
-  postcode_extract_memory_size   = 10240
+  postcode_extract_memory_size   = 2048
   # postcode_extract_core_dos_python_libs_arn = data.aws_lambda_layer_version.dos_python_libs.arn
 
   region_update_function_name = "${var.service_prefix}-region-update"
   region_update_description   = "Service finder function to update postcode mappings with region and subregions"
   region_update_runtime       = "python3.8"
   region_update_timeout       = 900
-  region_update_memory_size   = 10240
+  region_update_memory_size   = 2048
 
   email_update_function_name = "${var.service_prefix}-email-update"
   email_update_description   = "Service finder function to update postcode mappings with email and ICBs"
   email_update_runtime       = "python3.8"
   email_update_timeout       = 900
-  email_update_memory_size   = 10240
+  email_update_memory_size   = 2048
 
   file_generator_function_name = "${var.service_prefix}-ccg-file-generator"
   file_generator_description   = "Service finder function to generate ccg csv from pcodey files"
@@ -45,7 +45,7 @@ locals {
   postcode_extract_db_endpoint                = var.sf_read_replica_db
   postcode_extract_db_port                    = "5432"
   postcode_extract_db_region                  = "eu-west-2"
-  postcode_extract_db_batch_size              = "100000"
+  postcode_extract_db_batch_size              = "50000"
   postcode_extract_db_secret_name             = var.dos_read_replica_secret_name
   postcode_extract_db_key                     = var.dos_read_replica_key
   postcode_extract_db_secret_arn              = data.aws_secretsmanager_secret.dos_read_replica_secret_name.arn
@@ -83,7 +83,7 @@ locals {
   postcode_extract_cloudwatch_event_princinple      = "events.amazonaws.com"
 
   region_update_cloudwatch_event_name            = "${var.service_prefix}-region-update-rule"
-  region_update_cloudwatch_event_description     = "Daily timer to update the postcode with region and subregion every 4 hours"
+  region_update_cloudwatch_event_description     = "task is scheduled to run at 1:00 AM, 2:00 AM, 3:00 AM, and so on, every day."
   region_update_cloudwatch_event_cron_expression = "cron(0 */1 * * ? *)"
   region_update_cloudwatch_event_target          = "lambda"
   region_update_cloudwatch_event_statement       = "AllowExecutionFromCloudWatch"
@@ -91,7 +91,7 @@ locals {
   region_update_cloudwatch_event_princinple      = "events.amazonaws.com"
 
   email_update_cloudwatch_event_name            = "${var.service_prefix}-email-update-rule"
-  email_update_cloudwatch_event_description     = "Daily timer to update the postcode with email and icb every 4 hours"
+  email_update_cloudwatch_event_description     = "task is scheduled to run at 1:10 AM, 2:10 AM, 3:10 AM, and so on, every day."
   email_update_cloudwatch_event_cron_expression = "cron(10 */1 * * ? *)"
   email_update_cloudwatch_event_target          = "lambda"
   email_update_cloudwatch_event_statement       = "AllowExecutionFromCloudWatch"

@@ -7,13 +7,13 @@ import psycopg2.extras
 import os
 import json
 import logging
-import pandas as pd
-import glob
-from pandas import DataFrame
+import csv
+import io
 
 s3 = boto3.resource(u"s3")
-dynamodb = boto3.resource("dynamodb")
-
+SOURCE_BUCKET = os.environ.get("SOURCE_BUCKET")
+SOURCE_FOLDER = os.environ.get("SOURCE_FOLDER")
+FILE_PREFIX = os.environ.get("FILE_PREFIX")
 USR = os.environ.get("USR")
 SOURCE_DB = os.environ.get("SOURCE_DB")
 ENDPOINT = os.environ.get("ENDPOINT").split(":")[0]
@@ -23,13 +23,9 @@ BATCH_SIZE = int(os.environ.get("BATCH_SIZE"))
 SECRET_NAME = os.environ.get("SECRET_NAME")
 DOS_READ_ONLY_USER = os.environ.get("DOS_READ_ONLY_USER")
 LOGGING_LEVEL = os.environ.get("LOGGING_LEVEL")
-DYNAMODB_DESTINATION_TABLE = os.environ.get("DYNAMODB_DESTINATION_TABLE")
 
-
-
-logger = logging.getLogger()
-logger.setLevel(LOGGING_LEVEL)
-combined_df = DataFrame()
+logging.basicConfig(level=LOGGING_LEVEL)
+logger=logging.getLogger(__name__)
 
 def get_secret():
 
@@ -119,14 +115,14 @@ def extract_postcodes():
                             (select l.postcode as postcode,
                                 l.easting as easting,
                                 l.northing as northing,
-                                org."name" as org_name,
-                                org.organisationtypeid as organisationtypeid
+                                od."name"  as org_name
+                                od.organisationtypeid as organisationtypeid
                             from pathwaysdos.locations l
-                                left outer join pathwaysdos.odspostcodes o on l.postcode = o.postcode
+                                left outer join (SELECT DISTINCT ON (postcode) o.id, postcode ,o.orgcode ,org."name" ,org.organisationtypeid
+                                FROM pathwaysdos.odspostcodes o
                                 left outer join pathwaysdos.organisations org on org.code = o.orgcode
-                            where o.deletedtime is null) as pl
-                        where (pl.organisationtypeid = 1 or pl.org_name is null)"""
-
+                                where org.organisationtypeid =1 and o.deletedtime is null
+                                ORDER BY postcode, o.id DESC) od on l.postcode = od.postcode) as pl"""
     logger.info("Open connection")
     conn = connect()
     logger.info("Connection opened")
@@ -136,10 +132,10 @@ def extract_postcodes():
         count = 0
         while True:
             records = cur.fetchmany()
-            count = count + len(records)
+            count = count + 1
             if not records:
                 break
-            insert_bulk_data(records)
+            save_to_csv(records,count)
         return count
     except Exception as e:
         logger.error("Extract postcode failed due to {}".format(e))
@@ -149,39 +145,35 @@ def extract_postcodes():
         conn.close()
         logger.info("PostgreSQL connection is closed")
 
-def insert_bulk_data(postcode_location_records):
-    table = dynamodb.Table(DYNAMODB_DESTINATION_TABLE)
 
-    with table.batch_writer(overwrite_by_pkeys=["postcode", "name"]) as batch:
-        for postcode_location in postcode_location_records:
-            postcode = postcode_location[0].replace(" ", "")
-            batch.put_item(
-                Item={
-                    "postcode": postcode,
-                    "easting": postcode_location[1],
-                    "northing": postcode_location[2],
-                    "name": postcode_location[3],
-                    "orgcode": get_orgcode(postcode)
-                }
-            )
-        logger.info("inserted {} records into table {}".format(len(postcode_location_records), DYNAMODB_DESTINATION_TABLE))
-def get_orgcode(postcode):
-    result = combined_df[combined_df['postcode'] == postcode]['orgcode']
-    if (result.empty):
-        return ""
-    return result.values[0]
+def save_to_csv(query_results, count):
+    str_count = str(count)
+    file_name = SOURCE_FOLDER + FILE_PREFIX + str_count + ".csv"
+    try:
+        csv_buffer = io.StringIO()
+        writer = csv.writer(csv_buffer)
+
+        counter = 0
+        for row in query_results:
+            writer.writerow(row)
+            counter = counter + 1
+            if counter == len(query_results):
+                break
+
+        # Prepare buffer and transform to binary
+        csv_buffer_to_binary = io.BytesIO(csv_buffer.getvalue().encode("utf-8"))
+
+        # save to s3 bucket
+        logger.info("Saving file to: " + file_name)
+        bucket = s3.Bucket(SOURCE_BUCKET)
+        bucket.put_object(Key=file_name, Body=csv_buffer_to_binary)
+    except Exception as e:
+        logger.error("Failed to create file in s3 bucket due to {}".format(e))
+        raise e
+
 # This is the entry point for the Lambda function
 def lambda_handler(event, context):
-    csv_files_path = "/opt/data/pcodey*.csv"
-    csv_files = glob.glob(csv_files_path)
-    data_frames = []
-    for csv_file in csv_files:
-        df = pd.read_csv(csv_file, header=0)
-        data_frames.append(df)
-    combined_df = pd.concat(data_frames, ignore_index=True)
+    logger.info("Start of postcode_extract")
+    file_count = extract_postcodes()
     logger.info("loaded  csv files successfully.. Start of postcode_extract")
-    try:
-        records_count = extract_postcodes()
-        return {"statusCode": 200, "body": str(records_count) + " records updated successfully"}
-    except Exception as e:
-        return {"statusCode": 500, "body": "Failed to update records due to {}".format(e)}
+    return {"statusCode": 200, "body": str(file_count) + " file(s) created in s3 bucket"}
