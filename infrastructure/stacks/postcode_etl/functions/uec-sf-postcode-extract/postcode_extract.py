@@ -115,7 +115,7 @@ def extract_postcodes():
                             (select l.postcode as postcode,
                                 l.easting as easting,
                                 l.northing as northing,
-                                od."name"  as org_name
+                                od."name"  as org_name,
                                 od.organisationtypeid as organisationtypeid
                             from pathwaysdos.locations l
                                 left outer join (SELECT DISTINCT ON (postcode) o.id, postcode ,o.orgcode ,org."name" ,org.organisationtypeid

@@ -14,16 +14,18 @@ resource "aws_lambda_function" "postcode_extract_lambda" {
   # layers           = [local.postcode_extract_core_dos_python_libs_arn]
   environment {
     variables = {
-      USR                        = local.postcode_extract_db_user
-      SOURCE_DB                  = local.postcode_extract_source_db
-      ENDPOINT                   = local.postcode_extract_db_endpoint
-      PORT                       = local.postcode_extract_db_port
-      REGION                     = local.postcode_extract_db_region
-      BATCH_SIZE                 = local.postcode_extract_db_batch_size
-      SECRET_NAME                = local.postcode_extract_db_secret_name
-      DOS_READ_ONLY_USER         = local.postcode_extract_db_key
-      DYNAMODB_DESTINATION_TABLE = local.postcode_extract_dynamoDb_destination_table
-      LOGGING_LEVEL              = var.postcode_etl_logging_level
+      SOURCE_BUCKET      = local.postcode_etl_s3_bucket
+      SOURCE_FOLDER      = local.postcode_etl_s3_source_folder
+      FILE_PREFIX        = local.postcode_etl_s3_file_prefix
+      USR                = local.postcode_extract_db_user
+      SOURCE_DB          = local.postcode_extract_source_db
+      ENDPOINT           = local.postcode_extract_db_endpoint
+      PORT               = local.postcode_extract_db_port
+      REGION             = local.postcode_extract_db_region
+      BATCH_SIZE         = local.postcode_extract_db_batch_size
+      SECRET_NAME        = local.postcode_extract_db_secret_name
+      DOS_READ_ONLY_USER = local.postcode_extract_db_key
+      LOGGING_LEVEL      = var.postcode_etl_logging_level
     }
   }
   vpc_config {
