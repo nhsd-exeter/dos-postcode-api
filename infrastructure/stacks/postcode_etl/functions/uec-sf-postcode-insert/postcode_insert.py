@@ -122,10 +122,8 @@ def insert_bulk_data(postcode_location_records):
         for i in range(len(postcode_location_records)):
             postcode_location = postcode_location_records[i]
             postcode = postcode_location["postcode"].replace(" ", "")
-            print("data_frame size in insert_bulk_data {}".format(data_frame.size))
             index = binary_search(data_frame, postcode)
             orgcode = index["orgcode"] if index is not None else ""
-            print("inserting: " + postcode + " with orgcode: " + orgcode)
             batch.put_item(
                 Item={
                     "postcode": postcode,

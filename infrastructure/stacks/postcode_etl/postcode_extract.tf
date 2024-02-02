@@ -151,10 +151,10 @@ resource "aws_iam_role_policy_attachment" "AWSLambdaVPCAccessExecutionRole" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
 }
 
-resource "aws_iam_role_policy_attachment" "dynamoDbFullAccessInsert" {
-  role       = aws_iam_role.postcode_extract_lambda_role.name
-  policy_arn = local.dynamoDb_full_access_policy_arn
-}
+# resource "aws_iam_role_policy_attachment" "dynamoDbFullAccessInsert" {
+#   role       = aws_iam_role.postcode_extract_lambda_role.name
+#   policy_arn = local.dynamoDb_full_access_policy_arn
+# }
 resource "aws_cloudwatch_event_rule" "postcode_extract_cloudwatch_event" {
   name                = local.postcode_extract_cloudwatch_event_name
   description         = local.postcode_extract_cloudwatch_event_description
