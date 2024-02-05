@@ -27,8 +27,8 @@ def read_csv_files():
     try:
         # delete the previously processed files so we have a clean workspace
         bucket.objects.filter(Prefix=PROCESSED_FOLDER).delete()
-
-        postcode_location_csv_files = bucket.objects.filter(Prefix=INPUT_FOLDER, Delimiter="/")
+        # run the process for the first 8 files and this is due to the lambda timeout
+        postcode_location_csv_files = bucket.objects.filter(Prefix=INPUT_FOLDER, Delimiter="/")[:8]
 
         for postcode_location_csv_file in postcode_location_csv_files:
             name = postcode_location_csv_file.key
