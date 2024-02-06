@@ -114,9 +114,9 @@ pipeline {
     }
     stage('Perform Insert Lambda function 2 of 5') {
       steps {
-        script {
-          sh "make postcode-insert-etl PROFILE=${env.PROFILE}"
-        }
+          script {
+            sh "make postcode-insert-etl PROFILE=${env.PROFILE}"
+          }
       }
     }
     stage('Perform Insert Lambda function 3 of 5') {
