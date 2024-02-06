@@ -99,27 +99,6 @@ resource "aws_iam_role_policy_attachment" "dynamoDbFullAccessInsert" {
   role       = aws_iam_role.postcode_insert_lambda_role.name
   policy_arn = local.dynamoDb_full_access_policy_arn
 }
-
-resource "aws_cloudwatch_event_rule" "postcode_insert_cloudwatch_event" {
-  name                = local.postcode_insert_cloudwatch_event_name
-  description         = local.postcode_insert_cloudwatch_event_description
-  schedule_expression = local.postcode_insert_cloudwatch_event_cron_expression
-}
-
-resource "aws_cloudwatch_event_target" "daily_postcode_insert_job" {
-  rule      = aws_cloudwatch_event_rule.postcode_insert_cloudwatch_event.name
-  target_id = local.postcode_insert_cloudwatch_event_target
-  arn       = aws_lambda_function.postcode_insert_lambda.arn
-}
-
-resource "aws_lambda_permission" "allow_cloudwatch_to_call_insert_postcode" {
-  statement_id  = local.postcode_insert_cloudwatch_event_statement
-  action        = local.postcode_insert_cloudwatch_event_action
-  function_name = aws_lambda_function.postcode_insert_lambda.function_name
-  principal     = local.postcode_insert_cloudwatch_event_princinple
-  source_arn    = aws_cloudwatch_event_rule.postcode_insert_cloudwatch_event.arn
-}
-
 resource "aws_cloudwatch_log_group" "postcode_insert_log_group" {
   name = "/aws/lambda/${aws_lambda_function.postcode_insert_lambda.function_name}"
 }

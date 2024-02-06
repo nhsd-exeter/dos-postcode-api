@@ -66,14 +66,6 @@ locals {
   dynamoDb_full_access_policy_arn      = "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess"
   rds_data_read_only_access_policy_arn = "arn:aws:iam::aws:policy/AmazonRDSReadOnlyAccess"
 
-  postcode_insert_cloudwatch_event_name            = "${var.service_prefix}-postcode-insert-rule"
-  postcode_insert_cloudwatch_event_description     = "Run service every day at 2am, 2:20am, 2:40am, 3:00am, and 3:20am"
-  postcode_insert_cloudwatch_event_cron_expression = "cron(0 2,2:20,2:40,3,3:20 * * ? *)"
-  postcode_insert_cloudwatch_event_target          = "lambda"
-  postcode_insert_cloudwatch_event_statement       = "AllowExecutionFromCloudWatch"
-  postcode_insert_cloudwatch_event_action          = "lambda:InvokeFunction"
-  postcode_insert_cloudwatch_event_princinple      = "events.amazonaws.com"
-
   postcode_extract_cloudwatch_event_name            = "${var.service_prefix}-postcode-extract-rule"
   postcode_extract_cloudwatch_event_description     = "Daily timer to extract postcode and postcode data out of DoS an into the s3 bucket at 1am"
   postcode_extract_cloudwatch_event_cron_expression = "cron(0 1 ? * * *)"

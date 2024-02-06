@@ -24,8 +24,9 @@ SECRET_NAME = os.environ.get("SECRET_NAME")
 DOS_READ_ONLY_USER = os.environ.get("DOS_READ_ONLY_USER")
 LOGGING_LEVEL = os.environ.get("LOGGING_LEVEL")
 
-logging.basicConfig(level=LOGGING_LEVEL)
-logger=logging.getLogger(__name__)
+
+logger = logging.getLogger()
+logger.setLevel(LOGGING_LEVEL)
 
 def get_secret():
 
