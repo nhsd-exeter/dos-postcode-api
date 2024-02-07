@@ -120,25 +120,25 @@ resource "aws_cloudwatch_log_subscription_filter" "postcode_etl_extract_sns_clou
   destination_arn = aws_lambda_function.postcode_etl_sns_lambda.arn
 }
 
-resource "aws_lambda_permission" "allow_cloudwatch_insert" {
-  count = length(data.aws_cloudwatch_log_groups.insert_log_groups) > 0 ? 1 : 0
+# resource "aws_lambda_permission" "allow_cloudwatch_insert" {
+#   count = length(data.aws_cloudwatch_log_groups.insert_log_groups) > 0 ? 1 : 0
 
-  statement_id  = "AllowExecutionFromCloudWatchInsert"
-  action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.postcode_etl_sns_lambda.function_name
-  principal     = "logs.${var.aws_region}.amazonaws.com"
-  source_arn    = data.aws_cloudwatch_log_group.postcode_etl_insert_log_group[0].arn
-}
+#   statement_id  = "AllowExecutionFromCloudWatchInsert"
+#   action        = "lambda:InvokeFunction"
+#   function_name = aws_lambda_function.postcode_etl_sns_lambda.function_name
+#   principal     = "logs.${var.aws_region}.amazonaws.com"
+#   source_arn    = data.aws_cloudwatch_log_group.postcode_etl_insert_log_group[0].arn
+# }
 
-resource "aws_cloudwatch_log_subscription_filter" "postcode_etl_insert_sns_cloudwatch_log_trigger" {
-  count = length(data.aws_cloudwatch_log_groups.insert_log_groups) > 0 ? 1 : 0
+# resource "aws_cloudwatch_log_subscription_filter" "postcode_etl_insert_sns_cloudwatch_log_trigger" {
+#   count = length(data.aws_cloudwatch_log_groups.insert_log_groups) > 0 ? 1 : 0
 
-  depends_on      = [aws_lambda_permission.allow_cloudwatch_insert]
-  name            = local.postcode_etl_sns_cloudwatch_event_name
-  log_group_name  = data.aws_cloudwatch_log_group.postcode_etl_insert_log_group[0].name
-  filter_pattern  = "?ERROR ?WARN ?5xx"
-  destination_arn = aws_lambda_function.postcode_etl_sns_lambda.arn
-}
+#   depends_on      = [aws_lambda_permission.allow_cloudwatch_insert]
+#   name            = local.postcode_etl_sns_cloudwatch_event_name
+#   log_group_name  = data.aws_cloudwatch_log_group.postcode_etl_insert_log_group[0].name
+#   filter_pattern  = "?ERROR ?WARN ?5xx"
+#   destination_arn = aws_lambda_function.postcode_etl_sns_lambda.arn
+# }
 
 resource "aws_cloudwatch_metric_alarm" "postcode_extract_alarm" {
   alarm_name                = local.postcode_etl_extract_alarm_name
@@ -159,21 +159,21 @@ resource "aws_cloudwatch_metric_alarm" "postcode_extract_alarm" {
   tags = local.standard_tags
 }
 
-resource "aws_cloudwatch_metric_alarm" "postcode_insert_alarm" {
-  alarm_name                = local.postcode_etl_insert_alarm_name
-  comparison_operator       = "LessThanThreshold"
-  evaluation_periods        = "1"
-  metric_name               = "Invocations"
-  namespace                 = "AWS/Lambda"
-  period                    = var.postcode_etl_insert_alarm_period
-  statistic                 = "Average"
-  threshold                 = "1"
-  alarm_description         = "This metric monitors the postcode insert lambda and sends an alert to a slack channel if it hasnt triggered in the given period"
-  insufficient_data_actions = []
-  alarm_actions             = [aws_sns_topic.postcode_etl_sns_topic.arn]
-  dimensions = {
-    FunctionName = local.postcode_insert_function_name
-  }
+# resource "aws_cloudwatch_metric_alarm" "postcode_insert_alarm" {
+#   alarm_name                = local.postcode_etl_insert_alarm_name
+#   comparison_operator       = "LessThanThreshold"
+#   evaluation_periods        = "1"
+#   metric_name               = "Invocations"
+#   namespace                 = "AWS/Lambda"
+#   period                    = var.postcode_etl_insert_alarm_period
+#   statistic                 = "Average"
+#   threshold                 = "1"
+#   alarm_description         = "This metric monitors the postcode insert lambda and sends an alert to a slack channel if it hasnt triggered in the given period"
+#   insufficient_data_actions = []
+#   alarm_actions             = [aws_sns_topic.postcode_etl_sns_topic.arn]
+#   dimensions = {
+#     FunctionName = local.postcode_insert_function_name
+#   }
 
-  tags = local.standard_tags
-}
+#   tags = local.standard_tags
+# }

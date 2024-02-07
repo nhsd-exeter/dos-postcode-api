@@ -38,7 +38,7 @@ pipeline {
     stage('Prepare for jenkins-slave run') {
       steps {
         script {
-          sh "make pipeline-slave-prepare"
+          sh 'make pipeline-slave-prepare'
         }
       }
     }
@@ -102,13 +102,6 @@ pipeline {
       steps {
         script {
           sh "make postcode-extract-etl PROFILE=${env.PROFILE}"
-        }
-      }
-    }
-    stage('Perform Insert Lambda function') {
-      steps {
-        script {
-          sh "make postcode-insert-etl PROFILE=${env.PROFILE}"
         }
       }
     }

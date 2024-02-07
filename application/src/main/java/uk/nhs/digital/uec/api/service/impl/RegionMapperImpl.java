@@ -11,11 +11,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
-import uk.nhs.digital.uec.api.model.CCGRecord;
 import uk.nhs.digital.uec.api.model.ICBRecord;
 import uk.nhs.digital.uec.api.model.RegionRecord;
 import uk.nhs.digital.uec.api.service.RegionMapper;
-import uk.nhs.digital.uec.api.util.CCGUtil;
 import uk.nhs.digital.uec.api.util.ICBUtil;
 import uk.nhs.digital.uec.api.util.RegionUtil;
 
@@ -31,8 +29,6 @@ public class RegionMapperImpl implements RegionMapper {
   @Autowired private RegionUtil regionUtil;
 
   @Autowired private ICBUtil icbUtil;
-
-  @Autowired private CCGUtil ccgUtil;
 
   @PostConstruct
   public void init() {
@@ -61,11 +57,14 @@ public class RegionMapperImpl implements RegionMapper {
   }
 
   public RegionRecord getRegionRecord(String postcode) {
-    List<RegionRecord> regionRecordList =
+    final List<RegionRecord> regionRecordList =
         recordsList.stream()
             .filter(regionRecord -> postcode.startsWith(regionRecord.getPartPostcode()))
             .collect(Collectors.toList());
-    RegionRecord regionRecord = null;
+    if (regionRecordList.isEmpty()) {
+      log.info("No Region record found for a given postcode {}", postcode);
+    }
+    RegionRecord regionRecord = new RegionRecord();
     String partPostCode = "";
     if (regionRecordList.size() == 1) {
       regionRecord = regionRecordList.stream().findFirst().orElse(null);
@@ -85,7 +84,9 @@ public class RegionMapperImpl implements RegionMapper {
       int index =
           binarySearchIndex(
               regionRecordList.stream().map(RegionRecord::getPartPostcode).toArray(), partPostCode);
-      regionRecord = regionRecordList.get(index);
+      if (index != -1) {
+        regionRecord = regionRecordList.get(index);
+      }
     }
     if (regionRecord.getRegion().equals("North East")) {
       regionRecord.setRegion("Yorkshire and The Humber");
@@ -94,6 +95,7 @@ public class RegionMapperImpl implements RegionMapper {
           postcode,
           regionRecord);
     }
+    log.info("RegionRecord details: {}", regionRecord);
     return regionRecord;
   }
 
@@ -122,27 +124,15 @@ public class RegionMapperImpl implements RegionMapper {
   }
 
   public ICBRecord getICBRecord(String orgCode) {
-    ICBRecord icbRecord = null;
+    ICBRecord icbRecord = new ICBRecord();
     int index =
         binarySearchIndex(icbRecordList.stream().map(ICBRecord::getOrgCode).toArray(), orgCode);
-    icbRecord = icbRecordList.get(index);
-    return icbRecord;
-  }
-
-  @Override
-  public Optional<CCGRecord> getCCGRecord(String postcode, String region) {
-    log.info("Searching {} ", postcode);
-
-    ccgUtil.setFileName(postcode.substring(0, 1) + ".csv");
-    List<CCGRecord> ccgRecords = ccgUtil.call();
-    log.info("ccgRecords size {}", ccgRecords.size());
-    Integer index =
-        binarySearchIgnoringSpaces(
-            ccgRecords.stream().map(e -> e.getPostcode()).toArray(), postcode);
-    if (index == -1) {
-      return Optional.empty();
+    if (index != -1) {
+      icbRecord = icbRecordList.get(index);
     }
-    return Optional.ofNullable(ccgRecords.get(index));
+    log.info("ICBRecord details: {}", icbRecord);
+
+    return icbRecord;
   }
 
   private int binarySearchIndex(Object[] records, String target) {
@@ -161,43 +151,5 @@ public class RegionMapperImpl implements RegionMapper {
       }
     }
     return -1;
-  }
-
-  /**
-   * This method is written extend the possibility of "binarySearchIndex" method - use it in
-   * scenarios as explained in jira ticket SFD-5564 All it does is, performing a binary search on an
-   * array of postcodes to find all occurrences of a target postcode.
-   *
-   * @param records The array of postcodes to search within.
-   * @param target The postcode to search for.
-   * @return The index of the first occurrence of the target postcode in the array, or -1 if the
-   *     target postcode is not found.
-   */
-  private static int binarySearchIgnoringSpaces(Object[] records, String target) {
-    if (records == null || target == null) {
-      return -1; // Invalid input
-    }
-
-    int left = 0;
-    int right = records.length - 1;
-
-    while (left <= right) {
-      int mid = left + (right - left) / 2;
-
-      // Compare ignoring white spaces
-      String midValue = records[mid].toString().replaceAll("\\s", "");
-      target = target.replaceAll("\\s", "");
-
-      int result = midValue.compareTo(target);
-
-      if (result == 0) {
-        return mid; // Found the target
-      } else if (result < 0) {
-        left = mid + 1; // Target is in the right half
-      } else {
-        right = mid - 1; // Target is in the left half
-      }
-    }
-    return -1; // Target not found
   }
 }

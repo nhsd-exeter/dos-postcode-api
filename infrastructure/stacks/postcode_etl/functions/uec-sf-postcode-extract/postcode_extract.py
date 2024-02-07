@@ -2,13 +2,13 @@ from __future__ import print_function
 import boto3
 import base64
 from botocore.exceptions import ClientError
-import io
-import csv
 import psycopg2
 import psycopg2.extras
 import os
 import json
 import logging
+import csv
+import io
 
 s3 = boto3.resource(u"s3")
 SOURCE_BUCKET = os.environ.get("SOURCE_BUCKET")
@@ -24,8 +24,9 @@ SECRET_NAME = os.environ.get("SECRET_NAME")
 DOS_READ_ONLY_USER = os.environ.get("DOS_READ_ONLY_USER")
 LOGGING_LEVEL = os.environ.get("LOGGING_LEVEL")
 
-logging.basicConfig(level=LOGGING_LEVEL)
-logger=logging.getLogger(__name__)
+
+logger = logging.getLogger()
+logger.setLevel(LOGGING_LEVEL)
 
 def get_secret():
 
@@ -90,12 +91,12 @@ def connect():
 
 
 # Method to get cursor from db
-def getCursor(conn):
+def get_cursor(conn):
     try:
         cur = conn.cursor("sf-postcode-extract-odspostcodes")
         cur.itersize = BATCH_SIZE
         cur.arraysize = BATCH_SIZE
-        print("Created cur")
+        logger.info("Created cursor and set the batch size to  {}".format(BATCH_SIZE))
         return cur
     except Exception as e:
         logger.error("unable to retrieve cursor due to {}".format(e))
@@ -106,7 +107,7 @@ def getCursor(conn):
 # Method to extract postcodes from db
 def extract_postcodes():
 
-    selectStatement = """select
+    select_statement = """select
                             pl.postcode,
                             pl.easting,
                             pl.northing,
@@ -115,31 +116,31 @@ def extract_postcodes():
                             (select l.postcode as postcode,
                                 l.easting as easting,
                                 l.northing as northing,
-                                org."name" as org_name,
-                                org.organisationtypeid as organisationtypeid
+                                od."name"  as org_name,
+                                od.organisationtypeid as organisationtypeid
                             from pathwaysdos.locations l
-                                left outer join pathwaysdos.odspostcodes o on l.postcode = o.postcode
+                                left outer join (SELECT DISTINCT ON (postcode) o.id, postcode ,o.orgcode ,org."name" ,org.organisationtypeid
+                                FROM pathwaysdos.odspostcodes o
                                 left outer join pathwaysdos.organisations org on org.code = o.orgcode
-                            where o.deletedtime is null) as pl
-                        where (pl.organisationtypeid = 1 or pl.org_name is null)"""
-
+                                where org.organisationtypeid =1 and o.deletedtime is null
+                                ORDER BY postcode, o.id DESC) od on l.postcode = od.postcode) as pl"""
     logger.info("Open connection")
     conn = connect()
     logger.info("Connection opened")
-    cur = getCursor(conn)
+    cur = get_cursor(conn)
     try:
-        cur.execute(selectStatement)
+        cur.execute(select_statement)
         count = 0
         while True:
             records = cur.fetchmany()
             count = count + 1
             if not records:
                 break
-
-            save_to_csv(records, count)
+            save_to_csv(records,count)
         return count
     except Exception as e:
         logger.error("Extract postcode failed due to {}".format(e))
+        raise e
     finally:
         cur.close()
         conn.close()
@@ -147,8 +148,8 @@ def extract_postcodes():
 
 
 def save_to_csv(query_results, count):
-    strCount = str(count)
-    fileName = SOURCE_FOLDER + FILE_PREFIX + strCount + ".csv"
+    str_count = str(count)
+    file_name = SOURCE_FOLDER + FILE_PREFIX + str_count + ".csv"
     try:
         csv_buffer = io.StringIO()
         writer = csv.writer(csv_buffer)
@@ -164,18 +165,16 @@ def save_to_csv(query_results, count):
         csv_buffer_to_binary = io.BytesIO(csv_buffer.getvalue().encode("utf-8"))
 
         # save to s3 bucket
-        logger.info("Saving file to: " + fileName)
+        logger.info("Saving file to: " + file_name)
         bucket = s3.Bucket(SOURCE_BUCKET)
-        bucket.put_object(Key=fileName, Body=csv_buffer_to_binary)
+        bucket.put_object(Key=file_name, Body=csv_buffer_to_binary)
     except Exception as e:
         logger.error("Failed to create file in s3 bucket due to {}".format(e))
         raise e
 
-
 # This is the entry point for the Lambda function
 def lambda_handler(event, context):
-
     logger.info("Start of postcode_extract")
-    fileCount = extract_postcodes()
-
-    return {"statusCode": 200, "body": str(fileCount) + " file(s) created in s3 bucket"}
+    file_count = extract_postcodes()
+    logger.info("loaded  csv files successfully.. Start of postcode_extract")
+    return {"statusCode": 200, "body": str(file_count) + " file(s) created in s3 bucket"}

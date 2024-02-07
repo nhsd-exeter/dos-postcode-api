@@ -14,6 +14,7 @@ import lombok.ToString;
 @Setter
 @ToString
 public class PostcodeMapping {
+
   @DynamoDBHashKey
   @DynamoDBAttribute(attributeName = "postcode")
   private String postcode;
@@ -30,7 +31,7 @@ public class PostcodeMapping {
   @DynamoDBAttribute(attributeName = "ccgName")
   private String ccg;
 
-  @DynamoDBAttribute(attributeName = "organisationCode")
+  @DynamoDBAttribute(attributeName = "orgcode")
   private String organisationCode;
 
   @DynamoDBAttribute(attributeName = "nhs_region")

@@ -9,8 +9,8 @@
   <properties>
     <dependency-check-maven.version>8.4.3</dependency-check-maven.version>
     <mockito.version>5.8.0</mockito.version>
-    <aws-java-sdk-dynamodb.version>1.12.632</aws-java-sdk-dynamodb.version>
-    <aws-java-sdk-sts.version>1.12.632</aws-java-sdk-sts.version>
+    <aws-java-sdk-dynamodb.version>1.12.634</aws-java-sdk-dynamodb.version>
+    <aws-java-sdk-sts.version>1.12.634</aws-java-sdk-sts.version>
     <spring-data-dynamodb.version>5.2.5</spring-data-dynamodb.version>
     <amazon.awssdk.sts.version>2.10.40</amazon.awssdk.sts.version>
     <aws-java-sdk-core.version>1.12.234</aws-java-sdk-core.version>
@@ -57,7 +57,7 @@
       <dependency>
         <groupId>software.amazon.awssdk</groupId>
         <artifactId>bom</artifactId>
-        <version>2.22.12</version>
+        <version>2.23.0</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -89,7 +89,7 @@
     <dependency>
       <groupId>software.amazon.awssdk</groupId>
       <artifactId>dynamodb-enhanced</artifactId>
-      <version>2.22.12</version>
+      <version>2.23.0</version>
     </dependency>
 
     <dependency>

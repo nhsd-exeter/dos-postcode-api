@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import uk.nhs.digital.uec.api.exception.InvalidParameterException;
 import uk.nhs.digital.uec.api.exception.InvalidPostcodeException;
 import uk.nhs.digital.uec.api.exception.NotFoundException;
-import uk.nhs.digital.uec.api.model.CCGRecord;
 import uk.nhs.digital.uec.api.model.ICBRecord;
 import uk.nhs.digital.uec.api.model.PostcodeMapping;
 import uk.nhs.digital.uec.api.model.Region;
@@ -83,17 +82,17 @@ public class PostcodeMappingServiceImpl implements PostcodeMappingService {
     Optional<PostcodeMapping> findByPostCodeOptional =
         postcodeMappingRepository.findByPostcode(postcode);
     mapping = findByPostCodeOptional.orElse(null);
-    log.info("Mapping for {} is {}", postcode, mapping);
+    log.info("Found postcode details in dynamodb for {} : {}", postcode, mapping);
     return mapping;
   }
 
   private PostcodeMapping getByPostcodeAndName(String postcode, String name) {
     PostcodeMapping mapping;
-    log.info("Finding mapping by postcode and name");
+    log.info("Finding mapping by postcode and name {}, {}", postcode, name);
     Optional<PostcodeMapping> findByPostCodeAndNameOptional =
         postcodeMappingRepository.findByPostcodeAndName(postcode, name);
     mapping = findByPostCodeAndNameOptional.orElse(null);
-    log.info("Mapping for {} is {}", postcode, mapping);
+    log.info("Found postcode details in dynamodb {} is {}", postcode, mapping);
     return mapping;
   }
 
@@ -102,32 +101,22 @@ public class PostcodeMappingServiceImpl implements PostcodeMappingService {
 
     RegionRecord regionRecord = regionMapper.getRegionRecord(postcodeMapping.getPostcode());
 
+    log.info("RegionRecord: {}", regionRecord);
+
     if (Objects.isNull(regionRecord)) {
       return List.of(postcodeMapping);
     } else {
       postcodeMapping.setRegion(Region.getRegionEnum(regionRecord.getRegion()));
       postcodeMapping.setSubRegion(regionRecord.getSubRegion());
     }
-
-    Optional<CCGRecord> ccgRecord =
-        regionMapper.getCCGRecord(postcodeMapping.getPostcode(), regionRecord.getRegion());
-
-    if (ccgRecord.isEmpty()) {
+    ICBRecord icbRecord = regionMapper.getICBRecord(postcodeMapping.getOrganisationCode());
+    if (Objects.isNull(icbRecord)) {
       return List.of(postcodeMapping);
-    } else {
-      // for (CCGRecord ccgRecord : ccgRecords) {
-      postcodeMapping.setOrganisationCode(ccgRecord.get().getOrgCode());
-      ICBRecord icbRecord = regionMapper.getICBRecord(ccgRecord.get().getOrgCode());
-      if (Objects.isNull(icbRecord)) {
-        return List.of(postcodeMapping);
-      }
-      postcodeMapping.setIcb(icbRecord.getNhsIcb());
-      postcodeMapping.setNhs_region(icbRecord.getNhsRegion());
-      postcodeMapping.setEmail(icbRecord.getEmail());
-      postcodeMapping.setCcg(icbRecord.getNhsCcg());
-      //  }
     }
-
+    postcodeMapping.setIcb(icbRecord.getNhsIcb());
+    postcodeMapping.setNhs_region(icbRecord.getNhsRegion());
+    postcodeMapping.setEmail(icbRecord.getEmail());
+    postcodeMapping.setCcg(icbRecord.getNhsCcg());
     return List.of(postcodeMapping);
   }
 }
