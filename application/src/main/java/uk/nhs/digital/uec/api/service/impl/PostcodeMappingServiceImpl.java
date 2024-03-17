@@ -106,13 +106,13 @@ public class PostcodeMappingServiceImpl implements PostcodeMappingService {
     if (Objects.isNull(regionRecord)) {
       return List.of(postcodeMapping);
     } else {
-      postcodeMapping.setRegion(Region.getRegionEnum(regionRecord.getRegion()));
       postcodeMapping.setSubRegion(regionRecord.getSubRegion());
     }
     ICBRecord icbRecord = regionMapper.getICBRecord(postcodeMapping.getOrganisationCode());
     if (Objects.isNull(icbRecord)) {
       return List.of(postcodeMapping);
     }
+    postcodeMapping.setRegion(Region.getRegionEnum(icbRecord.getNhsRegion()));
     postcodeMapping.setIcb(icbRecord.getNhsIcb());
     postcodeMapping.setNhs_region(icbRecord.getNhsRegion());
     postcodeMapping.setEmail(icbRecord.getEmail());

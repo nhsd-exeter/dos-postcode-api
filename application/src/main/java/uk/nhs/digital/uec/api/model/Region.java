@@ -7,16 +7,16 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public enum Region {
-  EAST_OF_ENGLAND("East of England"),
-  LONDON("London"),
-  NORTH_EAST_AND_YORKSHIRE("Yorkshire and The Humber"),
+  EAST_OF_ENGLAND("NHS East of England Region"),
+  LONDON("NHS London Region"),
+  NORTH_EAST_AND_YORKSHIRE("NHS North East and Yorkshire Region"),
   NORTHERN_IRELAND("Northern Ireland"),
-  NORTH_WEST("North West"),
-  SOUTH_EAST("South East"),
-  SOUTH_WEST("South West"),
+  NORTH_WEST("NHS North West Region"),
+  SOUTH_EAST("NHS South East Region"),
+  SOUTH_WEST("NHS South West Region"),
   SCOTLAND("Scotland"),
   WALES("Wales"),
-  MIDLANDS("Midlands");
+  MIDLANDS("NHS Midlands Region");
 
   private String name;
 
