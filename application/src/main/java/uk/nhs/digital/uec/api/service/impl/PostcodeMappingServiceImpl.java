@@ -9,6 +9,7 @@ import uk.nhs.digital.uec.api.exception.InvalidParameterException;
 import uk.nhs.digital.uec.api.exception.InvalidPostcodeException;
 import uk.nhs.digital.uec.api.exception.NotFoundException;
 import uk.nhs.digital.uec.api.model.ICBRecord;
+import uk.nhs.digital.uec.api.model.NhsRegion;
 import uk.nhs.digital.uec.api.model.PostcodeMapping;
 import uk.nhs.digital.uec.api.model.Region;
 import uk.nhs.digital.uec.api.model.RegionRecord;
@@ -105,16 +106,17 @@ public class PostcodeMappingServiceImpl implements PostcodeMappingService {
 
     if (Objects.isNull(regionRecord)) {
       return List.of(postcodeMapping);
-    } else {
-      postcodeMapping.setSubRegion(regionRecord.getSubRegion());
     }
+    postcodeMapping.setRegion(Region.getRegionEnum(regionRecord.getRegion()));
+    postcodeMapping.setSubRegion(regionRecord.getSubRegion());
+
     ICBRecord icbRecord = regionMapper.getICBRecord(postcodeMapping.getOrganisationCode());
     if (Objects.isNull(icbRecord)) {
       return List.of(postcodeMapping);
     }
-    postcodeMapping.setRegion(Region.getRegionEnum(icbRecord.getNhsRegion()));
+    log.info("IcbRecord {}", icbRecord);
     postcodeMapping.setIcb(icbRecord.getNhsIcb());
-    postcodeMapping.setNhs_region(icbRecord.getNhsRegion());
+    postcodeMapping.setNhs_region(NhsRegion.getNhsRegionByValue(icbRecord.getNhsRegion()).name());
     postcodeMapping.setEmail(icbRecord.getEmail());
     postcodeMapping.setCcg(icbRecord.getNhsCcg());
     return List.of(postcodeMapping);

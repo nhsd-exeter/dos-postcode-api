@@ -7,16 +7,19 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public enum Region {
-  EAST_OF_ENGLAND("NHS East of England Region"),
-  LONDON("NHS London Region"),
-  NORTH_EAST_AND_YORKSHIRE("NHS North East and Yorkshire Region"),
+  EAST_OF_ENGLAND("East of England"),
+  LONDON("London"),
+  NORTH_EAST_AND_YORKSHIRE("Yorkshire and The Humber"),
   NORTHERN_IRELAND("Northern Ireland"),
-  NORTH_WEST("NHS North West Region"),
-  SOUTH_EAST("NHS South East Region"),
-  SOUTH_WEST("NHS South West Region"),
+
+  NORTH_WEST("North West"),
+  SOUTH_EAST("South East"),
+  SOUTH_WEST("South West"),
   SCOTLAND("Scotland"),
   WALES("Wales"),
-  MIDLANDS("NHS Midlands Region");
+  MIDLANDS("Midlands"),
+  NOT_FOUND("NotFound");
+
 
   private String name;
 
@@ -29,7 +32,7 @@ public enum Region {
         isMidlands(district, region.getName())
       )
       .findFirst()
-      .orElse(null);
+      .orElse(NOT_FOUND);
   }
 
   private static boolean isMidlands(String district, String name) {

@@ -88,6 +88,14 @@ public class RegionMapperImpl implements RegionMapper {
         regionRecord = regionRecordList.get(index);
       }
     }
+    if (regionRecord.getRegion().equals("North East")) {
+      regionRecord.setRegion("Yorkshire and The Humber");
+      log.info(
+          "Updated region from North East to Yorkshire and The Humber: {}, {}",
+          postcode,
+          regionRecord);
+    }
+
     log.info("RegionRecord details: {}", regionRecord);
     return regionRecord;
   }
