@@ -11,12 +11,15 @@ public enum Region {
   LONDON("London"),
   NORTH_EAST_AND_YORKSHIRE("Yorkshire and The Humber"),
   NORTHERN_IRELAND("Northern Ireland"),
+
   NORTH_WEST("North West"),
   SOUTH_EAST("South East"),
   SOUTH_WEST("South West"),
   SCOTLAND("Scotland"),
   WALES("Wales"),
-  MIDLANDS("Midlands");
+  MIDLANDS("Midlands"),
+  NOT_FOUND("NotFound");
+
 
   private String name;
 
@@ -29,7 +32,7 @@ public enum Region {
         isMidlands(district, region.getName())
       )
       .findFirst()
-      .orElse(null);
+      .orElse(NOT_FOUND);
   }
 
   private static boolean isMidlands(String district, String name) {

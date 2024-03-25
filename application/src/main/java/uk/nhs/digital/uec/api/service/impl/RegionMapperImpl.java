@@ -95,6 +95,7 @@ public class RegionMapperImpl implements RegionMapper {
           postcode,
           regionRecord);
     }
+
     log.info("RegionRecord details: {}", regionRecord);
     return regionRecord;
   }
