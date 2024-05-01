@@ -24,7 +24,7 @@
     dependencies to use the latest version -->
     <spring-security-oauth2-autoconfigure.version>2.6.8</spring-security-oauth2-autoconfigure.version>
     <java-jwt.version>3.19.4</java-jwt.version>
-    <commons-io.version>2.15.1</commons-io.version>
+    <commons-io.version>2.16.1</commons-io.version>
     <springfox-boot-starter.version>3.0.0</springfox-boot-starter.version>
     <springfox-swagger2.version>3.0.0</springfox-swagger2.version>
     <springfox-swagger-ui.version>3.0.0</springfox-swagger-ui.version>
